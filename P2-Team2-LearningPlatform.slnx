@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="LearnHub.Api/LearnHub.Api.csproj" />
+  <Project Path="LearnHub.Data/LearnHub.Data.csproj" />
+</Solution>
