@@ -44,6 +44,9 @@ Main entities:
 - Courses
 - StudentCourses (Enrollments)
 
+### ERD
+<img width="841" height="581" alt="LearnHub_ERD" src="https://github.com/user-attachments/assets/76d99a91-9ce1-49ee-ac82-3f8c211d9a5b" />
+
 ## Team
 
 - Jonathan Melendez
