@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnHub.Data.Migrations
 {
     [DbContext(typeof(LearnHubDbContext))]
-    [Migration("20260715040542_Initial")]
+    [Migration("20260716031137_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -175,6 +175,9 @@ namespace LearnHub.Data.Migrations
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date");
 
                     b.Property<DateOnly>("EnrollmentDate")
                         .HasColumnType("date");

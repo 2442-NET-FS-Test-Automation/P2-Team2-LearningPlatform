@@ -173,6 +173,9 @@ namespace LearnHub.Data.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date");
+
                     b.Property<DateOnly>("EnrollmentDate")
                         .HasColumnType("date");
 

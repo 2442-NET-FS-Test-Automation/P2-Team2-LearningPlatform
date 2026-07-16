@@ -148,7 +148,8 @@ namespace LearnHub.Data.Migrations
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     CourseId = table.Column<int>(type: "int", nullable: false),
                     Grade = table.Column<int>(type: "int", nullable: false),
-                    EnrollmentDate = table.Column<DateOnly>(type: "date", nullable: false)
+                    EnrollmentDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    EndDate = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {

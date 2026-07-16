@@ -2,24 +2,15 @@
 
 LearnHub is a full-stack learning management platform that allows students to browse and enroll in courses while providing professors and administrators with tools to manage course offerings.
 
-## Features
+## Main Features
 
-### Students
-- Register and log in securely
-- Browse available courses
-- Search and filter courses
-- Enroll in courses
-- View enrolled courses and grades
-
-### Professors
-- Manage assigned courses
-- View enrolled students
-- Submit student grades
-
-### Administrators
-- Manage professors
-- Manage courses
-- View enrollment reports
+- JWT Authentication
+- Role-Based Authorization
+- Course Management
+- Student Enrollment
+- Grade Management
+- Professor Management
+- Reporting Dashboard
 
 ## Tech Stack
 
@@ -27,11 +18,11 @@ LearnHub is a full-stack learning management platform that allows students to br
 - ASP.NET Core Web API
 - Entity Framework Core
 - SQL Server
-- JWT Authentication
 
 ### Frontend
 - React
 - TypeScript
+- Axios
 - TailwindCSS
 
 ## Database

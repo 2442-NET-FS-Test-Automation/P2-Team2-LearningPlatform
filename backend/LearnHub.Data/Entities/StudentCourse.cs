@@ -9,4 +9,6 @@ public class StudentCourse
     public Course Course { get; set; } = default!;
     public int Grade { get; set; }
     public DateOnly EnrollmentDate { get; set; }
+    public DateOnly EndDate { get; set; }
+
 }
