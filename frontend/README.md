@@ -46,26 +46,30 @@ LearnHub Web is a React + TypeScript single-page application that consumes the L
 **TBD**
 
 ## Routing (TBC)
-
+```
 /login
 /register
 /courses
 /courses/<courseId>
 /my-profile
-
+```
+```
 /student/dashboard
 /student/my-courses
-
+```
+```
 /professor/dashboard
 /professor/courses
 /professor/courses/students
-
+```
+```
 /admin/dashboard
 /admin/users
 /admin/professors
 /admin/courses
 /admin/shifts
 /admin/reports
+```
 
 ## Authentication
 
