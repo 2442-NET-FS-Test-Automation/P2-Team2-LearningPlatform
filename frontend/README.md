@@ -1,12 +1,12 @@
 # LearnHub Web
 
-LearnHub Web is a React + TypeScript single-page application that consumes the LearnHub ASP.NET Core API.
+LearnHub Web is a Vite + React + TypeScript single-page application that consumes the LearnHub ASP.NET Core API.
 
 ## Technologies
 
 - React
 - TypeScript
-- React Router
+- Vite
 - Axios
 
 ## Features
