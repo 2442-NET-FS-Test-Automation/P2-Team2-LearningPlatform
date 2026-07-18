@@ -2,6 +2,9 @@ import { Routes, Route } from "react-router-dom";
 
 import PublicLayout from "./components/layout/PublicLayout";
 import LandingPage from "./pages/LandingPage";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
+import ProfilePage from "./pages/auth/ProfilePage";
 
 export default function App() {
     return (
@@ -14,9 +17,9 @@ export default function App() {
                 <Route path="/courses/:id" element={<h1>Course Details</h1>} />
                 
                 {/* Authentication */}
-                <Route path="/login" element={<h1>Login</h1>} />
-                <Route path="/register" element={<h1>Register</h1>} />
-                <Route path="/my-profile" element={<h1>Profile</h1>} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/my-profile" element={<ProfilePage />} />
 
                 {/* Student */}
                 <Route path="/student/dashboard" element={<h1>Student Dashboard</h1>} />
