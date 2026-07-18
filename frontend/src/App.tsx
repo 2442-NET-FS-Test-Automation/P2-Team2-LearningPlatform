@@ -5,6 +5,8 @@ import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ProfilePage from "./pages/auth/ProfilePage";
+import CoursesPage from "./pages/courses/CoursesPage";
+import CourseDetailsPage from "./pages/courses/CourseDetailsPage";
 
 export default function App() {
     return (
@@ -13,8 +15,8 @@ export default function App() {
                 <Route path="/" element={<LandingPage />} />
                 
                 {/* Public */}
-                <Route path="/courses" element={<h1>Courses</h1>} />
-                <Route path="/courses/:id" element={<h1>Course Details</h1>} />
+                <Route path="/courses" element={<CoursesPage />} />
+                <Route path="/courses/:id" element={<CourseDetailsPage />} />
                 
                 {/* Authentication */}
                 <Route path="/login" element={<LoginPage />} />
