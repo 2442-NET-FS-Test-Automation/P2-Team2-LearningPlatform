@@ -2,78 +2,76 @@ import { Link } from "react-router-dom";
 
 export default function RegisterPage() {
     return (
-        <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4 py-10">
-            <div className="w-full max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden grid md:grid-cols-2">
+        <div className="auth-shell">
+            <div className="auth-card">
                 {/* Form */}
-                <div className="p-10">
-                    <h1 className="text-4xl font-bold">
+                <div className="auth-form-panel">
+                    <h1 className="text-4xl font-bold dark:text-white">
                         Create Account
                     </h1>
-                    <p className="mt-3 text-slate-500">
+                    <p className="mt-3 text-slate-500 dark:text-slate-400">
                         Join LearnHub and start learning today.
                     </p>
                     <form className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
-                            <label>First Name</label>
+                            <label className="form-label">First Name</label>
                             <input
                                 type="text"
                                 placeholder="Enter your first name"
-                                className="mt-2 w-full rounded-lg border p-3"
+                                className="form-input"
                             />
                         </div>
 
                         <div>
-                            <label>Last Name</label>
+                            <label className="form-label">Last Name</label>
                             <input
                                 type="text"
                                 placeholder="Enter your last name"
-                                className="mt-2 w-full rounded-lg border p-3"
+                                className="form-input"
                             />
                         </div>
                         <div>
-                            <label>Birth Date</label>
+                            <label className="form-label">Birth Date</label>
                             <input
                                 type="date"
-                                className="mt-2 w-full rounded-lg border p-3"
+                                className="form-input"
                             />
                         </div>
                         <div>
-                            <label>Username</label>
+                            <label className="form-label">Username</label>
                             <input
                                 type="text"
                                 placeholder="Enter your username"
-                                className="mt-2 w-full rounded-lg border p-3"
+                                className="form-input"
                             />
                         </div>
 
                         <div className="md:col-span-2">
-                            <label>Email</label>
+                            <label className="form-label">Email</label>
                             <input
                                 type="email"
                                 placeholder="Enter your email"
-                                className="mt-2 w-full rounded-lg border p-3"
+                                className="form-input"
                             />
                         </div>
                         <div className="md:col-span-2">
-                            <label>Password</label>
+                            <label className="form-label">Password</label>
                             <input
                                 type="password"
                                 placeholder="Enter your password"
-                                className="mt-2 w-full rounded-lg border p-3"
+                                className="form-input"
                             />
                         </div>
-                        <button
-                            className="md:col-span-2 mt-3 rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700"
-                        >
+                        <button className="btn-primary md:col-span-2 mt-3 w-full py-3 font-semibold">
                             Create Account
                         </button>
                     </form>
 
-                    <p className="mt-6 text-center">
+                    <p className="mt-6 text-center dark:text-slate-300">
                         Already have an account?{" "}
                         <Link
                             to="/login"
-                            className="text-blue-600 font-semibold"
+                            className="text-blue-600 font-semibold dark:text-blue-400"
                         >
                             Login
                         </Link>
@@ -81,12 +79,12 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Right */}
-                <div className="hidden md:flex items-center justify-center bg-slate-900 text-white p-10">
+                <div className="auth-side-panel">
                     <div className="max-w-sm text-center">
                         <h2 className="text-4xl font-bold">
                             Start your journey
                         </h2>
-                        <p className="mt-4 text-slate-300">
+                        <p className="mt-4 text-slate-300 dark:text-slate-400">
                             Create an account to enroll in courses,
                             track your grades, and connect with your professors.
                         </p>

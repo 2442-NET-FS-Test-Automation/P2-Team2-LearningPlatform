@@ -1,7 +1,6 @@
 import { BookOpen, GraduationCap, Users } from "lucide-react";
 
 export default function Features() {
-
     const features = [
         {
             icon: <BookOpen size={34} />,
@@ -21,27 +20,24 @@ export default function Features() {
     ];
 
     return (
-        <section className="bg-slate-50 py-20">
+        <section className="section-light py-20">
             <div className="mx-auto max-w-7xl px-8">
-                <h2 className="mb-12 text-center text-4xl font-bold">
+                <h2 className="mb-12 text-center text-4xl font-bold dark:text-white">
                     Why LearnHub?
                 </h2>
 
                 <div className="grid gap-8 md:grid-cols-3">
                     {features.map((feature) => (
-                        <div
-                            key={feature.title}
-                            className="rounded-xl bg-white p-8 shadow"
-                        >
+                        <div key={feature.title} className="card">
                             <div className="text-blue-600">
                                 {feature.icon}
                             </div>
 
-                            <h3 className="mt-5 text-xl font-semibold">
+                            <h3 className="mt-5 text-xl font-semibold dark:text-white">
                                 {feature.title}
                             </h3>
 
-                            <p className="mt-3 text-slate-600">
+                            <p className="mt-3 text-slate-600 dark:text-slate-300">
                                 {feature.text}
                             </p>
                         </div>
