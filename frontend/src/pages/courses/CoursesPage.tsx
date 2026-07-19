@@ -6,8 +6,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 export default function CoursesPage() {
     const courses: CourseCardProps[] = [
         { Id: 1, Name: "Python Basics", Description: "A course about programming in Python", CategoryName: "Programming"},
-        { Id: 2, Name: "", Description: "", CategoryName: "WebDevelopment"},
-        { Id: 3, Name: "", Description: "", CategoryName: "MobileDevelopment"},
+        { Id: 2, Name: "React for web", Description: "", CategoryName: "WebDevelopment"},
+        { Id: 3, Name: "Using Android Studio", Description: "", CategoryName: "MobileDevelopment"},
         { Id: 4, Name: "", Description: "", CategoryName: "DataScience"},
         { Id: 5, Name: "", Description: "", CategoryName: "ArtificialIntelligence"},
         { Id: 6, Name: "", Description: "", CategoryName: "Cybersecurity"},
