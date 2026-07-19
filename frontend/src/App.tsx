@@ -7,6 +7,7 @@ import RegisterPage from "./pages/auth/RegisterPage";
 import ProfilePage from "./pages/auth/ProfilePage";
 import CoursesPage from "./pages/courses/CoursesPage";
 import CourseDetailsPage from "./pages/courses/CourseDetailsPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 export default function App() {
     return (
@@ -40,11 +41,7 @@ export default function App() {
                 {/* 404 */}
                 <Route
                     path="*"
-                    element={
-                        <div className="flex h-screen items-center justify-center">
-                            <h1 className="text-3xl font-bold">404 | Page Not Found</h1>
-                        </div>
-                    }
+                    element={<NotFoundPage />}
                 />
             </Route>
         </Routes>

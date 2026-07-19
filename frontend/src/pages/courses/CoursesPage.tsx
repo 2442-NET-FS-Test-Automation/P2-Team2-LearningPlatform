@@ -64,9 +64,9 @@ export default function CoursesPage() {
 
     useMemo(() => {
         setCurrentPage(1);
-    }, [searchTerm]);
+    }, [searchTerm, itemsPerPage]);
 
-    return ( 
+    return (
         <div className="flex min-h-screen bg-slate-100 dark:bg-slate-900">
             <div className="flex-grow w-full max-w-7xl mx-auto py-10 px-10 ">
                 {/* Title & SearchBar */}
@@ -80,7 +80,7 @@ export default function CoursesPage() {
                 {/* Course Grid */}
                 {paginatedCourses.length > 0 ? (
                     <div className="grid gap-8 md:grid-cols-3 py-8 px-8">
-                        { paginatedCourses.map(c => <CourseCard Id={c.Id} Name={c.Name} Description={c.Description} CategoryName={c.CategoryName}/>) }
+                        { paginatedCourses.map(c => <CourseCard key={c.Id} Id={c.Id} Name={c.Name} Description={c.Description} CategoryName={c.CategoryName}/>) }
                     </div>
                 ): (
                     <p className="mt-8 text-center text-slate-500 dark:text-slate-400">
@@ -117,9 +117,11 @@ export default function CoursesPage() {
                     {/* Items Per Page Selector */}
                     <div className="my-auto mx-auto col-3">
                         <label htmlFor="itemsperpage">Per Page: </label>
-                        <select name="itemsperpage" id="itemsperpage" onChange={(e) => setItemsPerPage(Number(e.target.value))}>
+                        <select value={12}
+                            name="itemsperpage" id="itemsperpage" 
+                            onChange={(e) => setItemsPerPage(Number(e.target.value))}>
                             <option value="6">6</option>
-                            <option value="12" selected>12</option>
+                            <option value="12">12</option>
                             <option value="18">18</option>
                             <option value="24">24</option>
                             <option value="48">48</option>

@@ -8,8 +8,8 @@ export default function CourseCard({
     CategoryName
 }: CourseCardProps) {
     return (
-        <Link to={"/courses/" + Id} className="no-underline">
-            <div key={Name} className="card p-3">
+        <Link key={Name} to={"/courses/" + Id} className="no-underline">
+            <div className="card p-3">
                 <img src={"/course_img/" + CategoryName + ".jpg"} alt={CategoryName + " image"} className="rounded-xl aspect-video"/>
                 <div className="p-4">
                     <h3 className="text-xl font-semibold dark:text-white">{Name}</h3>
