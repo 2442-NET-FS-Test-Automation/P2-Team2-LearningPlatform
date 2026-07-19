@@ -36,7 +36,7 @@ export default function CourseDetailsPage() {
     const displayAbout = course.About || about;
     
     return (
-        <main className="min-h-screen bg-white dark:bg-slate-900">
+        <div className="min-h-screen bg-white dark:bg-slate-900">
             {/* Header Image */}
             <div className="relative h-64 w-full overflow-hidden bg-slate-200 dark:bg-slate-700">
                 <img
@@ -50,7 +50,7 @@ export default function CourseDetailsPage() {
 
             {/* Course Details */}
             <section className="section-white py-12">
-                <div className="mx-auto max-w-7xl px-8">
+                <div className="container-page">
                     <nav className="mb-6 text-sm text-slate-500 dark:text-slate-400">
                         <Link to="/courses" className="hover:text-blue-600 dark:hover:text-blue-400">
                             Courses
@@ -68,23 +68,23 @@ export default function CourseDetailsPage() {
                                 <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
                                     {course.CategoryName}
                                 </span>
-                                <h1 className="mt-3 text-4xl font-extrabold leading-tight dark:text-white">
+                                <h1 className="mt-3 text-4xl font-extrabold leading-tight">
                                     {displayName}
                                 </h1>
-                                <p className="mt-4 text-lg text-slate-600 dark:text-slate-300">
+                                <p className="mt-4 text-lg text-muted">
                                     {displayDescription}
                                 </p>
                             </div>
 
-                            <div className="border-t border-slate-200 pt-6 dark:border-slate-700">
-                                <h2 className="text-xl font-semibold dark:text-white">Instructor</h2>
-                                <p className="mt-1 text-slate-600 dark:text-slate-300">{course.Instructor}</p>
+                            <div className="divider-block">
+                                <h2 className="text-xl font-semibold">Instructor</h2>
+                                <p className="mt-1 text-muted">{course.Instructor}</p>
                             </div>
 
                             {/* Additional info */}
-                            <div className="border-t border-slate-200 pt-6 dark:border-slate-700">
-                                <h2 className="text-xl font-semibold dark:text-white">About this course</h2>
-                                <p className="mt-2 text-slate-600 dark:text-slate-300">{displayAbout}</p>
+                            <div className="divider-block">
+                                <h2 className="text-xl font-semibold">About this course</h2>
+                                <p className="mt-2 text-muted">{displayAbout}</p>
                             </div>
                         </div>
 
@@ -92,7 +92,7 @@ export default function CourseDetailsPage() {
                         <div className="lg:col-span-1">
                             <div className="card sticky top-24 space-y-6">
                                 <div className="flex items-baseline justify-between">
-                                    <span className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                                    <span className="big-stat">
                                         {course.Price === 0 ? ("Free") : (`${course.Price}$`)}
                                     </span>
                                     <span className="text-sm text-slate-500 dark:text-slate-400">
@@ -123,6 +123,6 @@ export default function CourseDetailsPage() {
                     </div>
                 </div>
             </section>
-        </main>
+        </div>
     );
 }

@@ -40,8 +40,8 @@ export default function StudentDashboardPage(){
 
     return (
         <div className="section-white min-h-screen py-10">
-            <div className="mx-auto max-w-7xl px-8">
-                <h1 className="mb-8 text-3xl font-extrabold dark:text-white">Dashboard</h1>
+            <div className="container-page">
+                <h1 className="mb-8 text-3xl font-extrabold">Dashboard</h1>
                 <div className="flex flex-col gap-8 lg:flex-row">
                     {/* Side Navigation */}
                     <aside className="lg:w-64 shrink-0">

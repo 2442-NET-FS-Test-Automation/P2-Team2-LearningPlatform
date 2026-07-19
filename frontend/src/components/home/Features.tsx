@@ -21,23 +21,23 @@ export default function Features() {
 
     return (
         <section className="section-light py-20">
-            <div className="mx-auto max-w-7xl px-8">
-                <h2 className="mb-12 text-center text-4xl font-bold dark:text-white">
+            <div className="container-page">
+                <h2 className="mb-12 text-center text-4xl font-bold">
                     Why LearnHub?
                 </h2>
 
-                <div className="grid gap-8 md:grid-cols-3">
+                <div className="card-grid">
                     {features.map((feature) => (
                         <div key={feature.title} className="card">
-                            <div className="text-blue-600">
+                            <div className="text-blue-600 dark:text-blue-400">
                                 {feature.icon}
                             </div>
 
-                            <h3 className="mt-5 text-xl font-semibold dark:text-white">
+                            <h3 className="mt-5 text-xl font-semibold">
                                 {feature.title}
                             </h3>
 
-                            <p className="mt-3 text-slate-600 dark:text-slate-300">
+                            <p className="mt-3 text-muted">
                                 {feature.text}
                             </p>
                         </div>

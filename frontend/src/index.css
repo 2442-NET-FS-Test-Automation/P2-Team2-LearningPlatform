@@ -35,9 +35,25 @@
     button {
         @apply transition-all duration-200;
     }
+    h1,
+    h2,
+    h3 {
+        @apply dark:text-white;
+    }
 }
 
 @layer components {
+    /* General */
+    .container-page {
+        @apply mx-auto max-w-7xl px-8;
+    }
+    .divider-block {
+        @apply border-t border-slate-200 pt-6 dark:border-slate-700;
+    }
+    .big-stat {
+        @apply text-4xl font-bold text-blue-600 dark:text-blue-400;
+    }
+
     /* Navbar */
     .navbar{
         @apply sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/80;
@@ -56,11 +72,26 @@
         @apply rounded-lg border border-slate-300 bg-white px-5 py-2.5 transition-all hover:bg-slate-100;
         @apply dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800;
     }
+    .btn-cta-primary {
+        @apply rounded-md bg-blue-600 px-6 py-3 text-white transition-colors hover:bg-blue-700;
+        @apply dark:bg-blue-500 dark:hover:bg-blue-400;
+    }
+
+    .btn-cta-outline {
+        @apply rounded-md border border-slate-300 px-6 py-3 transition-colors hover:bg-slate-100;
+        @apply dark:border-slate-700 dark:hover:bg-slate-800;
+    }
 
     /* Cards */
+    .card-grid {
+        @apply grid gap-8 md:grid-cols-3;
+    }
     .card {
         @apply rounded-xl border border-slate-200 bg-white p-6 shadow-md transition-all;
         @apply dark:border-slate-800 dark:bg-slate-900;
+    }
+    .stat-card {
+        @apply rounded-lg bg-slate-50 p-4 text-center dark:bg-slate-800;
     }
 
     /* Section backgrounds */
@@ -74,6 +105,9 @@
     /* Text colors */
     .text-muted {
         @apply text-slate-600 dark:text-slate-400;
+    }
+    .text-muted-alt {
+        @apply text-slate-300 dark:text-slate-400;
     }
 
     /* Auth pages */
@@ -100,15 +134,5 @@
     .form-input {
         @apply w-full rounded-lg border border-slate-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500;
         @apply dark:border-slate-600 dark:bg-slate-700 dark:text-white;
-    }
-
-    /* Hero CTAs */
-    .btn-cta-primary {
-        @apply rounded-md bg-blue-600 px-6 py-3 text-white transition-colors hover:bg-blue-700;
-        @apply dark:bg-blue-500 dark:hover:bg-blue-400;
-    }
-    .btn-cta-outline {
-        @apply rounded-md border border-slate-300 px-6 py-3 transition-colors hover:bg-slate-100;
-        @apply dark:border-slate-700 dark:hover:bg-slate-800;
     }
 }

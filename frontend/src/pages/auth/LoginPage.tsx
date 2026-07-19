@@ -6,10 +6,10 @@ export default function LoginPage() {
             <div className="auth-card">
                 {/* Left */}
                 <div className="auth-form-panel">
-                    <h1 className="text-4xl font-bold dark:text-white">
+                    <h1 className="text-4xl font-bold">
                         Welcome Back
                     </h1>
-                    <p className="mt-3 text-slate-500 dark:text-slate-400">
+                    <p className="mt-3 text-muted">
                         Sign in to continue using LearnHub.
                     </p>
                     <form className="mt-8 space-y-5">
@@ -47,7 +47,7 @@ export default function LoginPage() {
                         <h2 className="text-4xl font-bold">
                             LearnHub
                         </h2>
-                        <p className="mt-4 text-blue-100 dark:text-blue-200">
+                        <p className="mt-4 text-muted-alt">
                             Learn, grow and connect with professors
                             from anywhere.
                         </p>

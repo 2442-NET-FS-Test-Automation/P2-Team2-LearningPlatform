@@ -21,7 +21,7 @@ export default function ProfileSection({
                     <UserRound size={75} />
                 }
                 <div>
-                    <h2 className="text-2xl font-bold dark:text-white">{Name}</h2>
+                    <h2 className="text-2xl font-bold">{Name}</h2>
                     <p className="mb-2">{Username}</p>
                     <p className="text-muted">{Role}</p>
                     <p className="text-muted text-sm dark:text-slate-400">{Email}</p>
@@ -29,7 +29,7 @@ export default function ProfileSection({
                 <button className="btn-outline ml-auto text-sm">Edit Profile</button>
             </div>
             <div>
-                <h3 className="font-semibold dark:text-white">Bio</h3>
+                <h3 className="font-semibold">Bio</h3>
                 <p className="text-muted">{Bio || "No bio provided."}</p>
             </div>
         </div>

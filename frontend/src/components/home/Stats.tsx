@@ -12,11 +12,11 @@ export default function Stats() {
             <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 md:grid-cols-4">
                 {stats.map((stat) => (
                     <div key={stat.label} className="text-center">
-                        <h2 className="text-4xl font-bold text-blue-600 dark:text-blue-400">
+                        <h2 className="big-stat">
                             {stat.value}
                         </h2>
 
-                        <p className="mt-2 text-slate-600 dark:text-slate-300">
+                        <p className="mt-2 text-muted">
                             {stat.label}
                         </p>
                     </div>

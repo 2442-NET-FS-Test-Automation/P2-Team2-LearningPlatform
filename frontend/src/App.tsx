@@ -4,10 +4,11 @@ import PublicLayout from "./components/layout/PublicLayout";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
-import ProfilePage from "./pages/auth/ProfilePage";
+import ProfilePage from "./pages/StudentDashboardPage";
 import CoursesPage from "./pages/courses/CoursesPage";
 import CourseDetailsPage from "./pages/courses/CourseDetailsPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import StudentDashboardPage from "./pages/StudentDashboardPage";
 
 export default function App() {
     return (
@@ -25,8 +26,7 @@ export default function App() {
                 <Route path="/my-profile" element={<ProfilePage />} />
 
                 {/* Student */}
-                <Route path="/student/dashboard" element={<h1>Student Dashboard</h1>} />
-                <Route path="/student/my-courses" element={<h1>My Courses</h1>} />
+                <Route path="/student/dashboard" element={<StudentDashboardPage />} />
 
                 {/* Professor */}
                 <Route path="/professor/dashboard" element={<h1>Professor Dashboard</h1>} />

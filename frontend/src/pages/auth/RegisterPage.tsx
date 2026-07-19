@@ -6,10 +6,10 @@ export default function RegisterPage() {
             <div className="auth-card">
                 {/* Form */}
                 <div className="auth-form-panel">
-                    <h1 className="text-4xl font-bold dark:text-white">
+                    <h1 className="text-4xl font-bold">
                         Create Account
                     </h1>
-                    <p className="mt-3 text-slate-500 dark:text-slate-400">
+                    <p className="mt-3 text-muted">
                         Join LearnHub and start learning today.
                     </p>
                     <form className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -84,7 +84,7 @@ export default function RegisterPage() {
                         <h2 className="text-4xl font-bold">
                             Start your journey
                         </h2>
-                        <p className="mt-4 text-slate-300 dark:text-slate-400">
+                        <p className="mt-4 text-muted-alt">
                             Create an account to enroll in courses,
                             track your grades, and connect with your professors.
                         </p>

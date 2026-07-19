@@ -10,7 +10,7 @@ export default function CoursesSection({ courses }: UserCoursesInfo) {
     return (
         <div>
             <div className="card space-y-4">
-                <h2 className="text-xl font-semibold dark:text-white">Enrolled Courses</h2>
+                <h2 className="text-xl font-semibold">Enrolled Courses</h2>
                 {pendingCourses.length === 0 ? (
                     <p className="text-muted">You are not currently enrolled in any course.</p>
                 ) : (
@@ -31,7 +31,7 @@ export default function CoursesSection({ courses }: UserCoursesInfo) {
                 )}
             </div>
             <div className="card space-y-4 mt-5">
-                <h2 className="text-xl font-semibold dark:text-white">Completed Courses</h2>
+                <h2 className="text-xl font-semibold">Completed Courses</h2>
                 {completedCourses.length === 0 ? (
                     <p className="text-muted">You have not completed any course.</p>
                 ) : (

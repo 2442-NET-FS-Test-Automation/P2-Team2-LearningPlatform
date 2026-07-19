@@ -68,10 +68,10 @@ export default function CoursesPage() {
 
     return (
         <div className="flex min-h-screen bg-slate-100 dark:bg-slate-900">
-            <div className="flex-grow w-full max-w-7xl mx-auto py-10 px-10 ">
+            <div className="flex-grow w-full container-page py-10 ">
                 {/* Title & SearchBar */}
                 <div>
-                    <h1 className="text-4xl font-extrabold leading-tight dark:text-white">All courses</h1>
+                    <h1 className="text-4xl font-extrabold leading-tight">All courses</h1>
                     <input type="text" className="form-input mt-3" placeholder="Search courses"
                         value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)}
                     />
@@ -79,7 +79,7 @@ export default function CoursesPage() {
 
                 {/* Course Grid */}
                 {paginatedCourses.length > 0 ? (
-                    <div className="grid gap-8 md:grid-cols-3 py-8 px-8">
+                    <div className="card-grid py-8 px-8">
                         { paginatedCourses.map(c => <CourseCard key={c.Id} Id={c.Id} Name={c.Name} Description={c.Description} CategoryName={c.CategoryName}/>) }
                     </div>
                 ): (

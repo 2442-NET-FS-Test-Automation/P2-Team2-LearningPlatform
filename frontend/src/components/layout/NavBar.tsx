@@ -7,7 +7,7 @@ export default function Navbar() {
 
     return (
         <header className="navbar">
-            <nav className="mx-auto flex max-w-7xl items-center justify-between px-8 py-4">
+            <nav className="flex container-page items-center justify-between py-4">
                 <Link to="/"
                     className="text-2xl font-bold text-blue-600 dark:text-blue-400"
                 > LearnHub </Link>

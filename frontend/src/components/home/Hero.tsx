@@ -4,14 +4,14 @@ export default function Hero() {
     return (
         <section className="section-light">
             <div className="mx-auto flex min-h-[70vh] max-w-7xl flex-col items-center justify-center px-8 text-center">
-                <h1 className="text-6xl font-extrabold leading-tight dark:text-white">
+                <h1 className="text-6xl font-extrabold leading-tight">
                     Learn without
                     <span className="text-blue-600 dark:text-blue-400">
                         {" "}limits
                     </span>
                 </h1>
 
-                <p className="mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-300">
+                <p className="mt-6 max-w-2xl text-lg text-muted">
                     Explore university courses, learn from experienced professors,
                     and take the next step toward your future.
                 </p>

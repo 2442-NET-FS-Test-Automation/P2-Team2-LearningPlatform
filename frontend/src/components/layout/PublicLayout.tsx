@@ -6,11 +6,9 @@ export default function PublicLayout() {
     return (
         <>
             <Navbar />
-
-            <main className="min-h-screen">
-                <Outlet />
-            </main>
-
+                <main className="min-h-screen">
+                    <Outlet />
+                </main>
             <Footer />
         </>
     );
