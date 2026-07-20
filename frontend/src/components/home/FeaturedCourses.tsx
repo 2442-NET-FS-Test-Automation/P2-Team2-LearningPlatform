@@ -7,23 +7,20 @@ export default function FeaturedCourses() {
     ];
 
     return (
-        <section className="py-20">
-            <div className="mx-auto max-w-7xl px-8">
+        <section className="section-light py-20">
+            <div className="container-page">
                 <h2 className="mb-10 text-4xl font-bold">
                     Featured Courses
                 </h2>
 
-                <div className="grid gap-8 md:grid-cols-3">
+                <div className="card-grid">
                     {courses.map(course => (
-                        <div
-                            key={course}
-                            className="rounded-xl border bg-white p-6 shadow-sm"
-                        >
+                        <div key={course} className="card">
                             <h3 className="text-xl font-semibold">
                                 {course}
                             </h3>
 
-                            <p className="mt-3 text-slate-600">
+                            <p className="mt-3 text-muted">
                                 Discover the fundamentals and build practical
                                 skills through hands-on learning.
                             </p>

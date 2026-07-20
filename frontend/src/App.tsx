@@ -3,6 +3,18 @@ import { Routes, Route } from "react-router-dom";
 import PublicLayout from "./components/layout/PublicLayout";
 import LandingPage from "./pages/LandingPage";
 
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
+
+import CoursesPage from "./pages/courses/CoursesPage";
+import CourseDetailsPage from "./pages/courses/CourseDetailsPage";
+
+import StudentDashboardPage from "./pages/dashboard/StudentDashboardPage";
+import ProfessorDashboardPage from "./pages/dashboard/ProfessorDashboardPage";
+import ManagerDashboardPage from "./pages/dashboard/ManagerDashboardPage";
+
+import NotFoundPage from "./pages/NotFoundPage";
+
 export default function App() {
     return (
         <Routes>
@@ -10,37 +22,24 @@ export default function App() {
                 <Route path="/" element={<LandingPage />} />
                 
                 {/* Public */}
-                <Route path="/courses" element={<h1>Courses</h1>} />
-                <Route path="/courses/:id" element={<h1>Course Details</h1>} />
+                <Route path="/courses" element={<CoursesPage />} />
                 
                 {/* Authentication */}
-                <Route path="/login" element={<h1>Login</h1>} />
-                <Route path="/register" element={<h1>Register</h1>} />
-                <Route path="/my-profile" element={<h1>Profile</h1>} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
 
                 {/* Student */}
-                <Route path="/student/dashboard" element={<h1>Student Dashboard</h1>} />
-                <Route path="/student/my-courses" element={<h1>My Courses</h1>} />
+                <Route path="/student/dashboard" element={<StudentDashboardPage />} />
+                <Route path="/courses/:id" element={<CourseDetailsPage />} />
 
                 {/* Professor */}
-                <Route path="/professor/dashboard" element={<h1>Professor Dashboard</h1>} />
-                <Route path="/professor/courses" element={<h1>Professor Courses</h1>} />
-                <Route path="/professor/courses/:id" element={<h1>Assigned Course Details</h1>} />
+                <Route path="/professor/dashboard" element={<ProfessorDashboardPage />} />
 
                 {/* Admin */}
-                <Route path="/admin/dashboard" element={<h1>Admin Dashboard</h1>} />
-                <Route path="/admin/users" element={<h1>Users</h1>} />
-                <Route path="/admin/courses" element={<h1>Courses Management</h1>} />
+                <Route path="/manager/dashboard" element={<ManagerDashboardPage />} />
 
                 {/* 404 */}
-                <Route
-                    path="*"
-                    element={
-                        <div className="flex h-screen items-center justify-center">
-                            <h1 className="text-3xl font-bold">404 | Page Not Found</h1>
-                        </div>
-                    }
-                />
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>
     );

@@ -51,11 +51,9 @@ LearnHub Web is a Vite + React + TypeScript single-page application that consume
 /register
 /courses
 /courses/<courseId>
-/my-profile
 ```
 ```
 /student/dashboard
-/student/my-courses
 ```
 ```
 /professor/dashboard

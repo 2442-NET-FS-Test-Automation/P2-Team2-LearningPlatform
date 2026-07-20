@@ -1,28 +1,38 @@
 import { Link } from "react-router-dom"
+import { useTheme } from "../../ctx/ThemeCtx";
+import { Moon, Sun } from "lucide-react";
+import { getDashboardRoute } from "../../lib/funcs";
 
 export default function Navbar() {
+    const { theme, toggleTheme } = useTheme();
+
     return (
-        <header className="shadow-sm border-b bg-white">
-            <nav className="mx-auto flex max-w-7xl items-center justify-between px-8 py-4">
+        <header className="navbar">
+            <nav className="flex container-page items-center justify-between py-4">
                 <Link to="/"
-                    className="text-2xl font-bold text-blue-600"
+                    className="text-2xl font-bold text-blue-600 dark:text-blue-400"
                 > LearnHub </Link>
 
                 <div className="flex items-center gap-8">
+                    <Link to="/courses" className="nav-link" > Courses </Link>
 
-                    <Link to="/courses"
-                        className="font-medium hover:text-blue-600"
-                    > Courses </Link>
-
-                    <Link to="/login"
-                        className="font-medium hover:text-blue-600"
-                    > Login </Link>
-
-                    <Link to="/register"
-                        className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                    > Register </Link>
+                    {/* Make a ternary once we have user auth */}
+                    <Link to={getDashboardRoute("Student")} className="nav-link"> Dashboard </Link>
+                    <Link to="/login" className="nav-link"> Login </Link>
+                    <Link to="/register" className="btn-primary"> Register </Link>
+                    
+                    {/* Dark mode toggle */}
+                    <button
+                        onClick={toggleTheme}
+                        className="rounded-full p-2 transition hover:bg-slate-200 dark:hover:bg-slate-500"
+                        aria-label="Toggle theme"
+                    >
+                        {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+                    </button>
                 </div>
             </nav>
+
+            {/* TODO: Make a hamburger style menu for mobile */}
         </header>
     );
 }
