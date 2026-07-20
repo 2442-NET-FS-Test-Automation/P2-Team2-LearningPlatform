@@ -1,6 +1,6 @@
-export type UserRole = "Anonymous" | "Student" | "Professor" | "Admin";
+import type { ReactNode } from "react";
 
-export type StudentTabs = "profile" | "courses" | "progress" | "settings";
+export type UserRole = "Anonymous" | "Student" | "Professor" | "Admin";
 
 export type CourseCardProps = {
     Id: number,
@@ -47,4 +47,18 @@ export type UserInfo = {
     Role: UserRole,
     Bio?: string,
     Courses: UserCourseInfo[]
+}
+
+export type TabItem = {
+    Id: string;
+    Label: string;
+    Icon: ReactNode;
+}
+
+export type DashboardSideNavProps = {
+    Tabs: TabItem[];
+    ActiveTab: string;
+    OnTabChange: (tabId: string) => void;
+    OnLogout?: () => void;
+    ClassName?: string;
 }

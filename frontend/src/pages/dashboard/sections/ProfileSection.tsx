@@ -1,4 +1,4 @@
-import type { UserPartialInfo } from "../../lib/types";
+import type { UserPartialInfo } from "../../../lib/types";
 import { UserRound, UserRoundPen, UserRoundCog } from "lucide-react";
 
 export default function ProfileSection({

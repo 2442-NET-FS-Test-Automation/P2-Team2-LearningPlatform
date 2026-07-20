@@ -1,5 +1,5 @@
-import { getGradeColor } from "../../lib/funcs";
-import type { UserStats } from "../../lib/types";
+import { getGradeColor } from "../../../lib/funcs";
+import type { UserStats } from "../../../lib/types";
 
 export default function ProgressSection({
     TotalCourses,

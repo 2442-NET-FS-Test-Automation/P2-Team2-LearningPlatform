@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
-import type { UserCoursesInfo } from "../../lib/types";
-import { getGradeColor } from "../../lib/funcs";
+import type { UserCoursesInfo } from "../../../lib/types";
+import { getGradeColor } from "../../../lib/funcs";
 
 export default function CoursesSection({ courses }: UserCoursesInfo) {
     const pendingCourses = courses.filter(c => c.Completed === false);
