@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 
-import type { UserCoursesInfo } from "../../../lib/types";
-import { getGradeColor } from "../../../lib/funcs";
+import type { StudentCoursesInfo } from "../../../lib/types";
+import { formatSchedule, getGradeColor } from "../../../lib/funcs";
 
-export default function CoursesSection({ courses }: UserCoursesInfo) {
+export default function CoursesSection({ courses }: StudentCoursesInfo) {
     const pendingCourses = courses.filter(c => c.Completed === false);
     const completedCourses = courses.filter(c => c.Completed === true);
 
@@ -17,9 +17,14 @@ export default function CoursesSection({ courses }: UserCoursesInfo) {
                     <ul className="space-y-3">
                         {pendingCourses.map((course) => (
                             <li key={course.Id} className="flex items-center justify-between">
-                                <Link to={`/courses/${course.Id}`} className="font-medium hover:text-blue-600 dark:hover:text-blue-400">
-                                    {course.Name}
-                                </Link>
+                                <div>
+                                    <Link to={`/courses/${course.Id}`} className="font-medium hover:text-blue-600 dark:hover:text-blue-400">
+                                        {course.Name}
+                                    </Link>
+                                    {course.Schedule && course.Schedule.length > 0 && (
+                                        <p className="text-xs text-muted mt-0.5">{formatSchedule(course.Schedule)}</p>
+                                    )}
+                                </div>
                                 <div className="flex items-center gap-3">
                                     <button className="btn-outline text-red-600 border-red-600 px-4 py-2">
                                         Unenroll

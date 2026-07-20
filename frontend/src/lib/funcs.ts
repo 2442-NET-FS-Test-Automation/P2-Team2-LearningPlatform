@@ -1,3 +1,5 @@
+import { DAY_NAMES, DAY_NAMES_SHORT, type CourseSchedule } from "./types";
+
 export function handleLogout() {
     console.log("Logging out...");
 };
@@ -13,4 +15,20 @@ export function calculateAverage(array: number[]): number {
 
     const total = array.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     return total / array.length;
+}
+
+export function getDayName(day: number, short: boolean = false): string {
+    if (short) return DAY_NAMES_SHORT[day] ?? "Unknown";
+    return DAY_NAMES[day] ?? "Unknown";
+}
+
+export function formatSchedule(schedule: CourseSchedule[]): string {
+    return schedule
+        .map(s => `${getDayName(s.Day, true)} ${s.StartTime}-${s.EndTime}`)
+        .join(", ");
+}
+
+export function minutesFromMidnight(time: string): number {
+    const [h, m] = time.split(":").map(Number);
+    return h * 60 + (m || 0);
 }

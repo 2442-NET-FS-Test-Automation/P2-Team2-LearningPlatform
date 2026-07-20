@@ -1,7 +1,10 @@
 import { useParams, Link } from "react-router-dom";
-import type { CourseDetails } from "../../lib/types";
-import NotFoundPage from "../NotFoundPage";
 import { Clock, Trophy } from "lucide-react";
+
+import CourseScheduleList from "../../components/CourseScheduleList";
+import NotFoundPage from "../NotFoundPage";
+
+import type { CourseDetails, CourseSchedule } from "../../lib/types";
 
 export default function CourseDetailsPage() {
     // Temp Data
@@ -13,7 +16,11 @@ export default function CourseDetailsPage() {
             Price: 150,
             Certificate: true,
             Instructor: "Jane Doe",
-            Enrolled: 152
+            Enrolled: 152,
+            Schedule: [ 
+                { Day: 2, StartTime: "04:00", EndTime: "06:00" } as CourseSchedule,
+                { Day: 4, StartTime: "04:00", EndTime: "06:00" } as CourseSchedule
+            ]
         },
         {
             Id: 2, Name: "", Description: "", CategoryName: "WebDevelopment",
@@ -81,7 +88,8 @@ export default function CourseDetailsPage() {
                                 <p className="mt-1 text-muted">{course.Instructor}</p>
                             </div>
 
-                            {/* Additional info */}
+                            <CourseScheduleList Schedule={course.Schedule} />
+                            
                             <div className="divider-block">
                                 <h2 className="text-xl font-semibold">About this course</h2>
                                 <p className="mt-2 text-muted">{displayAbout}</p>

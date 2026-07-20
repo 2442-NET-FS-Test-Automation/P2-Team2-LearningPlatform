@@ -1,4 +1,4 @@
-import type { UserPartialInfo } from "../../../lib/types";
+import type { StudentPartialInfo } from "../../../lib/types";
 import { UserRound, UserRoundPen, UserRoundCog } from "lucide-react";
 
 export default function ProfileSection({
@@ -7,7 +7,7 @@ export default function ProfileSection({
     Username,
     Role,
     Bio,
-}: UserPartialInfo) {
+}: StudentPartialInfo) {
     return (
         <div className="card space-y-6">
             <div className="flex items-center gap-6">

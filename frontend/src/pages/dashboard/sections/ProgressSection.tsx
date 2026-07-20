@@ -1,11 +1,11 @@
 import { getGradeColor } from "../../../lib/funcs";
-import type { UserStats } from "../../../lib/types";
+import type { StudentStats } from "../../../lib/types";
 
 export default function ProgressSection({
     TotalCourses,
     Completed,
     AvgGrade,
-}: UserStats) {
+}: StudentStats) {
     return (
         <div className="card space-y-6">
             <h2 className="text-xl font-semibold">Your Progress</h2>

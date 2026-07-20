@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { User, BookOpen, BarChart3 } from "lucide-react";
+import { User, BookOpen, BarChart3, CalendarDays } from "lucide-react";
 
 import DashboardSideNav from "../../components/DashboardSideNav";
 import ProfileSection from "./sections/ProfileSection";
 import CoursesSection from "./sections/CoursesSection";
 import ProgressSection from "./sections/ProgressSection";
 
-import type { UserInfo, UserStats, UserCourseInfo, TabItem } from "../../lib/types";
+import type { StudentInfo, StudentStats, StudentCourseInfo, TabItem, CourseSchedule } from "../../lib/types";
 import { calculateAverage, handleLogout } from "../../lib/funcs";
+import WeeklyScheduleSection from "./sections/WeeklyScheduleSection";
 
 const tempuser = {
     Name: "Jon",
@@ -16,27 +17,31 @@ const tempuser = {
     Username: "megajon",
     Bio: "Passionate about CS and AI.",
     Courses: [
-        { Id: 1, Name: "Python Basics", Grade: 87, Completed: true } as UserCourseInfo,
-        { Id: 2, Name: "React for web", Completed: false } as UserCourseInfo,
-        { Id: 3, Name: "Using Android Studio", Completed: false } as UserCourseInfo,
-        { Id: 4, Name: "Data Analytics", Grade: 55, Completed: true } as UserCourseInfo
+        { Id: 1, Name: "Python Basics", Grade: 87, Completed: false, Schedule: [ 
+                        { Day: 2, StartTime: "16:00", EndTime: "18:00" } as CourseSchedule,
+                        { Day: 4, StartTime: "14:00", EndTime: "18:00" } as CourseSchedule
+                    ] } as StudentCourseInfo,
+        { Id: 2, Name: "React for web", Completed: false } as StudentCourseInfo,
+        { Id: 3, Name: "Using Android Studio", Completed: false } as StudentCourseInfo,
+        { Id: 4, Name: "Data Analytics", Grade: 55, Completed: true } as StudentCourseInfo
     ]
-} as UserInfo;
+} as StudentInfo;
 const tempstats = {
     TotalCourses: tempuser.Courses.length,
     Completed: tempuser.Courses.filter(c => c.Completed === true).length,
     AvgGrade: calculateAverage(tempuser.Courses.filter(c => c.Completed === true).map(c => Number(c.Grade))),
-} as UserStats;
+} as StudentStats;
 
 export default function StudentDashboardPage(){
-    const user: UserInfo = tempuser
-    const stats: UserStats = tempstats
+    const user: StudentInfo = tempuser
+    const stats: StudentStats = tempstats
 
     const [activeTab, setActiveTab] = useState<string>("courses");
 
     const tabs: TabItem[] = [
         { Id: "profile", Label: "Profile", Icon: <User size={18} /> },
         { Id: "courses", Label: "My Courses", Icon: <BookOpen size={18} /> },
+        { Id: "schedule", Label: "Schedule", Icon: <CalendarDays size={18} /> },
         { Id: "progress", Label: "Progress", Icon: <BarChart3 size={18} /> }
     ];
 
@@ -59,6 +64,7 @@ export default function StudentDashboardPage(){
                         />}
                         {activeTab === "courses" && <CoursesSection courses={user.Courses}  />}
                         {activeTab === "progress" && <ProgressSection TotalCourses={stats.TotalCourses} Completed={stats.Completed} AvgGrade={stats.AvgGrade} />}
+                        {activeTab === "schedule" && <WeeklyScheduleSection courses={user.Courses} />}
                     </div>
                 </div>
             </div>
