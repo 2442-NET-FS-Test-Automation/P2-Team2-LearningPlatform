@@ -12,6 +12,21 @@ export type CourseCardProps = {
     CategoryName: string
 }
 
+export type EventBoxProps = {
+    Event: ScheduleEvent;
+    HOUR_START: number;
+    HOUR_HEIGHT: number;
+}
+
+export type PaginationControlsProps = {
+    totalPages: number,
+    currentPage: number,
+    goToPage: (pagenum: number) => void,
+    handlePrevious: () => void,
+    handleNext: () => void,
+    setItemsPerPage: (value: number) => void
+}
+
 export type CourseDetails = {
     Id: number,
     Name: string,
@@ -61,12 +76,6 @@ export type DashboardSideNavProps = {
     OnLogout?: () => void;
     ClassName?: string;
 }
-
-export type EventBoxProps = {
-    Event: ScheduleEvent;
-    HOUR_START: number;
-    HOUR_HEIGHT: number;
-};
 
 export type UserInfo = {
     Name: string,
