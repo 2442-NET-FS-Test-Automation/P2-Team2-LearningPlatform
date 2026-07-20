@@ -32,6 +32,16 @@ export type CourseSchedule = {
     EndTime: string
 }
 
+export type CourseInfo = {
+    Id: number,
+    Name: string,
+    Schedule?: CourseSchedule[]
+}
+
+export type CoursesInfo = {
+    Courses: CourseInfo[];
+}
+
 export type CourseScheduleListProps = {
     Schedule?: CourseSchedule[];
 };
@@ -62,15 +72,13 @@ export type UserInfo = {
     Name: string,
     Email: string,
     Username: string,
-    Role: UserRole
+    Role: UserRole,
+    Bio?: string
 }
 
-export type StudentCourseInfo = {
-    Id: number,
-    Name: string,
+export interface StudentCourseInfo extends CourseInfo {
     Grade?: number,
-    Completed: boolean,
-    Schedule?: CourseSchedule[]
+    Completed: boolean
 }
 
 export type StudentCoursesInfo = {
@@ -78,11 +86,8 @@ export type StudentCoursesInfo = {
 }
 
 export interface StudentInfo extends UserInfo {
-    Bio?: string,
     Courses: StudentCourseInfo[]
 }
-
-export type StudentPartialInfo = Partial<StudentInfo>
 
 export type StudentStats = {
     TotalCourses: number,

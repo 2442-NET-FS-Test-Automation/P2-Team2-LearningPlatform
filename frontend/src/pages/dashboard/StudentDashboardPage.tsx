@@ -64,7 +64,7 @@ export default function StudentDashboardPage(){
                         />}
                         {activeTab === "courses" && <CoursesSection courses={user.Courses}  />}
                         {activeTab === "progress" && <ProgressSection TotalCourses={stats.TotalCourses} Completed={stats.Completed} AvgGrade={stats.AvgGrade} />}
-                        {activeTab === "schedule" && <WeeklyScheduleSection courses={user.Courses} />}
+                        {activeTab === "schedule" && <WeeklyScheduleSection Courses={user.Courses.filter(c => c.Completed === false)} />}
                     </div>
                 </div>
             </div>
