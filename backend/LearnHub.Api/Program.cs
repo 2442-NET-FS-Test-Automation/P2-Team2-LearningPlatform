@@ -13,7 +13,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // DbContext
-var conn_string = "Server=localhost,1433;Database=LearnHub;User Id=sa;Password=LearningHub12345.;TrustServerCertificate=True;";
+var conn_string = builder.Configuration["Conn-String"]!;
 builder.Services.AddDbContextFactory<LearnHubDbContext>(o => o.UseSqlServer(conn_string));
 
 builder.Services.AddControllers();

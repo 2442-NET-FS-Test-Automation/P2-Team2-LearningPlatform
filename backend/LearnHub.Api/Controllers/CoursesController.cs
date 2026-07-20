@@ -1,10 +1,6 @@
-using Azure;
 using LearnHub.Data;
 using LearnHub.Data.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.JsonPatch;
 using LearnHub.Data.Repositories;
 
 namespace LearnHub.Api.Controllers
