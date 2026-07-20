@@ -23,7 +23,6 @@ export default function App() {
                 
                 {/* Public */}
                 <Route path="/courses" element={<CoursesPage />} />
-                <Route path="/courses/:id" element={<CourseDetailsPage />} />
                 
                 {/* Authentication */}
                 <Route path="/login" element={<LoginPage />} />
@@ -31,22 +30,16 @@ export default function App() {
 
                 {/* Student */}
                 <Route path="/student/dashboard" element={<StudentDashboardPage />} />
+                <Route path="/courses/:id" element={<CourseDetailsPage />} />
 
                 {/* Professor */}
                 <Route path="/professor/dashboard" element={<ProfessorDashboardPage />} />
-                <Route path="/professor/courses" element={<h1>Professor Courses</h1>} />
-                <Route path="/professor/courses/:id" element={<h1>Assigned Course Details</h1>} />
 
                 {/* Admin */}
-                <Route path="/admin/dashboard" element={<ManagerDashboardPage />} />
-                <Route path="/admin/users" element={<h1>Users</h1>} />
-                <Route path="/admin/courses" element={<h1>Courses Management</h1>} />
+                <Route path="/manager/dashboard" element={<ManagerDashboardPage />} />
 
                 {/* 404 */}
-                <Route
-                    path="*"
-                    element={<NotFoundPage />}
-                />
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>
     );

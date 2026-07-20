@@ -5,10 +5,10 @@ import DashboardSideNav from "../../components/DashboardSideNav";
 import ProfileSection from "./sections/ProfileSection";
 import CoursesSection from "./sections/CoursesSection";
 import ProgressSection from "./sections/ProgressSection";
+import WeeklyScheduleSection from "./sections/WeeklyScheduleSection";
 
 import type { StudentInfo, StudentStats, StudentCourseInfo, TabItem, CourseSchedule } from "../../lib/types";
 import { calculateAverage, handleLogout } from "../../lib/funcs";
-import WeeklyScheduleSection from "./sections/WeeklyScheduleSection";
 
 const tempuser = {
     Name: "Jon",

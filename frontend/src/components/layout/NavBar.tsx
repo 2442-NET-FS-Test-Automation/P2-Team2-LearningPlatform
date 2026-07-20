@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import { useTheme } from "../../ctx/ThemeCtx";
 import { Moon, Sun } from "lucide-react";
+import { getDashboardRoute } from "../../lib/funcs";
 
 export default function Navbar() {
     const { theme, toggleTheme } = useTheme();
@@ -14,6 +15,9 @@ export default function Navbar() {
 
                 <div className="flex items-center gap-8">
                     <Link to="/courses" className="nav-link" > Courses </Link>
+
+                    {/* Make a ternary once we have user auth */}
+                    <Link to={getDashboardRoute("Student")} className="nav-link"> Dashboard </Link>
                     <Link to="/login" className="nav-link"> Login </Link>
                     <Link to="/register" className="btn-primary"> Register </Link>
                     
@@ -27,6 +31,8 @@ export default function Navbar() {
                     </button>
                 </div>
             </nav>
+
+            {/* TODO: Make a hamburger style menu for mobile */}
         </header>
     );
 }

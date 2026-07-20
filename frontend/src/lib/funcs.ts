@@ -4,6 +4,15 @@ export function handleLogout() {
     console.log("Logging out...");
 };
 
+export function getDashboardRoute(role: string): string {
+    switch (role) {
+        case "Student": return "/student/dashboard";
+        case "Professor": return "/professor/dashboard";
+        case "Manager": return "/manager/dashboard";
+        default: return "/";
+    }
+}
+
 export function getGradeColor (grade: number): string {
     if (grade >= 80) return 'text-green-600 dark:text-green-400';
     if (grade >= 60) return 'text-yellow-600 dark:text-yellow-400';
