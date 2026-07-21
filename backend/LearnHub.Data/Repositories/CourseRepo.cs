@@ -1,0 +1,162 @@
+using LearnHub.Data.Entities;
+using Microsoft.EntityFrameworkCore;
+using LearnHub.Data;
+using LearnHub.Data.Dtos.Courses;
+
+namespace LearnHub.Data.Repositories;
+
+public class CourseRepo : ICourseRepo
+{
+    // our dbContext
+    private readonly LearnHubDbContext _context;
+
+    // Builder
+    public CourseRepo(LearnHubDbContext context)
+    {
+        _context = context;
+    }
+
+    // Function for get all the courses
+    public async Task<PagedResult<CourseListDto>> GetAllAsync(
+    int page,
+    int pageSize,
+    bool? active = null)
+    {
+        // Create a query from the context of Courses
+        var query = _context.Courses.AsQueryable();
+
+        // If active has a value (true or false) the query filters the result
+        // of the courses.
+        // In case active dont have any value, the query dont filter anything
+        // and the result are gonna be all the courses
+        if (active.HasValue)
+        {
+            // Query = courses who IsActive value equals to our active value
+            query = query.Where(c => c.IsActive == active.Value);
+        }
+
+        // await for know the count of the items
+        var totalItems = await query.CountAsync();
+
+        // Create the var courses in base of the query, implemented pagination and selecting the specific
+        // data for our Dto
+        var courses = await query
+            .OrderBy(c => c.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(c => new CourseListDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description,
+                Category = c.CategoryName
+            })
+            .ToListAsync();
+
+        // return a PagedResult<T>
+        return new PagedResult<CourseListDto>
+        {
+            Items = courses,
+            Page = page,
+            PageSize = pageSize,
+            TotalItems = totalItems,
+            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+        };
+    }
+
+    // This function dont have an endpoint, only for logical purposes
+    // because didnt want to expose the table Course for the users
+    public async Task<Course?> GetByIdAsync(int id)
+    {
+        // return the first item with the matching id
+        return await _context.Courses
+            .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    public async Task<CourseDetailDto?> GetByIdDetailedAsync(int id)
+    {
+        // Return a CourseDetailDto, in the context of Courses await for 
+        // the course who include Professor, the Professor include User
+        // then the course include a Schedule
+        // the course are filtered where the id matches
+        // and selected the data for our CourseDetailDto
+        return await _context.Courses
+            .Include(c => c.Professor)
+                .ThenInclude(p => p.User)
+            .Include(c => c.Schedule)
+            .Where(c => c.Id == id)
+            .Select(c => new CourseDetailDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description,
+                About = c.About,
+                Category = c.CategoryName,
+                Price = c.EnrollmentPrice,
+                Hours = c.Hours,
+                Certification = c.Certification,
+
+                Instructor =
+                    c.Professor.User.FirstName + " " +
+                    c.Professor.User.LastName,
+
+                EnrolledStudents = _context.StudentCourses
+                    .Count(sc => sc.CourseId == c.Id),
+
+                Schedule = c.Schedule
+                    .Select(s => new CourseScheduleDto
+                    {
+                        Day = s.Day,
+                        StartTime = s.StartTime,
+                        EndTime = s.EndTime
+                    })
+                    .ToList()
+            })
+            .FirstOrDefaultAsync(); // Select the first id match
+    }
+
+
+    public async Task<Course> CreateAsync(Course course)
+    {
+        // Add the course parameter to our db context
+        _context.Courses.Add(course);
+        // Save the changes in the ChangeTracker();
+        await _context.SaveChangesAsync();
+
+        return course;
+    }
+    public async Task UpdateAsync(Course course)
+    {
+        // Update our db context course with course parameter
+        _context.Courses.Update(course);
+
+        // save changes
+        await _context.SaveChangesAsync();
+    }
+
+    // In our application we didnt want to delete a course, only a logical Delete
+    // in this case only we want to deactivate the course 
+    public async Task DeleteAsync(Course course)
+    {
+        // Deactivate the course
+        course.IsActive = false;
+
+        // Save changes
+        await _context.SaveChangesAsync();
+    }
+    // i dont want to write more comments :c
+
+    // This function is gonna be moved to a ProfessorRepo
+    public async Task<bool> ProfessorExistsAsync(int id)
+    {
+        // await for the search of a Professor with match id, if 
+        // ther is a Professor match, return true, other case return false
+        return await _context.Professors
+            .AnyAsync(p => p.Id == id);
+    }
+    // public async Task<bool> CourseExistsAsync(int id)
+    // {
+    //     return await _context.Courses
+    //         .AnyAsync(c => c.Id == id);
+    // }
+}

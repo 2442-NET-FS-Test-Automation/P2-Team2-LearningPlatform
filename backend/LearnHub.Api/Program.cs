@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 using Serilog;
+using LearnHub.Data.Repositories;
 
 using LearnHub.Data;
 using LearnHub.Api.Services;
@@ -20,6 +21,9 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog();
 
+// Add CourseRepo and ICourseRepo to the builder.Services
+builder.Services.AddScoped<ICourseRepo, CourseRepo>();
+
 // DbContext
 var conn_string = builder.Configuration["Conn-String"]!;
 
@@ -29,15 +33,9 @@ builder.Services.AddScoped(sp =>
     sp.GetRequiredService<IDbContextFactory<LearnHubDbContext>>().CreateDbContext());
 
 
-
-
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-
-
-
-
 
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -77,11 +75,6 @@ var app = builder.Build();
 app.MapGet("/", () => {
     return "Learnhub API";
 });
-
-// app.MapPost("/register", () => {
-//     return "testing register";
-// });
-
 
 
 // Configure the HTTP request pipeline.
