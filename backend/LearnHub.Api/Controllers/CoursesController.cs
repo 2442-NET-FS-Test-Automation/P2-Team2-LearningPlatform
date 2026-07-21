@@ -21,20 +21,33 @@ namespace LearnHub.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Course>>> GetCourses(
             [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10,
-            bool? active = null
+            [FromQuery] int pageSize = 10
         )
         {
             if (page < 1) page = 1;
             if (pageSize < 1) pageSize = 10;
             if (pageSize > 50) pageSize = 50;
 
-            var result = await _repo.GetAllAsync(page, pageSize, active);
+            var result = await _repo.GetAllAsync(page, pageSize, true);
 
             return Ok(result);
         }
 
         [HttpGet("{id}")]
+        public async Task<ActionResult<Course>> GetCourse(int id)
+        {
+            if (DataTypeVerification.IsNumValid(id))
+            {
+                var course = _repo.GetByIdDetailedAsync(id);
+                
+                if(course == null) return NotFound();
+
+                return Ok(course);
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("{id}/basic")]
         public async Task<ActionResult<Course>> GetCourseById(int id)
         {
             if (DataTypeVerification.IsNumValid(id))

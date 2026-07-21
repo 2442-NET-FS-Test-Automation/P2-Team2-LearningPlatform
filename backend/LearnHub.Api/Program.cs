@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using LearnHub.Data.Repositories;
 
 using LearnHub.Data;
 
@@ -12,6 +13,8 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog();
 
+builder.Services.AddScoped<ICourseRepo, CourseRepo>();
+
 // DbContext
 var conn_string = builder.Configuration["Conn-String"]!;
 builder.Services.AddDbContextFactory<LearnHubDbContext>(o => o.UseSqlServer(conn_string));
@@ -19,6 +22,7 @@ builder.Services.AddDbContextFactory<LearnHubDbContext>(o => o.UseSqlServer(conn
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
 
 var app = builder.Build();
 
