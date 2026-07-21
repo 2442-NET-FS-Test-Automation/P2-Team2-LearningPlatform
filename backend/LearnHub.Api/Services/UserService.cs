@@ -12,15 +12,11 @@ public class UserService : IUserService
     private readonly LearnHubDbContext _db;
     private readonly IPasswordHasher<User> _hasher;
 
-
     public UserService(LearnHubDbContext db, IPasswordHasher<User> hasher)
     {
         _db = db;
         _hasher = hasher;
     }
-
-
-
 
     // -- Regster user task --
     public async Task<string?> RegisterUserAsync(
@@ -46,8 +42,6 @@ public class UserService : IUserService
             return "Username already registered";
         }
 
-
-
         var user = new User
         {
             Username = username,
@@ -63,10 +57,8 @@ public class UserService : IUserService
             BirthDate = DateOnly.Parse(birthDate)
         };
 
-    
         user.PasswordHash = _hasher.HashPassword(user, password);
         
-
         // _db.Users.Add(user);
         _db.Students.Add(student);
         await _db.SaveChangesAsync();
@@ -87,5 +79,10 @@ public class UserService : IUserService
         var result = _hasher.VerifyHashedPassword(foundUser, foundUser.PasswordHash, password);
 
         return result == PasswordVerificationResult.Success ? foundUser : null;
+    }
+
+    public async Task<User?> GetUserByUsernameAsync(string username)
+    {
+        return await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
     }
 }

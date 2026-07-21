@@ -1,5 +1,11 @@
 import { minutesFromMidnight } from "../lib/funcs";
-import type { EventBoxProps } from "../lib/types";
+import type { ScheduleEvent } from "../lib/types";
+
+export type EventBoxProps = {
+    Event: ScheduleEvent;
+    HOUR_START: number;
+    HOUR_HEIGHT: number;
+}
 
 export default function EventBox({ Event, HOUR_START, HOUR_HEIGHT }: EventBoxProps) {
     const start = minutesFromMidnight(Event.StartTime);

@@ -1,14 +1,14 @@
-import { DAY_NAMES, DAY_NAMES_SHORT, type CourseSchedule } from "./types";
+import { DAY_NAMES, DAY_NAMES_SHORT, type CourseSchedule, type UserRole } from "./types";
 
 export function handleLogout() {
     console.log("Logging out...");
 };
 
-export function getDashboardRoute(role: string): string {
+export function getDashboardRoute(role: UserRole): string {
     switch (role) {
         case "Student": return "/student/dashboard";
         case "Professor": return "/professor/dashboard";
-        case "Manager": return "/manager/dashboard";
+        case "Admin": return "/manager/dashboard";
         default: return "/";
     }
 }

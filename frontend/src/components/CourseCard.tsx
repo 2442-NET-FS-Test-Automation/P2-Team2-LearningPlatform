@@ -1,5 +1,11 @@
 import { Link } from "react-router-dom";
-import type { CourseCardProps } from "../lib/types";
+
+export type CourseCardProps = {
+    Id: number,
+    Name: string,
+    Description: string,
+    CategoryName: string
+}
 
 export default function CourseCard({
     Id,

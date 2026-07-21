@@ -1,10 +1,9 @@
 import { useMemo, useState } from "react";
 import CourseCard from "../../components/CourseCard";
 import PaginationControls from "../../components/layout/PaginationControls";
-import type { CourseCardProps } from "../../lib/types";
 
 export default function CoursesPage() {
-    const courses: CourseCardProps[] = [
+    const courses = [
         { Id: 1, Name: "Python Basics", Description: "A course about programming in Python", CategoryName: "Programming"},
         { Id: 2, Name: "React for web", Description: "", CategoryName: "WebDevelopment"},
         { Id: 3, Name: "Using Android Studio", Description: "", CategoryName: "MobileDevelopment"},

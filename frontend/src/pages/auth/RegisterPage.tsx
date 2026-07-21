@@ -1,6 +1,46 @@
-import { Link } from "react-router-dom";
+import { useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+import { useAuth } from "../../ctx/AuthCtx";
+
+import { getDashboardRoute } from "../../lib/funcs";
+import type { RegisterData } from "../../lib/typesAuth";
+
+const emptyForm: RegisterData = {
+    FirstName: "",
+    LastName: "",
+    Username: "",
+    Email: "",
+    Password: "",
+    BirthDate: "",
+};
 
 export default function RegisterPage() {
+    const { register } = useAuth();
+    const navigate = useNavigate();
+
+    const [form, setForm] = useState<RegisterData>(emptyForm);
+    const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const updateField = (field: keyof RegisterData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        setForm((prev) => ({ ...prev, [field]: e.target.value }));
+    };
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        setError(null);
+        setIsSubmitting(true);
+        try {
+            const user = await register(form);
+            navigate(getDashboardRoute(user.role));
+        } catch {
+            setError("Could not create account. Check your details and try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <div className="auth-shell">
             <div className="auth-card">
@@ -12,13 +52,15 @@ export default function RegisterPage() {
                     <p className="mt-3 text-muted">
                         Join LearnHub and start learning today.
                     </p>
-                    <form className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <form className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-5" onSubmit={handleSubmit}>
                         <div>
                             <label className="form-label">First Name</label>
                             <input
                                 type="text"
                                 placeholder="Enter your first name"
                                 className="form-input"
+                                onChange={updateField("FirstName")}
+                                required
                             />
                         </div>
 
@@ -28,6 +70,8 @@ export default function RegisterPage() {
                                 type="text"
                                 placeholder="Enter your last name"
                                 className="form-input"
+                                onChange={updateField("LastName")}
+                                required
                             />
                         </div>
                         <div>
@@ -35,6 +79,8 @@ export default function RegisterPage() {
                             <input
                                 type="date"
                                 className="form-input"
+                                onChange={updateField("BirthDate")}
+                                required
                             />
                         </div>
                         <div>
@@ -43,6 +89,8 @@ export default function RegisterPage() {
                                 type="text"
                                 placeholder="Enter your username"
                                 className="form-input"
+                                onChange={updateField("Username")}
+                                required
                             />
                         </div>
 
@@ -52,6 +100,8 @@ export default function RegisterPage() {
                                 type="email"
                                 placeholder="Enter your email"
                                 className="form-input"
+                                onChange={updateField("Email")}
+                                required
                             />
                         </div>
                         <div className="md:col-span-2">
@@ -60,10 +110,15 @@ export default function RegisterPage() {
                                 type="password"
                                 placeholder="Enter your password"
                                 className="form-input"
+                                onChange={updateField("Password")}
+                                required
                             />
                         </div>
-                        <button className="btn-primary md:col-span-2 mt-3 w-full py-3 font-semibold">
-                            Create Account
+                        {error && (
+                            <p className="md:col-span-2 text-sm text-red-600 dark:text-red-400">{error}</p>
+                        )}
+                        <button className="btn-primary md:col-span-2 mt-3 w-full py-3 font-semibold" disabled={isSubmitting}>
+                            {isSubmitting ? "Creating account…" : "Create Account"}
                         </button>
                     </form>
 
