@@ -1,10 +1,20 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { Moon, Sun, LogOut } from "lucide-react";
+
 import { useTheme } from "../../ctx/ThemeCtx";
-import { Moon, Sun } from "lucide-react";
+import { useAuth } from "../../ctx/AuthCtx";
+
 import { getDashboardRoute } from "../../lib/funcs";
 
 export default function Navbar() {
     const { theme, toggleTheme } = useTheme();
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate("/");
+    };
 
     return (
         <header className="navbar">
@@ -16,10 +26,20 @@ export default function Navbar() {
                 <div className="flex items-center gap-8">
                     <Link to="/courses" className="nav-link" > Courses </Link>
 
-                    {/* Make a ternary once we have user auth */}
-                    <Link to={getDashboardRoute("Student")} className="nav-link"> Dashboard </Link>
-                    <Link to="/login" className="nav-link"> Login </Link>
-                    <Link to="/register" className="btn-primary"> Register </Link>
+                    {user ? (
+                        <>
+                            <Link to={getDashboardRoute("Student")} className="nav-link"> Dashboard </Link>
+                            <button onClick={handleLogout} className="nav-link flex items-center gap-1.5">
+                                <LogOut size={16} /> Logout
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <Link to = "/login" className = "nav-link"> Login </Link>
+                            <Link to="/register" className="btn-primary"> Register </Link>
+                        </>
+                    )}
+                    
                     
                     {/* Dark mode toggle */}
                     <button

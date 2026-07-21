@@ -48,11 +48,12 @@ export type TabItem = {
 }
 
 export type UserInfo = {
-    Name: string,
-    Email: string,
-    Username: string,
-    Role: UserRole,
-    Bio?: string
+    firstName: string,
+    lastName: string,
+    email: string,
+    username: string,
+    role: UserRole,
+    bio?: string
 }
 
 export interface StudentCourseInfo extends CourseInfo {
