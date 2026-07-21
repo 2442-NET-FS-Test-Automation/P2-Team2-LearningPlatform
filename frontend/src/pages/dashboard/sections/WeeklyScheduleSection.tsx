@@ -1,5 +1,5 @@
 import EventBox from "../../../components/EventBox";
-import { DAY_NAMES_SHORT, type ScheduleEvent, type StudentCoursesInfo } from "../../../lib/types";
+import { DAY_NAMES_SHORT, type ScheduleEvent, type CoursesInfo } from "../../../lib/types";
 
 const HOUR_START = 7;
 const HOUR_END = 21;
@@ -13,8 +13,8 @@ const EVENT_COLORS = [
     "bg-pink-100 text-pink-800 border-pink-300 dark:bg-pink-900/40 dark:text-pink-300 dark:border-pink-700",
 ];
 
-export default function WeeklyScheduleSection({ courses }: StudentCoursesInfo) {
-    const pendingCourses = courses.filter(c => c.Completed === false && c.Schedule && c.Schedule.length > 0);
+export default function WeeklyScheduleSection({ Courses }: CoursesInfo) {
+    const pendingCourses = Courses.filter(c => c.Schedule && c.Schedule.length > 0);
 
     const events: ScheduleEvent[] = pendingCourses.flatMap((course, courseIndex) =>
         (course.Schedule ?? []).map(s => ({

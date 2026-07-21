@@ -14,6 +14,8 @@ import ProfessorDashboardPage from "./pages/dashboard/ProfessorDashboardPage";
 import ManagerDashboardPage from "./pages/dashboard/ManagerDashboardPage";
 
 import NotFoundPage from "./pages/NotFoundPage";
+import ProtectedRoute from "./components/layout/ProtectedRoute";
+import UnauthorizedPage from "./pages/UnauthorizedPage";
 
 export default function App() {
     return (
@@ -23,20 +25,30 @@ export default function App() {
                 
                 {/* Public */}
                 <Route path="/courses" element={<CoursesPage />} />
+                <Route path="/courses/:id" element={<CourseDetailsPage />} />
                 
                 {/* Authentication */}
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
 
                 {/* Student */}
-                <Route path="/student/dashboard" element={<StudentDashboardPage />} />
-                <Route path="/courses/:id" element={<CourseDetailsPage />} />
+                <Route element={<ProtectedRoute allowedRoles={["Student"]} />}>
+                    <Route path="/student/dashboard" element={<StudentDashboardPage />} />
+                </Route>
 
                 {/* Professor */}
-                <Route path="/professor/dashboard" element={<ProfessorDashboardPage />} />
+                <Route element={<ProtectedRoute allowedRoles={["Professor"]} />}>
+                    <Route path="/professor/dashboard" element={<ProfessorDashboardPage />} />
+                    
+                </Route>
 
                 {/* Admin */}
-                <Route path="/manager/dashboard" element={<ManagerDashboardPage />} />
+                <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>
+                    <Route path="/manager/dashboard" element={<ManagerDashboardPage />} />
+                </Route>
+
+                {/* 401 */}
+                <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
                 {/* 404 */}
                 <Route path="*" element={<NotFoundPage />} />

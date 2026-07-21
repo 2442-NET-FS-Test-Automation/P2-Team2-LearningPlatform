@@ -5,13 +5,6 @@ export const DAY_NAMES_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 export type UserRole = "Anonymous" | "Student" | "Professor" | "Admin";
 
-export type CourseCardProps = {
-    Id: number,
-    Name: string,
-    Description: string,
-    CategoryName: string
-}
-
 export type CourseDetails = {
     Id: number,
     Name: string,
@@ -32,6 +25,16 @@ export type CourseSchedule = {
     EndTime: string
 }
 
+export type CourseInfo = {
+    Id: number,
+    Name: string,
+    Schedule?: CourseSchedule[]
+}
+
+export type CoursesInfo = {
+    Courses: CourseInfo[];
+}
+
 export type CourseScheduleListProps = {
     Schedule?: CourseSchedule[];
 };
@@ -44,33 +47,18 @@ export type TabItem = {
     Icon: ReactNode;
 }
 
-export type DashboardSideNavProps = {
-    Tabs: TabItem[];
-    ActiveTab: string;
-    OnTabChange: (tabId: string) => void;
-    OnLogout?: () => void;
-    ClassName?: string;
-}
-
-export type EventBoxProps = {
-    Event: ScheduleEvent;
-    HOUR_START: number;
-    HOUR_HEIGHT: number;
-};
-
 export type UserInfo = {
-    Name: string,
-    Email: string,
-    Username: string,
-    Role: UserRole
+    firstName: string,
+    lastName: string,
+    email: string,
+    username: string,
+    role: UserRole,
+    bio?: string
 }
 
-export type StudentCourseInfo = {
-    Id: number,
-    Name: string,
+export interface StudentCourseInfo extends CourseInfo {
     Grade?: number,
-    Completed: boolean,
-    Schedule?: CourseSchedule[]
+    Completed: boolean
 }
 
 export type StudentCoursesInfo = {
@@ -78,11 +66,8 @@ export type StudentCoursesInfo = {
 }
 
 export interface StudentInfo extends UserInfo {
-    Bio?: string,
     Courses: StudentCourseInfo[]
 }
-
-export type StudentPartialInfo = Partial<StudentInfo>
 
 export type StudentStats = {
     TotalCourses: number,
