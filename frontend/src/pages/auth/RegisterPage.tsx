@@ -33,6 +33,7 @@ export default function RegisterPage() {
         setIsSubmitting(true);
         try {
             const user = await register(form);
+            console.log(user);
             navigate(getDashboardRoute(user.role));
         } catch {
             setError("Could not create account. Check your details and try again.");
