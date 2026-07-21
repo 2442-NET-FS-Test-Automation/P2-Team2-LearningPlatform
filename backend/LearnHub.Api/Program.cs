@@ -13,10 +13,12 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog();
 
+// Add CourseRepo and ICourseRepo to the builder.Services
 builder.Services.AddScoped<ICourseRepo, CourseRepo>();
 
 // DbContext
 var conn_string = builder.Configuration["Conn-String"]!;
+
 builder.Services.AddDbContextFactory<LearnHubDbContext>(o => o.UseSqlServer(conn_string));
 
 builder.Services.AddControllers();

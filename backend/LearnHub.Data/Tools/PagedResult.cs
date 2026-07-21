@@ -1,3 +1,6 @@
+namespace LearnHub.Data;
+
+// Created a PagedResult<T> for return paginated data for all entities
 public class PagedResult<T>
 {
     public IEnumerable<T> Items {get; set;} = [];
