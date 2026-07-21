@@ -3,8 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using LearnHub.Api.Services;
 using LearnHub.Data;
 using System.Security.Claims;
+using Serilog;
 
 namespace LearnHub.Api.Controllers;
+
+// TODO: return a user DTO PasswordHash MUST NOT be returned to the client
+// TODO: Make this use a repo
+
 
 [ApiController]
 [Route("auth")]
@@ -61,7 +66,7 @@ public class AuthController : ControllerBase {
             });
         }
 
-        var token = _tokens.Issue(user.Username, UserRoles.Student);
+        var token = _tokens.Issue(user.Username, user.Role);
 
         return Ok(new {
             user,
@@ -72,9 +77,10 @@ public class AuthController : ControllerBase {
     [HttpGet("me")]
     public ActionResult Me()
     {
+        var userFound = User.Identity?.Name == null ? null : _users.GetUserByUsernameAsync(User.Identity.Name);
         return Ok(new
         {
-            name = User.Identity?.Name,
+            user = userFound,
             role = User.FindFirstValue(ClaimTypes.Role)
         });
     }

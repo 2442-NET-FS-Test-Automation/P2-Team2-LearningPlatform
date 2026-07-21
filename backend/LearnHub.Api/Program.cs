@@ -45,6 +45,12 @@ builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+const string SpaCorsPolicy = "spa";
+builder.Services.AddCors(o => o.AddPolicy(SpaCorsPolicy, 
+    p => p.WithOrigins("http://localhost:5173")
+        .AllowAnyHeader()
+        .AllowAnyMethod()));
+
 var jwtKey = builder.Configuration["Jwt:key"];
 const string jwtIssuer = "learnhub";
 const string jwtAudience = "learnhub-clients";
@@ -84,6 +90,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseCors(SpaCorsPolicy);
 
 // -- Authentication and Authorization --
 app.UseAuthentication();

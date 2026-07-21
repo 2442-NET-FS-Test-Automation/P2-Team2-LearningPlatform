@@ -15,7 +15,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             return;
         }
         api.get("/auth/me")
-            .then((res) => setUser(res.data))
+            .then((res) => {
+                switch (res.data.user.result.role){
+                    case 0: res.data.user.result.role = "Admin"; break;
+                    case 1: res.data.user.result.role = "Professor"; break;
+                    case 2: res.data.user.result.role = "Student"; break;
+                }
+                setUser(res.data.user.result); 
+            })
             .catch(() => localStorage.removeItem("token"))
             .finally(() => setIsLoading(false));
     }, []);
@@ -23,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const login = async (credentials: LoginCredentials) => {
         const res = await api.post("/auth/login", credentials);
         localStorage.setItem("token", res.data.token);
-        switch (res.data.user.role) {
+        switch (res.data.user.role){
             case 0: res.data.user.role = "Admin"; break;
             case 1: res.data.user.role = "Professor"; break;
             case 2: res.data.user.role = "Student"; break;
@@ -35,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const register = async (data: RegisterData) => {
         const res = await api.post("/auth/register", data);
         localStorage.setItem("token", res.data.token);
-        switch(res.data.user.role){
+        switch (res.data.user.role){
             case 0: res.data.user.role = "Admin"; break;
             case 1: res.data.user.role = "Professor"; break;
             case 2: res.data.user.role = "Student"; break;

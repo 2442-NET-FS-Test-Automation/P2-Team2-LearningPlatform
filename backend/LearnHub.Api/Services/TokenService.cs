@@ -16,7 +16,7 @@ public class TokenService : ITokenService
         _key = config["Jwt:key"];
     }
 
-    public string Issue(string user, UserRoles role)
+    public string Issue(string username, UserRoles role)
     {
          var creds = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key!)), SecurityAlgorithms.HmacSha256
@@ -26,7 +26,7 @@ public class TokenService : ITokenService
             "learnhub",
             "learnhub-clients",
             new[] {
-                new Claim(ClaimTypes.Name, user),
+                new Claim(ClaimTypes.Name, username),
                 new Claim(ClaimTypes.Role, role.ToString())
             },
             expires: DateTime.UtcNow.AddDays(1),
