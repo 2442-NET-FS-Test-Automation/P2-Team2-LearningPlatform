@@ -36,7 +36,7 @@ namespace LearnHub.Api.Controllers
 
             // If the user is in one of these roles set the variable as true
             bool canViewInactive = User.IsInRole(UserRoles.Admin.ToString()) ||
-                                   User.IsInRole(UserRoles.Manager.ToString())||
+                                   User.IsInRole(UserRoles.Admin.ToString()) ||
                                    User.IsInRole(UserRoles.Professor.ToString());
 
             // if canViewInactive == true then set is as null
