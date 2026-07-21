@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 using Serilog;
+using LearnHub.Data.Repositories;
 
 using LearnHub.Data;
 using LearnHub.Api.Services;
@@ -19,6 +20,9 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File("logs/LearnHub-.log", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 builder.Host.UseSerilog();
+
+// Add CourseRepo and ICourseRepo to the builder.Services
+builder.Services.AddScoped<ICourseRepo, CourseRepo>();
 
 // DbContext
 var conn_string = builder.Configuration["Conn-String"]!;

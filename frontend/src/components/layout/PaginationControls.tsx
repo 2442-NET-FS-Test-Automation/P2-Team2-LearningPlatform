@@ -1,5 +1,13 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import type { PaginationControlsProps } from "../../lib/types";
+
+export type PaginationControlsProps = {
+    totalPages: number,
+    currentPage: number,
+    goToPage: (pagenum: number) => void,
+    handlePrevious: () => void,
+    handleNext: () => void,
+    setItemsPerPage: (value: number) => void
+}
 
 export default function PaginationControls({
     totalPages,
