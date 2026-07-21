@@ -20,7 +20,6 @@ export default function LoginPage() {
         setIsSubmitting(true);
         try {
             const user = await login({ EmailOrUsername: emailOrUsername, Password: password });
-            console.log(user);
             console.log(getDashboardRoute(user.role));
             navigate(getDashboardRoute(user.role));
         } catch (e) {

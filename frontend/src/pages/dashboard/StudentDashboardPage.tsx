@@ -31,21 +31,21 @@ const tempstats = {
 export default function StudentDashboardPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
-    if (user == null) {
-        navigate("/"); 
-        return;
-    };
-
+    
     const stats: StudentStats = tempstats
-
+    
     const [activeTab, setActiveTab] = useState<string>("courses");
-
     const tabs: TabItem[] = [
         { Id: "profile", Label: "Profile", Icon: <User size={18} /> },
         { Id: "courses", Label: "My Courses", Icon: <BookOpen size={18} /> },
         { Id: "schedule", Label: "Schedule", Icon: <CalendarDays size={18} /> },
         { Id: "progress", Label: "Progress", Icon: <BarChart3 size={18} /> }
     ];
+    
+    if (user == null) {
+        navigate("/login"); 
+        return;
+    };
 
     return (
         <div className="section-white min-h-screen py-10">

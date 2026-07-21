@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
+
+import { useAuth } from "../ctx/AuthCtx";
+
 import type { TabItem } from "../lib/types";
 
 export type DashboardSideNavProps = {
@@ -16,6 +20,14 @@ export default function DashboardSideNav({
     OnLogout,
     ClassName = "",
 }: DashboardSideNavProps) {
+    const navigate = useNavigate();
+    const { logout } = useAuth();
+
+    const handleLogout = () => {
+        logout();
+        navigate("/");
+    };
+    
     return (
     <aside className={`lg:w-64 shrink-0 ${ClassName}`}>
         <nav className="card space-y-1 p-4">
@@ -38,7 +50,7 @@ export default function DashboardSideNav({
                 <>
                     <hr className="my-2 border-slate-200 dark:border-slate-700" />
                     <button
-                        onClick={OnLogout}
+                        onClick={handleLogout}
                         className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
                     >
                         <LogOut size={18} />

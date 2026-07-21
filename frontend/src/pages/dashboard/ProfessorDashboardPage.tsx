@@ -14,18 +14,18 @@ import { handleLogout } from "../../lib/funcs";
 export default function ProfessorDashboardPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
-    if (user == null) {
-        navigate("/");
-        return;
-    };
-
+    
     const [activeTab, setActiveTab] = useState<string>("courses");
-
     const tabs: TabItem[] = [
         { Id: "profile", Label: "Profile", Icon: <User size={18} /> },
         { Id: "courses", Label: "My Courses", Icon: <BookOpen size={18} />},
         { Id: "schedule", Label: "Schedule", Icon: <CalendarDays size={18} />}
     ];
+
+    if (user == null) {
+        navigate("/login");
+        return;
+    };
 
     return (
         <div className="section-white min-h-screen py-10">

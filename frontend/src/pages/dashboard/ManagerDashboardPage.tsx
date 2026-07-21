@@ -13,20 +13,20 @@ import { handleLogout } from "../../lib/funcs";
 export default function ManagerDashboardPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
-    if (user == null) {
-        navigate("/");
-        return;
-    };
-    
-    const [activeTab, setActiveTab] = useState<string>("courses");
 
+    const [activeTab, setActiveTab] = useState<string>("courses");
     const tabs: TabItem[] = [
         { Id: "profile", Label: "Profile", Icon: <User size={18} /> },
         { Id: "manageusers", Label: "Manage Users", Icon: <UsersRound size={18} /> },
         { Id: "managecourses", Label: "Manage Courses", Icon: <BookCopy size={18} /> },
         { Id: "manageshifts", Label: "Manage Shifts", Icon: <CalendarClock size={18} /> },
-        { Id: "reports", Label: "Reports", Icon: <NotebookText size={18} /> },  
+        { Id: "reports", Label: "Reports", Icon: <NotebookText size={18} /> },
     ];
+
+    if (user == null) {
+        navigate("/login");
+        return;
+    };
 
     return (
         <div className="section-white min-h-screen py-10">
