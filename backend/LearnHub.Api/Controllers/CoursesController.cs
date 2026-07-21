@@ -95,7 +95,7 @@ namespace LearnHub.Api.Controllers
             // await for the creation of the course
             var createdCourse = await _repo.CreateAsync(course);
 
-            // idk what this does
+            // Return where you can consult the createdCourse and the required parameters
             return CreatedAtAction(
                 nameof(GetCourse),
                 new {id = course.Id},

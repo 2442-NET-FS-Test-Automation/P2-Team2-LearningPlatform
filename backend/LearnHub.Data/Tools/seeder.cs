@@ -1,7 +1,7 @@
 namespace LearnHub.Data;
 
 
-// Seeder Function luego se arma, (no se como se dice en ingles)
+// Seeder Function
 public static class Seeder
 {
     
