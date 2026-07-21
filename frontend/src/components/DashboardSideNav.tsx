@@ -1,5 +1,13 @@
 import { LogOut } from "lucide-react";
-import type { DashboardSideNavProps } from "../lib/types";
+import type { TabItem } from "../lib/types";
+
+export type DashboardSideNavProps = {
+    Tabs: TabItem[];
+    ActiveTab: string;
+    OnTabChange: (tabId: string) => void;
+    OnLogout?: () => void;
+    ClassName?: string;
+}
 
 export default function DashboardSideNav({
     Tabs,

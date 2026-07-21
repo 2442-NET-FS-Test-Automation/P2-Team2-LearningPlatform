@@ -5,28 +5,6 @@ export const DAY_NAMES_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 export type UserRole = "Anonymous" | "Student" | "Professor" | "Admin";
 
-export type CourseCardProps = {
-    Id: number,
-    Name: string,
-    Description: string,
-    CategoryName: string
-}
-
-export type EventBoxProps = {
-    Event: ScheduleEvent;
-    HOUR_START: number;
-    HOUR_HEIGHT: number;
-}
-
-export type PaginationControlsProps = {
-    totalPages: number,
-    currentPage: number,
-    goToPage: (pagenum: number) => void,
-    handlePrevious: () => void,
-    handleNext: () => void,
-    setItemsPerPage: (value: number) => void
-}
-
 export type CourseDetails = {
     Id: number,
     Name: string,
@@ -67,14 +45,6 @@ export type TabItem = {
     Id: string;
     Label: string;
     Icon: ReactNode;
-}
-
-export type DashboardSideNavProps = {
-    Tabs: TabItem[];
-    ActiveTab: string;
-    OnTabChange: (tabId: string) => void;
-    OnLogout?: () => void;
-    ClassName?: string;
 }
 
 export type UserInfo = {
