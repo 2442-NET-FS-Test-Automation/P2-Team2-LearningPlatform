@@ -55,10 +55,21 @@ public class UserService : IUserService
 
         user.PasswordHash = _hasher.HashPassword(user, password);
 
+
+        var date = DateOnly.Parse(birthDate);
+        Console.WriteLine(date);
+
+        if(date > DateOnly.FromDateTime(DateTime.Today))
+            return "Birth date cannot be in the future";
+
+        if(date > DateOnly.FromDateTime(DateTime.Today.AddYears(-12)))
+            return "You must be at least 12 years old to register";
+        
+
         var student = new Student
         {
             User = user,
-            BirthDate = DateOnly.Parse(birthDate)
+            BirthDate = date
         };
 
         await _userRepo.RegisterStudentAsync(student);
