@@ -26,16 +26,39 @@ export default function RegisterPage() {
     const updateField = (field: keyof RegisterData) => (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm((prev) => ({ ...prev, [field]: e.target.value }));
     };
-
+    
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError(null);
         setIsSubmitting(true);
+
+        if (form.Username.includes("@")) {
+            setError("Username can't have @ symbol");
+            setIsSubmitting(false);
+            return;
+        }
+        
+        const birthDateMs: number = Date.parse(form.BirthDate);
+        const minDate: Date = new Date();
+        minDate.setFullYear(minDate.getFullYear() - 12);
+
+        if (birthDateMs > minDate.getTime()) {
+            setError("You have to be 12 years old to register");
+            setIsSubmitting(false);
+            return;
+        }
+
+        if (form.Password.length < 8) {
+            setError("Your password should be at least 8 characters long");
+            setIsSubmitting(false);
+            return;
+        }
+
         try {
             const user = await register(form);
             navigate(getDashboardRoute(user.role));
         } catch {
-            setError("Could not create account. Check your details and try again.");
+            setError("Could not create account. Try again.");
         } finally {
             setIsSubmitting(false);
         }
