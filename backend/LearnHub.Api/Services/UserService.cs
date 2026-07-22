@@ -69,7 +69,7 @@ public class UserService : IUserService
             BirthDate = DateOnly.Parse(birthDate)
         };
 
-        await _userRepo.RegisterStudentAsync(student);
+        await _studentRepo.AddAsync(student);
         return null;
     }
 
