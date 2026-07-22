@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../../ctx/AuthCtx";
 
 export default function Hero() {
+    const { user } = useAuth();
+    
     return (
         <section className="section-light">
             <div className="mx-auto flex min-h-[95vh] max-w-7xl flex-col items-center justify-center px-8 text-center">
@@ -20,9 +23,11 @@ export default function Hero() {
                     <Link to="/courses" className="btn-cta-primary">
                         Browse Courses
                     </Link>
-                    <Link to="/register" className="btn-cta-outline">
-                        Get Started
-                    </Link>
+                    {!user &&
+                        <Link to="/register" className="btn-cta-outline">
+                            Get Started
+                        </Link>
+                    }
                 </div>
             </div>
         </section>
