@@ -7,7 +7,7 @@ using LearnHub.Api.DTOs.Courses;
 namespace LearnHub.Api.Controllers;
 
 // Define Controller route
-[Route("api/courses")]
+[Route("api/[controller]")]
 [ApiController]
 public class CoursesController : ControllerBase
 {

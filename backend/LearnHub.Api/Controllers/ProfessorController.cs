@@ -2,7 +2,7 @@ using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/professors")]
+[Route("api/[controller]")]
 public class ProfessorController: ControllerBase
 {
     private readonly IUserRepo _userRepo;
