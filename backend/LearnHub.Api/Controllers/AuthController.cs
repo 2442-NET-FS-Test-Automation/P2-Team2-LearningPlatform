@@ -2,6 +2,7 @@ using LearnHub.Api.DTOs.Auth;
 using Microsoft.AspNetCore.Mvc;
 using LearnHub.Api.Services;
 using LearnHub.Data;
+using LearnHub.Data.Entities;
 using System.Security.Claims;
 using Serilog;
 
@@ -47,8 +48,10 @@ public class AuthController : ControllerBase {
 
         var user = await _users.LoginUserAsync(dto.Username, dto.Password);
 
+        var publicUser = ToPublicUser(user!);
+
         return Ok(new {
-            user,
+            user = publicUser,
             token 
         });
     }
@@ -83,5 +86,22 @@ public class AuthController : ControllerBase {
             user = userFound,
             role = User.FindFirstValue(ClaimTypes.Role)
         });
+    }
+
+
+
+
+    // -- Helper methods --
+    private static UserDto ToPublicUser(User user)
+    {
+        return new UserDto(
+            user.Id.ToString(),
+            user.Username,
+            user.FirstName,
+            user.LastName,
+            user.Email,
+            user.Bio ?? "",
+            user.Role.ToString()
+        );
     }
 }

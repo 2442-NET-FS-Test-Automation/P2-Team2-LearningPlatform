@@ -26,7 +26,7 @@ export default function CoursesSection({ courses }: StudentCoursesInfo) {
                                     )}
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <button className="btn-outline text-red-600 border-red-600 px-4 py-2">
+                                    <button className="btn-outline px-4 py-2 text-yellow-600 border-yellow-600 dark:text-yellow-600/80 dark:border-yellow-600/80">
                                         Unenroll
                                     </button>
                                 </div>

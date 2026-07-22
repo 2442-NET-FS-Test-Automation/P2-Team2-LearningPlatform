@@ -11,7 +11,7 @@ namespace LearnHub.Api.Controllers;
 [ApiController]
 public class CoursesController : ControllerBase
 {
-    // Our Repositorie context
+    // Our Repository context
     private readonly ICourseRepo _repo;
 
     // Builder
@@ -34,8 +34,7 @@ public class CoursesController : ControllerBase
         if (pageSize > 50) pageSize = 50;
 
         // If the user is in one of these roles set the variable as true
-        bool canViewInactive = User.IsInRole(UserRoles.Admin.ToString()) ||
-                                User.IsInRole(UserRoles.Professor.ToString());
+        bool canViewInactive = User.IsInRole(UserRoles.Admin.ToString());
 
         // if canViewInactive == true then set is as null
         // because he can see without filter, if its false

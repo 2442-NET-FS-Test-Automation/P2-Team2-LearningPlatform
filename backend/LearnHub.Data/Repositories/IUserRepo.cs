@@ -1,3 +1,4 @@
+using LearnHub.Data;
 using LearnHub.Data.Entities;
 
 namespace LearnHub.Data.Repositories;

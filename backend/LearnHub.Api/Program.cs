@@ -10,19 +10,20 @@ using LearnHub.Data.Repositories;
 using LearnHub.Data;
 using LearnHub.Api.Services;
 using LearnHub.Data.Entities;
-
+using LearnHub.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Serilog Setup
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console() // Write to console, and write to a file - starting a new file each day.
+    .WriteTo.Console()
     .WriteTo.File("logs/LearnHub-.log", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 builder.Host.UseSerilog();
 
 // Add CourseRepo and ICourseRepo to the builder.Services
 builder.Services.AddScoped<ICourseRepo, CourseRepo>();
+builder.Services.AddScoped<IUserRepo, UserRepo>();
 
 // DbContext
 var conn_string = builder.Configuration["Conn-String"]!;
@@ -32,9 +33,7 @@ builder.Services.AddDbContextFactory<LearnHubDbContext>(o => o.UseSqlServer(conn
 builder.Services.AddScoped(sp =>
     sp.GetRequiredService<IDbContextFactory<LearnHubDbContext>>().CreateDbContext());
 
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 // Services
@@ -43,15 +42,16 @@ builder.Services.AddScoped<IStudentRepo, StudentRepo>();
 builder.Services.AddScoped<IProfessorRepo, ProfessorRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
-
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+// CORS Configuration
 const string SpaCorsPolicy = "spa";
 builder.Services.AddCors(o => o.AddPolicy(SpaCorsPolicy, 
     p => p.WithOrigins("http://localhost:5173")
         .AllowAnyHeader()
         .AllowAnyMethod()));
 
+// JWT Authentication
 var jwtKey = builder.Configuration["Jwt:key"];
 const string jwtIssuer = "learnhub";
 const string jwtAudience = "learnhub-clients";
@@ -70,33 +70,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-
 var app = builder.Build();
 
+app.UseExceptionHandlingMiddleware();
 
+app.UseCors(SpaCorsPolicy);
 
-app.MapGet("/", () => {
-    return "Learnhub API";
-});
-
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.UseCors(SpaCorsPolicy);
+app.UseHttpsRedirection();
 
-// -- Authentication and Authorization --
 app.UseAuthentication();
 app.UseAuthorization();
 
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
+app.MapGet("/", () => {
+    return "Learnhub API";
+});
 app.MapControllers();
 
 app.Run();
