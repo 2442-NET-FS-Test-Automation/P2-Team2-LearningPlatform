@@ -1,10 +1,11 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Clock, Trophy } from "lucide-react";
 
 import CourseScheduleList from "../../components/CourseScheduleList";
 import NotFoundPage from "../NotFoundPage";
 
 import type { CourseDetails, CourseSchedule } from "../../lib/types";
+import { useAuth } from "../../ctx/AuthCtx";
 
 export default function CourseDetailsPage() {
     // Temp Data
@@ -32,6 +33,9 @@ export default function CourseDetailsPage() {
         }
     ];
     
+    const { user } = useAuth();
+    const navigate = useNavigate();
+
     const { id } = useParams();
     const course: CourseDetails = courses.find(c => c.Id === Number(id)) as CourseDetails;
     if (!course) return (<NotFoundPage />);
@@ -108,9 +112,15 @@ export default function CourseDetailsPage() {
                                     </span>
                                 </div>
 
-                                <button className="btn-primary w-full justify-center text-center">
-                                    Enroll Now
-                                </button>
+                                {user ? (
+                                    <button className="btn-primary w-full justify-center text-center">
+                                        Enroll Now
+                                    </button>
+                                ) : (
+                                    <button onClick={() => navigate("/login")} className="btn-primary w-full justify-center text-center">
+                                        Login to enroll
+                                    </button>
+                                )}
 
                                 <div className="text-sm text-slate-500 dark:text-slate-400">
                                     {course.Hours != null && (

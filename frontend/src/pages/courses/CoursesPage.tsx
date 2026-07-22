@@ -49,7 +49,7 @@ export default function CoursesPage() {
     }, [courses, searchTerm]);
 
     // Pagination
-    const [itemsPerPage, setItemsPerPage] = useState(12);
+    const [itemsPerPage, setItemsPerPage] = useState(6);
     const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
 
     const [currentPage, setCurrentPage] = useState(1);
