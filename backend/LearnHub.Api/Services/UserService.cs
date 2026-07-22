@@ -1,5 +1,6 @@
 using LearnHub.Data;
 using LearnHub.Data.Entities;
+using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,11 +12,13 @@ public class UserService : IUserService
 {
     private readonly LearnHubDbContext _db;
     private readonly IPasswordHasher<User> _hasher;
+    private readonly IUserRepo _userRepo;
 
-    public UserService(LearnHubDbContext db, IPasswordHasher<User> hasher)
+    public UserService(LearnHubDbContext db, IPasswordHasher<User> hasher, IUserRepo userRepo)
     {
         _db = db;
         _hasher = hasher;
+        _userRepo = userRepo;
     }
 
     // -- Regster user task --
@@ -29,18 +32,16 @@ public class UserService : IUserService
         string password
     )
     {
-        //validate if user exists
         //validate if email exists
-        if (await _db.Users.AnyAsync(u => u.Email == email))
-        {
-            return "Email already registered";
-        }
-
+        if(await _userRepo.EmailExistsAsync(email))
+            return "Email already registered -- testing";
         
-        if (await _db.Users.AnyAsync(u => u.Username == username))
-        {
-            return "Username already registered";
-        }
+        
+        //validate if user exists
+        if(await _userRepo.UsernameExistsAsync(username))
+            return "Username already registered -- testing";
+
+            
 
         var user = new User
         {
@@ -52,16 +53,15 @@ public class UserService : IUserService
             Role = UserRoles.Student
         };
 
-        var student = new Student {
+        user.PasswordHash = _hasher.HashPassword(user, password);
+
+        var student = new Student
+        {
             User = user,
             BirthDate = DateOnly.Parse(birthDate)
         };
 
-        user.PasswordHash = _hasher.HashPassword(user, password);
-        
-        // _db.Users.Add(user);
-        _db.Students.Add(student);
-        await _db.SaveChangesAsync();
+        await _userRepo.RegisterStudentAsync(student);
         return null;
     }
 

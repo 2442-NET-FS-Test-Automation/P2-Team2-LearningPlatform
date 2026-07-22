@@ -35,8 +35,7 @@ namespace LearnHub.Api.Controllers
             if (pageSize > 50) pageSize = 50;
 
             // If the user is in one of these roles set the variable as true
-            bool canViewInactive = User.IsInRole(UserRoles.Admin.ToString()) ||
-                                   User.IsInRole(UserRoles.Professor.ToString());
+            bool canViewInactive = User.IsInRole(UserRoles.Admin.ToString());
 
             // if canViewInactive == true then set is as null
             // because he can see without filter, if its false
