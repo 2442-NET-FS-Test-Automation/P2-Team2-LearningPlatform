@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace LearnHub.Api.DTOs;
+namespace LearnHub.Api.DTOs.Auth;
 
 public record RegisterUserDto(
     // [Required] string Test

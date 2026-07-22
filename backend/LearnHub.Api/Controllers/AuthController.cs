@@ -1,4 +1,4 @@
-using LearnHub.Api.DTOs;
+using LearnHub.Api.DTOs.Auth;
 using Microsoft.AspNetCore.Mvc;
 using LearnHub.Api.Services;
 using LearnHub.Data;
@@ -13,7 +13,7 @@ namespace LearnHub.Api.Controllers;
 
 
 [ApiController]
-[Route("auth")]
+[Route("api/auth")]
 public class AuthController : ControllerBase {
     private readonly IUserService _users;
     private readonly ITokenService _tokens;

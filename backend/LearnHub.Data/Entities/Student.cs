@@ -6,4 +6,6 @@ public class Student
     public int UserId { get; set; }
     public User User { get; set; } = default!;
     public DateOnly BirthDate { get; set; }
+    public ICollection<StudentCourse> StudentCourses { get; set; } = new List<StudentCourse>();
+    
 }
