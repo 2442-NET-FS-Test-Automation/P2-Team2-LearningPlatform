@@ -30,4 +30,11 @@ public class StudentRepo: IStudentRepo
                 .ThenInclude(sc => sc.Course)
             .FirstOrDefaultAsync(s => s.Id == id);
     }
+
+    public async Task<User> AddAsync(Student student)
+    {
+        _context.Students.Add(student);
+        await _context.SaveChangesAsync();
+        return student.User;
+    }
 }
