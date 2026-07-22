@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../ctx/AuthCtx";
 
-import { getDashboardRoute } from "../../lib/funcs";
+import { getDashboardRoute, isAlphanumeric } from "../../lib/funcs";
 import type { RegisterData } from "../../lib/typesAuth";
 
 const emptyForm: RegisterData = {
@@ -32,8 +32,8 @@ export default function RegisterPage() {
         setError(null);
         setIsSubmitting(true);
 
-        if (form.Username.includes("@")) {
-            setError("Username can't have @ symbol");
+        if (!isAlphanumeric(form.Username)) {
+            setError("Username can only contain letters and numbers");
             setIsSubmitting(false);
             return;
         }
