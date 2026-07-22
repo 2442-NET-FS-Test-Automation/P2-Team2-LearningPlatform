@@ -1,7 +1,6 @@
 using LearnHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using LearnHub.Data;
-using LearnHub.Data.Dtos.Courses;
+
 
 namespace LearnHub.Data.Repositories;
 
@@ -17,7 +16,7 @@ public class CourseRepo : ICourseRepo
     }
 
     // Function for get all the courses
-    public async Task<PagedResult<CourseListDto>> GetAllAsync(
+    public async Task<PagedResult<Course>> GetAllAsync(
     int page,
     int pageSize,
     bool? active = null)
@@ -44,17 +43,10 @@ public class CourseRepo : ICourseRepo
             .OrderBy(c => c.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(c => new CourseListDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                Category = c.CategoryName
-            })
             .ToListAsync();
 
         // return a PagedResult<T>
-        return new PagedResult<CourseListDto>
+        return new PagedResult<Course>
         {
             Items = courses,
             Page = page,
@@ -72,49 +64,6 @@ public class CourseRepo : ICourseRepo
         return await _context.Courses
             .FirstOrDefaultAsync(c => c.Id == id);
     }
-
-    public async Task<CourseDetailDto?> GetByIdDetailedAsync(int id)
-    {
-        // Return a CourseDetailDto, in the context of Courses await for 
-        // the course who include Professor, the Professor include User
-        // then the course include a Schedule
-        // the course are filtered where the id matches
-        // and selected the data for our CourseDetailDto
-        return await _context.Courses
-            .Include(c => c.Professor)
-                .ThenInclude(p => p.User)
-            .Include(c => c.Schedule)
-            .Where(c => c.Id == id)
-            .Select(c => new CourseDetailDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                About = c.About,
-                Category = c.CategoryName,
-                Price = c.EnrollmentPrice,
-                Hours = c.Hours,
-                Certification = c.Certification,
-
-                Instructor =
-                    c.Professor.User.FirstName + " " +
-                    c.Professor.User.LastName,
-
-                EnrolledStudents = _context.StudentCourses
-                    .Count(sc => sc.CourseId == c.Id),
-
-                Schedule = c.Schedule
-                    .Select(s => new CourseScheduleDto
-                    {
-                        Day = s.Day,
-                        StartTime = s.StartTime,
-                        EndTime = s.EndTime
-                    })
-                    .ToList()
-            })
-            .FirstOrDefaultAsync(); // Select the first id match
-    }
-
 
     public async Task<Course> CreateAsync(Course course)
     {
@@ -159,4 +108,9 @@ public class CourseRepo : ICourseRepo
     //     return await _context.Courses
     //         .AnyAsync(c => c.Id == id);
     // }
+    public async Task<int> GetEnrollmentCountAsync(int courseId)
+    {
+        return await _context.StudentCourses
+            .CountAsync(sc => sc.CourseId == courseId);
+    }
 }

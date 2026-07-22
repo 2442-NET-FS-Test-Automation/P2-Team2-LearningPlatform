@@ -2,13 +2,13 @@ using LearnHub.Data;
 using LearnHub.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using LearnHub.Data.Repositories;
-using LearnHub.Data.Dtos.Courses;
+using LearnHub.Api.DTOs.Courses;
 
 namespace LearnHub.Api.Controllers
 
 {
     // Define Controller route
-    [Route("api/[controller]")]
+    [Route("api/courses")]
     [ApiController]
     public class CoursesController : ControllerBase
     {
@@ -36,7 +36,6 @@ namespace LearnHub.Api.Controllers
 
             // If the user is in one of these roles set the variable as true
             bool canViewInactive = User.IsInRole(UserRoles.Admin.ToString()) ||
-                                   User.IsInRole(UserRoles.Manager.ToString())||
                                    User.IsInRole(UserRoles.Professor.ToString());
 
             // if canViewInactive == true then set is as null
@@ -47,8 +46,24 @@ namespace LearnHub.Api.Controllers
             // await for the courses
             var result = await _repo.GetAllAsync(page, pageSize, activeFilter);
             
+            var response = new PagedResult<CourseListDto>
+            {
+                Items = result.Items.Select(c => new CourseListDto
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    Category = c.CategoryName
+                }).ToList(),
+
+                Page = result.Page,
+                PageSize = result.PageSize,
+                TotalItems = result.TotalItems,
+                TotalPages = result.TotalPages
+            };
+
             // return message + response
-            return Ok(result);
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
@@ -58,13 +73,42 @@ namespace LearnHub.Api.Controllers
             if (DataTypeVerification.IsNumValid(id))
             {
                 //  await for the course searched
-                var course = await _repo.GetByIdDetailedAsync(id);
+                var course = await _repo.GetByIdAsync(id);
                 
                 // if the response is null then send a NotFound message
                 if(course == null) return NotFound();
 
+                // get the enrolled students
+                var enrolledStudents = await _repo.GetEnrollmentCountAsync(id);
+
+                // create the dto in base of the object
+                var dto = new CourseDetailDto
+                {
+                    Id = course.Id,
+                    Name = course.Name,
+                    Description = course.Description,
+                    About = course.About,
+                    Category = course.CategoryName,
+                    Price = course.EnrollmentPrice,
+                    Hours = course.Hours,
+                    Certification = course.Certification,
+
+                    Instructor =
+                        course.Professor.User.FirstName + " " +
+                        course.Professor.User.LastName,
+                    EnrolledStudents = enrolledStudents,
+                    Schedule = course.Schedule
+                        .Select(s => new CourseScheduleDto
+                        {
+                            Day = s.Day,
+                            StartTime = s.StartTime,
+                            EndTime = s.EndTime
+                        })
+                        .ToList()
+                };
+
                 // if all works, send Ok + response
-                return Ok(course);
+                return Ok(dto);
             }
             // if the id isnt valid then return a BadRequest message
             return BadRequest();

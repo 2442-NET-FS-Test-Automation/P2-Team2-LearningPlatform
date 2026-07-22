@@ -1,4 +1,4 @@
-using LearnHub.Api.DTOs;
+using LearnHub.Api.DTOs.Auth;
 using Microsoft.AspNetCore.Mvc;
 using LearnHub.Api.Services;
 using LearnHub.Data;
