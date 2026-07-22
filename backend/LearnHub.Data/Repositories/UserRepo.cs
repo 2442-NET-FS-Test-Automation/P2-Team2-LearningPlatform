@@ -1,5 +1,6 @@
 using Azure;
 using LearnHub.Data.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,16 @@ public class UserRepo : IUserRepo
 
     public async Task<PagedResult<User>> GetAllAsync(int page, int pageSize, UserRoles? role)
     {
-        var query = _context.Users.AsQueryable();
+        var query = _context.Users.Select(u => new User
+            {
+                Id = u.Id,
+                Role = u.Role,
+                Username = u.Username,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Email = u.Email,
+                Bio = u.Bio
+            });
 
         if(role != null) query = query.Where(u => u.Role == role);
 
@@ -63,6 +73,8 @@ public class UserRepo : IUserRepo
         return await _context.Users
             .AnyAsync(o => o.Id == id);
     }
+
+    [HttpGet("search")]
     public async Task<PagedResult<User>> SearchByFullNameAsync(string fullName, int page, int pageSize)
     {
         fullName = fullName.ToLower();
@@ -89,5 +101,23 @@ public class UserRepo : IUserRepo
             TotalItems = totalItems,
             TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
         };
+    }
+
+    public void Add(User user)
+    {
+        _context.Users.Add(user);
+    }
+
+    public async Task<bool> EmailExistsAsync(string email)
+    {
+        return await _context.Users
+            .AnyAsync(u => u.Email == email);
+    }
+
+
+    public async Task<bool> UsernameExistsAsync(string username)
+    {
+        return await _context.Users
+            .AnyAsync(u => u.Username == username);
     }
 }

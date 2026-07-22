@@ -78,26 +78,69 @@ public class UserService : IUserService
 
     public async Task<User?> CreateUserAsync(CreateUserDto dto)
     {
-        var user = await CreateBaseUserAsync(dto);
+        if(await _userRepo.EmailExistsAsync(dto.Email))
+            throw new ArgumentException("Email already exists");
 
-        switch (dto.Role)
+        if(await _userRepo.UsernameExistsAsync(dto.Username))
+            throw new ArgumentException("Username already exists");
+            
+        using var transaction = await _db.Database.BeginTransactionAsync();
+
+        try
         {
-            case UserRoles.Professor:
-                await _professorRepo.CreateAsync(new Professor
-                {
-                    UserId = user.Id,
-                    ShiftId = dto.ShiftId!.Value,
-                    ContractDate = dto.ContractDate!.Value,
-                    IsActive = true
-                });
-                break;
-                
-        }
+            
+            var user = CreateBaseUser(dto);
 
-        return user;
+            _userRepo.Add(user);
+
+            if(dto.Role == UserRoles.Professor)
+            {
+                if(dto.ShiftId == null || dto.ContractDate == null)
+                    throw new ArgumentException("Professor data missing");
+            }
+            switch(dto.Role)
+            {
+                case UserRoles.Professor:
+
+                    _professorRepo.Add(new Professor
+                    {
+                        User = user,
+                        ShiftId = dto.ShiftId!.Value,
+                        ContractDate = dto.ContractDate!.Value,
+                        IsActive = true
+                    });
+
+                    break;
+
+
+                case UserRoles.Student:
+
+                    _studentRepo.Add(new Student
+                    {
+                        User = user,
+                        BirthDate = dto.BirthDate!.Value
+                    });
+
+                    break;
+                
+                case UserRoles.Admin:
+                    break;
+            }
+
+            await _db.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return user;
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 
-    private async Task<User> CreateBaseUserAsync(CreateUserDto dto)
+    private  User CreateBaseUser(CreateUserDto dto)
     {
         var user = new User
         {
@@ -111,8 +154,6 @@ public class UserService : IUserService
 
         user.PasswordHash =
             _hasher.HashPassword(user, dto.Password);
-        
-        await _userRepo.CreateAsync(user);
 
         return user;
     }

@@ -16,8 +16,4 @@ public class ProfessorController: ControllerBase
         _professorRepo = professorRepo;
     }
 
-    public async Task<ActionResult<PagedResult<ProfessorDto>>> GetProfessors(int page, int pageSize)
-    {
-        
-    }
 }

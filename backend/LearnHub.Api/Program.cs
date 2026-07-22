@@ -39,6 +39,8 @@ builder.Services.AddOpenApi();
 
 // Services
 builder.Services.AddScoped<IUserRepo, UserRepo>();
+builder.Services.AddScoped<IStudentRepo, StudentRepo>();
+builder.Services.AddScoped<IProfessorRepo, ProfessorRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 

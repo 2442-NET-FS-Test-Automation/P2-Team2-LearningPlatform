@@ -16,10 +16,8 @@ public class ProfessorRepo: IProfessorRepo
         _context = context;
     }
 
-    public async Task<Professor?> CreateAsync(Professor professor)
+    public void Add(Professor professor)
     {
         _context.Professors.Add(professor);
-        await _context.SaveChangesAsync();
-        return professor;
     }
 }

@@ -1,6 +1,7 @@
 
 
 using LearnHub.Api.DTOs.Users;
+using LearnHub.Api.Services;
 using LearnHub.Data;
 using LearnHub.Data.Entities;
 using LearnHub.Data.Repositories;
@@ -14,10 +15,12 @@ namespace LearnHub.Api.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserRepo _repo;
+    private readonly IUserService _service;
 
-    public UserController(IUserRepo repo)
+    public UserController(IUserRepo repo, IUserService service)
     {
         _repo = repo;
+        _service = service;
     }
 
 
@@ -107,6 +110,23 @@ public class UserController : ControllerBase
         return Ok(dto);
     }
 
+    [HttpPost]
+    public async Task<ActionResult<UserDto>> CreateUser(CreateUserDto dto)
+    {
+        try
+        {
+            var user = await _service.CreateUserAsync(dto);
+
+            return Ok(user);
+        }
+        catch(ArgumentException ex)
+        {
+            return BadRequest(new
+            {
+                error = ex.Message
+            });
+        }
+    }
 
     
 

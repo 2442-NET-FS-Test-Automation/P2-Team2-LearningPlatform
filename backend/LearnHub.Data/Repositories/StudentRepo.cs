@@ -4,6 +4,7 @@ using LearnHub.Data;
 using LearnHub.Data.Entities;
 using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 public class StudentRepo: IStudentRepo
 {
@@ -16,10 +17,17 @@ public class StudentRepo: IStudentRepo
         _context = context;
     }
 
-    public async Task<Student?> CreateAsync(Student student)
+    public void Add(Student student)
     {
         _context.Students.Add(student);
-        await _context.SaveChangesAsync();
-        return student;
+    }
+
+    public async Task<Student?> GetByIdAsync(int id)
+    {
+        return await _context.Students
+            .Include(s => s.User)
+            .Include(s => s.StudentCourses)
+                .ThenInclude(sc => sc.Course)
+            .FirstOrDefaultAsync(s => s.Id == id);
     }
 }

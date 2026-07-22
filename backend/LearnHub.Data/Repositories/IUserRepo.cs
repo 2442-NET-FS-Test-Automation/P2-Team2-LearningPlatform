@@ -10,4 +10,8 @@ public interface IUserRepo
     Task UpdateAsync(User user);
     Task<bool> ExistsAsync(int id);
     Task<PagedResult<User>> SearchByFullNameAsync(string fullName, int page, int pageSize);
+    void Add(User user);
+
+    Task<bool> EmailExistsAsync(string email);
+    Task<bool> UsernameExistsAsync(string username);
 }
