@@ -12,7 +12,7 @@ namespace LearnHub.Api.Controllers;
 
 
 [ApiController]
-[Route("auth")]
+[Route("api/auth")]
 public class AuthController : ControllerBase {
     private readonly IUserService _users;
     private readonly ITokenService _tokens;

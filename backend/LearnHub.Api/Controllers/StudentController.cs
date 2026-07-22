@@ -1,8 +1,6 @@
 
 
 using LearnHub.Api.DTOs.Students;
-using LearnHub.Data;
-using LearnHub.Data.Entities;
 using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
