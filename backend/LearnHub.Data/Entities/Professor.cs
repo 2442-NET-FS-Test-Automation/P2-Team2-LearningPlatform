@@ -7,6 +7,6 @@ public class Professor
     public User User { get; set; } = default!;
     public int ShiftId { get; set; }
     public Shift Shift { get; set; } = default!;
-    public DateOnly ContractDate { get; set; }
-    public bool IsActive { get; set; }
+    public DateOnly ContractDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+    public bool IsActive { get; set; } = true;
 }
