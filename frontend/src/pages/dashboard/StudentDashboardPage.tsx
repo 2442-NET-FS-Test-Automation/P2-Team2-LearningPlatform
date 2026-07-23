@@ -15,8 +15,8 @@ import { calculateAverage, handleLogout } from "../../lib/funcs";
 
 const Courses = [
         { Id: 1, Name: "Python Basics", Grade: 87, Completed: false, Schedule: [ 
-                        { Day: 2, StartTime: "16:00", EndTime: "18:00" } as CourseSchedule,
-                        { Day: 4, StartTime: "14:00", EndTime: "18:00" } as CourseSchedule
+                        { day: 2, startTime: "16:00", endTime: "18:00" } as CourseSchedule,
+                        { day: 4, startTime: "14:00", endTime: "18:00" } as CourseSchedule
                     ] } as StudentCourseInfo,
         { Id: 2, Name: "React for web", Completed: false } as StudentCourseInfo,
         { Id: 3, Name: "Using Android Studio", Completed: false } as StudentCourseInfo,

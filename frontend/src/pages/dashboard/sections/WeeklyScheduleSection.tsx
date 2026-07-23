@@ -68,7 +68,7 @@ export default function WeeklyScheduleSection({ Courses }: CoursesInfo) {
                                     />
                                 ))}
 
-                                {events.filter((e) => e.Day === dayIndex)
+                                {events.filter((e) => e.day === dayIndex)
                                     .map((e, i) => <EventBox key={i} Event={e} HOUR_START={HOUR_START} HOUR_HEIGHT={HOUR_HEIGHT}/>)
                                 }
                             </div>

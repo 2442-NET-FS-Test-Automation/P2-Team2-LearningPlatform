@@ -1,3 +1,4 @@
+import type { CourseDetails } from "../lib/types";
 import { api } from "./api";
 
 export async function getEnabledCourses(page: number = 1, pageSize: number = 6) {
@@ -7,8 +8,6 @@ export async function getEnabledCourses(page: number = 1, pageSize: number = 6) 
             pageSize: pageSize
         }
     });
-    console.log("enabled")
-    console.log(result.data)
     return result.data;
 }
 
@@ -19,13 +18,11 @@ export async function getDisabledCourses(page: number = 1, pageSize: number = 6)
             pageSize: pageSize
         }
     })
-    console.log("disabled")
-    console.log(result.data)
     return result.data;
 }
 
 export async function getCourseDetails(id: number) {
-    const result = await api.get("/Courses/"+id)
+    const result = await api.get<CourseDetails>("/Courses/"+id)
     console.log("details")
     console.log(result.data)
     return result.data;

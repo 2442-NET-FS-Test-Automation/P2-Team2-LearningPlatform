@@ -17,9 +17,18 @@ export default function CoursesPage() {
         )
     }, [courses, searchTerm]);
     
+    // Get Courses from the API
+    const [totalCourses, setTotalCourses] = useState(0)
+    useEffect(() => {
+        getEnabledCourses().then((res) => {
+            setCourses(res.items);
+            setTotalCourses(res.totalItems);
+        })
+    }, [])
+    
     // Pagination
     const [itemsPerPage, setItemsPerPage] = useState(6);
-    const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
+    const totalPages = Math.ceil(totalCourses / itemsPerPage);
     
     const [currentPage, setCurrentPage] = useState(1);
     const firstIndex = (currentPage - 1) * itemsPerPage;
@@ -29,16 +38,10 @@ export default function CoursesPage() {
     const handlePrevious = () => {setCurrentPage((prev) => Math.max(prev - 1, 1))};
     const handleNext = () => {setCurrentPage((prev) => Math.min(prev + 1, totalPages))};
     const goToPage = (pagenum: number) => {setCurrentPage(Math.min(Math.max(pagenum, 1), totalPages))};
-    
+
     useMemo(() => {
         setCurrentPage(1);
     }, [searchTerm, itemsPerPage]);
-
-    useEffect(() => {
-        getEnabledCourses().then((res) => {
-            setCourses(res.items)
-        })
-    }, [])
 
     return (
         <div className="flex min-h-screen bg-slate-100 dark:bg-slate-900">

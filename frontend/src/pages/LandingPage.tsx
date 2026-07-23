@@ -3,12 +3,14 @@ import Stats from "../components/home/Stats";
 import Features from "../components/home/Features";
 import FeaturedCourses from "../components/home/FeaturedCourses";
 import { useEffect } from "react";
-import { getEnabledCourses } from "../api/coursesRequests";
+import { getCourseDetails} from "../api/coursesRequests";
 
-export default function LandingPage() {4
+export default function LandingPage() {
     useEffect(() => {
-        getEnabledCourses().then((res) => console.log(res))
+        console.log("id: 1")
+        getCourseDetails(1).then((res) => console.log(res)).catch((e) => console.log("error", e))
     }, [])
+
     return (
         <>
             <main>
