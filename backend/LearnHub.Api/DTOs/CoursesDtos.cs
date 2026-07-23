@@ -11,7 +11,7 @@ public class CourseListDto
 
     public string Description { get; set; } = default!;
 
-    public CourseCategory Category { get; set; }
+    public string Category { get; set; } = default!;
 }
 
 public class CourseScheduleDto
@@ -33,7 +33,7 @@ public class CourseDetailDto
 
     public string About { get; set; } = default!;
 
-    public CourseCategory Category { get; set; }
+    public string Category { get; set; } = default!;
 
     public string Instructor { get; set; } = default!;
 

@@ -1,42 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CourseCard from "../../components/CourseCard";
 import PaginationControls from "../../components/layout/PaginationControls";
+import type { CourseCompact } from "../../lib/types";
+import { getEnabledCourses } from "../../api/coursesRequests";
 
 export default function CoursesPage() {
-    const courses = [
-        { Id: 1, Name: "Python Basics", Description: "A course about programming in Python", CategoryName: "Programming"},
-        { Id: 2, Name: "React for web", Description: "", CategoryName: "WebDevelopment"},
-        { Id: 3, Name: "Using Android Studio", Description: "", CategoryName: "MobileDevelopment"},
-        { Id: 4, Name: "", Description: "", CategoryName: "DataScience"},
-        { Id: 5, Name: "", Description: "", CategoryName: "ArtificialIntelligence"},
-        { Id: 6, Name: "", Description: "", CategoryName: "Cybersecurity"},
-        { Id: 7, Name: "", Description: "", CategoryName: "DatabaseSystems"},
-        { Id: 8, Name: "", Description: "", CategoryName: "CloudComputing"},
-        { Id: 9, Name: "", Description: "", CategoryName: "DevOps"},
-        { Id: 10, Name: "", Description: "", CategoryName: "SoftwareEngineering"},
-        { Id: 11, Name: "", Description: "", CategoryName: "Mathematics"},
-        { Id: 12, Name: "", Description: "", CategoryName: "Physics"},
-        { Id: 13, Name: "", Description: "", CategoryName: "Chemistry"},
-        { Id: 14, Name: "", Description: "", CategoryName: "Biology"},
-        { Id: 15, Name: "", Description: "", CategoryName: "Business"},
-        { Id: 16, Name: "", Description: "", CategoryName: "Marketing"},
-        { Id: 17, Name: "", Description: "", CategoryName: "Finance"},
-        { Id: 18, Name: "", Description: "", CategoryName: "Entrepreneurship"},
-        { Id: 19, Name: "", Description: "", CategoryName: "Design"},
-        { Id: 20, Name: "", Description: "", CategoryName: "GraphicDesign"},
-        { Id: 21, Name: "", Description: "", CategoryName: "UxUiDesign"},
-        { Id: 22, Name: "", Description: "", CategoryName: "Languages"},
-        { Id: 23, Name: "", Description: "", CategoryName: "Communication"},
-        { Id: 24, Name: "", Description: "", CategoryName: "PersonalDevelopment"},
-        { Id: 25, Name: "", Description: "", CategoryName: "ProjectManagement"},
-        { Id: 26, Name: "", Description: "", CategoryName: "Other"},
-        { Id: 27, Name: "", Description: "", CategoryName: "DatabaseSystems"},
-        { Id: 28, Name: "", Description: "", CategoryName: "ArtificialIntelligence"},
-        { Id: 29, Name: "", Description: "", CategoryName: "Design"},
-        { Id: 30, Name: "", Description: "", CategoryName: "Cybersecurity"},
-        { Id: 31, Name: "", Description: "", CategoryName: "Programming"},
-        { Id: 32, Name: "", Description: "", CategoryName: "PersonalDevelopment"}
-    ];
+    const [courses, setCourses] = useState<CourseCompact[]>([]);
 
     // Search functions
     const [searchTerm, setSearchTerm] = useState("");
@@ -44,18 +13,27 @@ export default function CoursesPage() {
         const search = searchTerm.trim().toLowerCase();
         if (!search) return courses;
         return courses.filter(
-            (course) => course.Name.toLowerCase().includes(search) || course.CategoryName.toLowerCase().includes(search)
+            (course) => course.name.toLowerCase().includes(search) || course.category.toLowerCase().includes(search)
         )
     }, [courses, searchTerm]);
-
+    
+    // Get Courses from the API
+    const [totalCourses, setTotalCourses] = useState(0)
+    useEffect(() => {
+        getEnabledCourses().then((res) => {
+            setCourses(res.items);
+            setTotalCourses(res.totalItems);
+        })
+    }, [])
+    
     // Pagination
     const [itemsPerPage, setItemsPerPage] = useState(6);
-    const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
-
+    const totalPages = Math.ceil(totalCourses / itemsPerPage);
+    
     const [currentPage, setCurrentPage] = useState(1);
     const firstIndex = (currentPage - 1) * itemsPerPage;
     const paginatedCourses = filteredCourses.slice(firstIndex, firstIndex+itemsPerPage);
-
+    
     // Pagination handlers
     const handlePrevious = () => {setCurrentPage((prev) => Math.max(prev - 1, 1))};
     const handleNext = () => {setCurrentPage((prev) => Math.min(prev + 1, totalPages))};
@@ -79,7 +57,7 @@ export default function CoursesPage() {
                 {/* Course Grid */}
                 {paginatedCourses.length > 0 ? (
                     <div className="card-grid py-8 px-8">
-                        { paginatedCourses.map(c => <CourseCard key={c.Id} Id={c.Id} Name={c.Name} Description={c.Description} CategoryName={c.CategoryName}/>) }
+                        { paginatedCourses.map(c => <CourseCard key={c.id} Id={c.id} Name={c.name} Description={c.description} CategoryName={c.category}/>) }
                     </div>
                 ): (
                     <p className="mt-8 text-center text-slate-500 dark:text-slate-400">

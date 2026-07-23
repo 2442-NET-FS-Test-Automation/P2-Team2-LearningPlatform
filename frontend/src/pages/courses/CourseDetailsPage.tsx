@@ -4,55 +4,40 @@ import { Clock, Trophy } from "lucide-react";
 import CourseScheduleList from "../../components/CourseScheduleList";
 import NotFoundPage from "../NotFoundPage";
 
-import type { CourseDetails, CourseSchedule } from "../../lib/types";
+import type { CourseDetails } from "../../lib/types";
 import { useAuth } from "../../ctx/AuthCtx";
+import { useEffect, useState } from "react";
+import { getCourseDetails } from "../../api/coursesRequests";
 
-export default function CourseDetailsPage() {
-    // Temp Data
-    const courses: CourseDetails[] = [
-        {
-            Id: 1, Name: "Python Basics", Description: "A course about programming in Python", CategoryName: "Programming",
-            About: "Youll see everythin pythonic.",
-            Hours: 15,
-            Price: 150,
-            Certificate: true,
-            Instructor: "Jane Doe",
-            Enrolled: 152,
-            Schedule: [ 
-                { Day: 2, StartTime: "04:00", EndTime: "06:00" } as CourseSchedule,
-                { Day: 4, StartTime: "04:00", EndTime: "06:00" } as CourseSchedule
-            ]
-        },
-        {
-            Id: 2, Name: "", Description: "", CategoryName: "WebDevelopment",
-            About: "",
-            Price: 0,
-            Certificate: false,
-            Instructor: "el pepe",
-            Enrolled: 2
-        }
-    ];
-    
+export default function CourseDetailsPage() {    
     const { user } = useAuth();
     const navigate = useNavigate();
 
+
     const { id } = useParams();
-    const course: CourseDetails = courses.find(c => c.Id === Number(id)) as CourseDetails;
+    const [course, setCourse] = useState<CourseDetails>()
+
+    useEffect(() => {
+        getCourseDetails(Number(id))
+            .then(res => setCourse(res))
+            .catch(e => console.log(e))
+    }, [])
+
     if (!course) return (<NotFoundPage />);
     
-    const displayName = course.Name || "Untitled Course";
-    const displayDescription = course.Description || "No description available.";
+    const displayName = course.name || "Untitled Course";
+    const displayDescription = course.description || "No description available.";
 
     const about = "This course covers all the essential topics you need to master " + displayName + ". You'll work on hands-on projects and gain practical skills that you can apply immediately."
-    const displayAbout = course.About || about;
+    const displayAbout = course.about || about;
     
     return (
         <div className="min-h-screen bg-white dark:bg-slate-900">
             {/* Header Image */}
             <div className="relative h-64 w-full overflow-hidden bg-slate-200 dark:bg-slate-700">
                 <img
-                    src={`/course_img/${course.CategoryName}.jpg`}
-                    alt={`${course.CategoryName} cover`}
+                    src={`/course_img/${course.category}.jpg`}
+                    alt={`${course.category} cover`}
                     className="h-full w-full object-cover"
                     onError={(e) => {(e.target as HTMLImageElement).src = "/course_img/default.jpg";}}
                 />
@@ -77,7 +62,7 @@ export default function CourseDetailsPage() {
                         <div className="lg:col-span-2 space-y-6">
                             <div>
                                 <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
-                                    {course.CategoryName}
+                                    {course.category}
                                 </span>
                                 <h1 className="mt-3 text-4xl font-extrabold leading-tight">
                                     {displayName}
@@ -89,10 +74,10 @@ export default function CourseDetailsPage() {
 
                             <div className="divider-block">
                                 <h2 className="text-xl font-semibold">Instructor</h2>
-                                <p className="mt-1 text-muted">{course.Instructor}</p>
+                                <p className="mt-1 text-muted">{course.instructor}</p>
                             </div>
 
-                            <CourseScheduleList Schedule={course.Schedule} />
+                            <CourseScheduleList Schedule={course.schedule} />
                             
                             <div className="divider-block">
                                 <h2 className="text-xl font-semibold">About this course</h2>
@@ -105,10 +90,10 @@ export default function CourseDetailsPage() {
                             <div className="card sticky top-24 space-y-6">
                                 <div className="flex items-baseline justify-between">
                                     <span className="big-stat">
-                                        {course.Price === 0 ? ("Free") : (`${course.Price}$`)}
+                                        {course.price === 0 ? ("Free") : (`${course.price}$`)}
                                     </span>
                                     <span className="text-sm text-slate-500 dark:text-slate-400">
-                                        {course.Enrolled} enrolled
+                                        {course.enrolledStudents} enrolled
                                     </span>
                                 </div>
 
@@ -123,13 +108,13 @@ export default function CourseDetailsPage() {
                                 )}
 
                                 <div className="text-sm text-slate-500 dark:text-slate-400">
-                                    {course.Hours != null && (
+                                    {course.hours != null && (
                                         <div className="flex">
                                             <Clock size={20} />
-                                            <p className="mx-2">{course.Hours} hours of content</p>
+                                            <p className="mx-2">{course.hours} hours of content</p>
                                         </div>
                                     )}
-                                    {course.Certificate === true && (
+                                    {course.certification === true && (
                                         <div className="flex my-3">
                                             <Trophy size={20} />
                                             <p className="mx-2">Certificate of completion</p> 

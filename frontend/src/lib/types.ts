@@ -6,23 +6,30 @@ export const DAY_NAMES_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 export type UserRole = "Anonymous" | "Student" | "Professor" | "Admin";
 
 export type CourseDetails = {
-    Id: number,
-    Name: string,
-    CategoryName: string,
-    Description: string,
-    About: string,
-    Instructor: string,
-    Price: number,
-    Hours?: number,
-    Certificate: boolean,
-    Enrolled: number,
-    Schedule?: CourseSchedule[]
+    id: number,
+    name: string,
+    category: string,
+    description: string,
+    about: string,
+    instructor: string,
+    price: number,
+    hours?: number,
+    certification: boolean,
+    enrolledStudents: number,
+    schedule?: CourseSchedule[]
+}
+
+export type CourseCompact = {
+    id: number,
+    name: string,
+    description: string,
+    category: string
 }
 
 export type CourseSchedule = {
-    Day: number,
-    StartTime: string,
-    EndTime: string
+    day: number,
+    startTime: string,
+    endTime: string
 }
 
 export type CourseInfo = {

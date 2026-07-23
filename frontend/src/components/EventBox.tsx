@@ -8,8 +8,8 @@ export type EventBoxProps = {
 }
 
 export default function EventBox({ Event, HOUR_START, HOUR_HEIGHT }: EventBoxProps) {
-    const start = minutesFromMidnight(Event.StartTime);
-    const end = minutesFromMidnight(Event.EndTime);
+    const start = minutesFromMidnight(Event.startTime);
+    const end = minutesFromMidnight(Event.endTime);
     const top = ((start - HOUR_START * 60) / 60) * HOUR_HEIGHT;
     const height = ((end - start) / 60) * HOUR_HEIGHT;
 
@@ -17,10 +17,10 @@ export default function EventBox({ Event, HOUR_START, HOUR_HEIGHT }: EventBoxPro
         <div
             className={`absolute left-0.5 right-0.5 overflow-hidden rounded-md border px-1.5 py-1 text-[11px] leading-tight ${Event.ColorClass}`}
             style={{ top, height: Math.max(height, 18) }}
-            title={`${Event.CourseName}: ${Event.StartTime}-${Event.EndTime}`}
+            title={`${Event.CourseName}: ${Event.startTime}-${Event.endTime}`}
         >
             <p className="font-semibold truncate">{Event.CourseName}</p>
-            <p className="truncate">{Event.StartTime}-{Event.EndTime}</p>
+            <p className="truncate">{Event.startTime}-{Event.endTime}</p>
         </div>
     );
 }
