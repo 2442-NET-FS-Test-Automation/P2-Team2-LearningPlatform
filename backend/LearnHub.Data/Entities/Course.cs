@@ -19,4 +19,5 @@ public class Course
     [Precision(10, 2)]
     public decimal EnrollmentPrice { get; set; }
     public bool IsActive { get; set; }
+    public ICollection<StudentCourse> StudentCourses { get; set; } = new List<StudentCourse>();
 }

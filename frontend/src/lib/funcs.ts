@@ -41,3 +41,7 @@ export function minutesFromMidnight(time: string): number {
     const [h, m] = time.split(":").map(Number);
     return h * 60 + (m || 0);
 }
+
+export function isAlphanumeric(text: string): boolean {
+  return /^[a-zA-Z0-9]+$/.test(text);
+}

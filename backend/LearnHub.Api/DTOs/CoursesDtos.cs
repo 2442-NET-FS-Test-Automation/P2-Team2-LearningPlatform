@@ -1,6 +1,7 @@
-namespace LearnHub.Data.Dtos.Courses;
 
 using LearnHub.Data;
+
+namespace LearnHub.Api.DTOs.Courses;
 
 public class CourseListDto
 {

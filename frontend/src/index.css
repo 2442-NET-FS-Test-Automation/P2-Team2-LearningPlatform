@@ -38,7 +38,7 @@
     h1,
     h2,
     h3 {
-        @apply dark:text-white;
+        @apply dark:text-white/90;
     }
 }
 
@@ -65,15 +65,15 @@
 
     /* Buttons */
     .btn-primary {
-        @apply rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md active:scale-95;
+        @apply rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white/90 shadow-sm transition-all hover:bg-blue-700 hover:shadow-md active:scale-95;
         @apply dark:bg-blue-500 dark:hover:bg-blue-400;
     }
     .btn-outline {
-        @apply rounded-lg border border-slate-300 bg-white px-5 py-2.5 transition-all hover:bg-slate-100;
-        @apply dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800;
+        @apply rounded-lg border border-slate-300 bg-white/80 px-5 py-2.5 transition-all hover:bg-slate-100;
+        @apply dark:border-slate-700 dark:bg-slate-900/50 dark:hover:bg-slate-900;
     }
     .btn-cta-primary {
-        @apply rounded-md bg-blue-600 px-6 py-3 text-white transition-colors hover:bg-blue-700;
+        @apply rounded-md bg-blue-600 px-6 py-3 text-white/90 transition-colors hover:bg-blue-700;
         @apply dark:bg-blue-500 dark:hover:bg-blue-400;
     }
 
@@ -87,8 +87,8 @@
         @apply grid gap-8 md:grid-cols-3;
     }
     .card {
-        @apply rounded-xl border border-slate-200 bg-white p-6 shadow-md transition-all;
-        @apply dark:border-slate-800 dark:bg-slate-900;
+        @apply rounded-xl border border-slate-200 bg-white/80 p-6 shadow-md transition-all;
+        @apply dark:border-slate-800 dark:bg-slate-800/40;
     }
     .stat-card {
         @apply rounded-lg bg-slate-50 p-4 text-center dark:bg-slate-800;
@@ -99,7 +99,7 @@
         @apply bg-slate-50 dark:bg-slate-900;
     }
     .section-white {
-        @apply bg-white dark:bg-slate-900;
+        @apply bg-white/80 dark:bg-slate-900;
     }
 
     /* Text colors */
@@ -116,23 +116,23 @@
         @apply dark:bg-slate-900;
     }
     .auth-card {
-        @apply grid w-full max-w-6xl overflow-hidden rounded-2xl bg-white shadow-xl md:grid-cols-2;
+        @apply grid w-full max-w-6xl overflow-hidden rounded-2xl bg-white/80 shadow-xl md:grid-cols-2;
         @apply dark:bg-slate-800;
     }
     .auth-form-panel {
         @apply p-10;
     }
     .auth-side-panel {
-        @apply hidden items-center justify-center bg-slate-900 p-10 text-white md:flex;
-        @apply dark:bg-blue-800;
+        @apply hidden items-center justify-center bg-slate-900 p-10 text-white/90 md:flex;
+        @apply dark:bg-blue-800/30;
     }
 
     .form-label {
         @apply mb-1.5 block font-medium text-slate-700;
-        @apply dark:text-white;
+        @apply dark:text-white/90;
     }
     .form-input {
         @apply w-full rounded-lg border border-slate-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500;
-        @apply dark:border-slate-600 dark:bg-slate-700 dark:text-white;
+        @apply dark:border-slate-600 dark:bg-slate-700 dark:text-white/90;
     }
 }

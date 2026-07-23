@@ -1,18 +1,15 @@
-using LearnHub.Data.Dtos.Courses;
 using LearnHub.Data.Entities;
 
 namespace LearnHub.Data.Repositories;
 
 public interface ICourseRepo
 {
-    Task<PagedResult<CourseListDto>> GetAllAsync(
+    Task<PagedResult<Course>> GetAllAsync(
         int page,
         int pageSize,
         bool? active = null);
 
     Task<Course?> GetByIdAsync(int id);
-
-    Task<CourseDetailDto?> GetByIdDetailedAsync(int id);
 
     Task<Course> CreateAsync(Course course);
 
@@ -21,4 +18,5 @@ public interface ICourseRepo
     Task DeleteAsync(Course course);
 
     Task<bool> ProfessorExistsAsync(int id);
+    Task<int> GetEnrollmentCountAsync(int courseId);
 }

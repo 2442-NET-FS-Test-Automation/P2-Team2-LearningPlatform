@@ -19,13 +19,13 @@ public class LearnHubDbContext(DbContextOptions<LearnHubDbContext> options) : Db
 
         modelBuilder.Entity<StudentCourse>()
             .HasOne(s => s.Student)
-            .WithMany()
+            .WithMany(s => s.StudentCourses)
             .HasForeignKey(s => s.StudentId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<StudentCourse>()
             .HasOne(s => s.Course)
-            .WithMany()
+            .WithMany(s => s.StudentCourses)
             .HasForeignKey(s => s.CourseId)
             .OnDelete(DeleteBehavior.Restrict);
 
