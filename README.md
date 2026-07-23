@@ -36,7 +36,8 @@ Main entities:
 - StudentCourses (Enrollments)
 
 ### ERD
-<img width="841" height="581" alt="LearnHub_ERD" src="https://github.com/user-attachments/assets/76d99a91-9ce1-49ee-ac82-3f8c211d9a5b" />
+<img width="841" height="661" alt="P2_ERD" src="https://github.com/user-attachments/assets/8f33d5a7-7960-4eb4-ba1d-98709edf2349" />
+
 
 ## Team
 
