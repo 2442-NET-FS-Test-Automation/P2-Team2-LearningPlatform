@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, BookOpen, BarChart3, CalendarDays } from "lucide-react";
 
@@ -10,29 +10,30 @@ import WeeklyScheduleSection from "./sections/WeeklyScheduleSection";
 
 import { useAuth } from "../../ctx/AuthCtx";
 
-import type { StudentStats, StudentCourseInfo, TabItem, CourseSchedule } from "../../lib/types";
+import type { StudentCourseInfo, StudentStats, TabItem } from "../../lib/types";
 import { calculateAverage, handleLogout } from "../../lib/funcs";
-
-const Courses = [
-        { Id: 1, Name: "Python Basics", Grade: 87, Completed: false, Schedule: [ 
-                        { day: 2, startTime: "16:00", endTime: "18:00" } as CourseSchedule,
-                        { day: 4, startTime: "14:00", endTime: "18:00" } as CourseSchedule
-                    ] } as StudentCourseInfo,
-        { Id: 2, Name: "React for web", Completed: false } as StudentCourseInfo,
-        { Id: 3, Name: "Using Android Studio", Completed: false } as StudentCourseInfo,
-        { Id: 4, Name: "Data Analytics", Grade: 55, Completed: true } as StudentCourseInfo
-    ]
-const tempstats = {
-    TotalCourses: Courses.length,
-    Completed: Courses.filter(c => c.Completed === true).length,
-    AvgGrade: calculateAverage(Courses.filter(c => c.Completed === true).map(c => Number(c.Grade))),
-} as StudentStats;
 
 export default function StudentDashboardPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
     
-    const stats: StudentStats = tempstats
+    const [courses, setCourses] = useState<StudentCourseInfo[]>([]);
+    useEffect(() => {
+        // TODO: Endpoint not done yet so no info can be obtained
+        // Get courses of current student
+    }, [])
+
+    const [stats, setStats] = useState<StudentStats>({
+        TotalCourses: courses.length,
+        Completed: courses.filter(c => c.Completed === true).length,
+        AvgGrade: calculateAverage(courses.filter(c => c.Completed === true).map(c => Number(c.Grade))),
+    })
+
+    useEffect(() => {
+        // TODO: Endpoint not done yet so no info can be obtained
+        // Get stats of current student
+
+    }, [])
     
     const [activeTab, setActiveTab] = useState<string>("courses");
     const tabs: TabItem[] = [
@@ -65,9 +66,9 @@ export default function StudentDashboardPage() {
                             role={user.role}
                             bio={user.bio}
                         />}
-                        {activeTab === "courses" && <CoursesSection courses={Courses}  />}
+                        {activeTab === "courses" && <CoursesSection courses={courses}  />}
                         {activeTab === "progress" && <ProgressSection TotalCourses={stats.TotalCourses} Completed={stats.Completed} AvgGrade={stats.AvgGrade} />}
-                        {activeTab === "schedule" && <WeeklyScheduleSection Courses={Courses.filter(c => c.Completed === false)} />}
+                        {activeTab === "schedule" && <WeeklyScheduleSection Courses={courses.filter(c => c.Completed === false)} />}
                     </div>
                 </div>
             </div>
