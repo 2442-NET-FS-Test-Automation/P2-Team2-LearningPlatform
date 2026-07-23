@@ -28,7 +28,7 @@ export default function FeaturedCourses() {
     ];
 
     return (
-        <section className="section-white py-12 pb-30 dark:bg-slate-900">
+        <section className="section-light py-12 pb-30 dark:bg-slate-900">
             <div className="container-page">
                 <div className="text-center">
                     <span className="eyebrow-badge">Popular this term</span>

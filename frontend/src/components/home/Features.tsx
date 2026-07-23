@@ -26,7 +26,7 @@ export default function Features() {
     ];
 
     return (
-        <section className="section-light relative overflow-hidden py-24">
+        <section className="section-white relative overflow-hidden py-24">
             <div className="pointer-events-none absolute -right-40 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-blue-400/10 blur-3xl dark:bg-blue-500/5" aria-hidden="true" />
 
             <div className="container-page relative">
