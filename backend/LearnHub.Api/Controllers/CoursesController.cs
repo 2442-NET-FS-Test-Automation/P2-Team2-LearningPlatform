@@ -43,7 +43,7 @@ public class CoursesController : ControllerBase
                 Id = c.Id,
                 Name = c.Name,
                 Description = c.Description,
-                Category = c.CategoryName
+                Category = c.CategoryName.ToString()
             }).ToList(),
 
             Page = result.Page,
@@ -77,7 +77,7 @@ public class CoursesController : ControllerBase
                 Id = c.Id,
                 Name = c.Name,
                 Description = c.Description,
-                Category = c.CategoryName
+                Category = c.CategoryName.ToString()
             }).ToList(),
 
             Page = result.Page,
@@ -111,7 +111,7 @@ public class CoursesController : ControllerBase
                 Id = c.Id,
                 Name = c.Name,
                 Description = c.Description,
-                Category = c.CategoryName
+                Category = c.CategoryName.ToString()
             }).ToList(),
 
             Page = result.Page,

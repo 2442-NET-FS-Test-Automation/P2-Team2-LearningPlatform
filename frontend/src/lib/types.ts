@@ -19,6 +19,13 @@ export type CourseDetails = {
     Schedule?: CourseSchedule[]
 }
 
+export type CourseCompact = {
+    id: number,
+    name: string,
+    description: string,
+    category: string
+}
+
 export type CourseSchedule = {
     Day: number,
     StartTime: string,
