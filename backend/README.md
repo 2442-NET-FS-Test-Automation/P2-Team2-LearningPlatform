@@ -40,7 +40,23 @@ The LearnHub API is an ASP.NET Core Web API responsible for authentication, busi
 
 ## Project Structure
 
-**TBD**
+```
+├── LearnHub.Api/              # Services and Controllers live here
+│   ├── Controllers/           # Each Controller mapping endpoints
+│   ├── DTOs/                  # Model the Controllers I/O formats
+│   ├── Mapping/               # AutoMapper Profiles
+│   ├── Middleware/            # Custom middleware
+│   ├── Services/              # Services like token generation
+│   └── logs/                  # Directory for Serilog logging (not uploaded)
+├── LearnHub.Data/             # Repository and Entities are here
+│   ├── Entities/              # Data first Entity models
+│   ├── Enums/                 # Some enums used to restrict fields
+│   ├── Migrations/            # EF Core migrations
+│   ├── Repositories/          # Repositories following the Repository Design Pattern
+│   ├── Tools/                 # Other models not considered Entities and Helper classes
+│   └── LearnHubDBContext.cs   # DbContext for EF Core linking
+└── Learnhub.slnx              # Solution of the project API
+```
 
 ## Authentication
 
@@ -50,32 +66,49 @@ The LearnHub API is an ASP.NET Core Web API responsible for authentication, busi
 
 Available roles:
 
-- Admin
+- Manager
 - Professor
 - Student
 
-## API Endpoints (TBC)
+## API Endpoints Per Controller (TBC)
 
-Authentication
+### Authentication
 
 ```
 POST /api/auth/register
 POST /api/auth/login
+GET /api/auth/me
 ```
 
-Courses
+### Courses
 
 ```
-GET    /api/courses
-GET    /api/courses/{id}
-POST   /api/courses
-PUT    /api/courses/{id}
-DELETE /api/courses/{id}
+GET    /api/Courses
+GET    /api/Courses/enabled
+GET    /api/Courses/disabled
+GET    /api/Courses/{id}
+POST   /api/Courses           # Admin
+PATCH  /api/Courses/{id}      # Admin and Professor
+DELETE /api/Courses/{id}      # Admin
 ```
 
-Students
+### Users
+```
+```
+
+### Students
 
 ```
 GET /api/students/me
 POST /api/students/enroll
+```
+
+### Professors
+```
+
+```
+
+### Reports
+```
+
 ```
