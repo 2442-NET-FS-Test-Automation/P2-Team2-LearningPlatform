@@ -58,8 +58,8 @@ export default function RegisterPage() {
             const user = await register(form);
             
             navigate(getDashboardRoute(user.role));
-        } catch {
-            setError("Could not create account. Try again.");
+        } catch (err: any) {
+            setError(err.response?.data?.error || "Could not create account. Try again.");
         } finally {
             setIsSubmitting(false);
         }

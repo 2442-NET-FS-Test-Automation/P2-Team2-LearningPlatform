@@ -23,6 +23,7 @@ namespace LearnHub.Api.Middleware
                     KeyNotFoundException => StatusCodes.Status404NotFound,
                     UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
                     ArgumentException => StatusCodes.Status400BadRequest,
+                    FormatException => StatusCodes.Status400BadRequest,
                     _ => StatusCodes.Status500InternalServerError
                 };
 
