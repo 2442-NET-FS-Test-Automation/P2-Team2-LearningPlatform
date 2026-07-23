@@ -86,3 +86,39 @@ export interface ProfessorInfo extends UserInfo {
     ContractDate: string,
     IsActive: boolean
 }
+export interface UserDto {
+    id: number;
+    username: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    bio?: string;
+    role: "Student" | "Professor" | "Admin";
+}
+
+export interface CreateUserDto {
+    username: string;
+    password: string;
+
+    firstName: string;
+    lastName: string;
+    email: string;
+    bio: string;
+
+    role: "Student" | "Professor" | "Admin";
+
+    // Student
+    birthDate?: string;
+
+    // Professor
+    shiftId?: number;
+    contractDate?: string;
+}
+
+export interface PagedResult<T> {
+    items: T[];
+    page: number;
+    pageSize: number;
+    totalItems: number;
+    totalPages: number;
+}

@@ -27,7 +27,7 @@ builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IReportRepo, ReportRepo>();
 
 // DbContext
-var conn_string = builder.Configuration["Conn-String"]!;
+var conn_string = builder.Configuration["Conn-String:DefaultConnection"]!;
 
 builder.Services.AddDbContextFactory<LearnHubDbContext>(o => o.UseSqlServer(conn_string));
 
