@@ -23,6 +23,7 @@ builder.Host.UseSerilog();
 
 // Add CourseRepo and ICourseRepo to the builder.Services
 builder.Services.AddScoped<ICourseRepo, CourseRepo>();
+builder.Services.AddScoped<IReportRepo, ReportRepo>();
 
 // DbContext
 var conn_string = builder.Configuration["Conn-String"]!;
