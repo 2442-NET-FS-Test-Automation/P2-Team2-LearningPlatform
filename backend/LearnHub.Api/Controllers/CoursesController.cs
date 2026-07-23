@@ -124,7 +124,7 @@ public class CoursesController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<CourseDetailDto>> GetCourse(int id)
     {
         // Verify the id is valid
@@ -132,12 +132,14 @@ public class CoursesController : ControllerBase
         {
             //  await for the course searched
             var course = await _repo.GetByIdAsync(id);
-            
+        
             // if the response is null then send a NotFound message
             if(course == null) return NotFound();
 
             // get the enrolled students
             var enrolledStudents = await _repo.GetEnrollmentCountAsync(id);
+
+            var schedule = await _repo.GetCourseScheduleById(id);
 
             // create the dto in base of the object
             var dto = new CourseDetailDto
@@ -146,7 +148,7 @@ public class CoursesController : ControllerBase
                 Name = course.Name,
                 Description = course.Description,
                 About = course.About,
-                Category = course.CategoryName,
+                Category = course.CategoryName.ToString(),
                 Price = course.EnrollmentPrice,
                 Hours = course.Hours,
                 Certification = course.Certification,
@@ -155,7 +157,7 @@ public class CoursesController : ControllerBase
                     course.Professor.User.FirstName + " " +
                     course.Professor.User.LastName,
                 EnrolledStudents = enrolledStudents,
-                Schedule = course.Schedule
+                Schedule = schedule
                     .Select(s => new CourseScheduleDto
                     {
                         Day = s.Day,

@@ -105,7 +105,14 @@ public class CourseRepo : ICourseRepo
     {
         // return the first item with the matching id
         return await _context.Courses
+            .Include(c => c.Professor)
+                .ThenInclude(p => p.User)
             .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    public async Task<List<CourseSchedule>> GetCourseScheduleById(int id)
+    {
+        return await _context.CourseSchedules.Where(cs => cs.CourseId == id).ToListAsync();
     }
 
     public async Task<Course> CreateAsync(Course course)
@@ -153,7 +160,6 @@ public class CourseRepo : ICourseRepo
     // }
     public async Task<int> GetEnrollmentCountAsync(int courseId)
     {
-        return await _context.StudentCourses
-            .CountAsync(sc => sc.CourseId == courseId);
+        return await _context.StudentCourses.CountAsync(sc => sc.CourseId == courseId);
     }
 }

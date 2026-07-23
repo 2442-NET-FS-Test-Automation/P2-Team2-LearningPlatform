@@ -10,6 +10,8 @@ public interface ICourseRepo
 
     Task<Course?> GetByIdAsync(int id);
 
+    Task<List<CourseSchedule>> GetCourseScheduleById(int id);
+
     Task<Course> CreateAsync(Course course);
 
     Task UpdateAsync(Course course);
