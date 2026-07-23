@@ -33,17 +33,77 @@ public class CoursesController : ControllerBase
         if (pageSize < 1) pageSize = 10;
         if (pageSize > 50) pageSize = 50;
 
-        // If the user is in one of these roles set the variable as true
-        bool canViewInactive = User.IsInRole(UserRoles.Admin.ToString());
+        // await for the courses
+        var result = await _repo.GetAllAsync(page, pageSize);
+        
+        var response = new PagedResult<CourseListDto>
+        {
+            Items = result.Items.Select(c => new CourseListDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description,
+                Category = c.CategoryName
+            }).ToList(),
 
-        // if canViewInactive == true then set is as null
-        // because he can see without filter, if its false
-        // then its a student, apply the filter in true
-        bool? activeFilter = canViewInactive ? null : true;
+            Page = result.Page,
+            PageSize = result.PageSize,
+            TotalItems = result.TotalItems,
+            TotalPages = result.TotalPages
+        };
+
+        // return message + response
+        return Ok(response);
+    }
+
+    [HttpGet("enabled")]
+    public async Task<ActionResult<IEnumerable<CourseListDto>>> GetEnabledCourses(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10
+    )
+    {
+        // Set pagination limits
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 10;
+        if (pageSize > 50) pageSize = 50;
 
         // await for the courses
-        var result = await _repo.GetAllAsync(page, pageSize, activeFilter);
-        
+        var result = await _repo.GetEnabledAsync(page, pageSize);
+
+        var response = new PagedResult<CourseListDto>
+        {
+            Items = result.Items.Select(c => new CourseListDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description,
+                Category = c.CategoryName
+            }).ToList(),
+
+            Page = result.Page,
+            PageSize = result.PageSize,
+            TotalItems = result.TotalItems,
+            TotalPages = result.TotalPages
+        };
+
+        // return message + response
+        return Ok(response);
+    }
+
+    [HttpGet("disabled")]
+    public async Task<ActionResult<IEnumerable<CourseListDto>>> GetDisabledCourses(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10
+    )
+    {
+        // Set pagination limits
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 10;
+        if (pageSize > 50) pageSize = 50;
+
+        // await for the courses
+        var result = await _repo.GetDisabledAsync(page, pageSize);
+
         var response = new PagedResult<CourseListDto>
         {
             Items = result.Items.Select(c => new CourseListDto

@@ -4,10 +4,9 @@ namespace LearnHub.Data.Repositories;
 
 public interface ICourseRepo
 {
-    Task<PagedResult<Course>> GetAllAsync(
-        int page,
-        int pageSize,
-        bool? active = null);
+    Task<PagedResult<Course>> GetAllAsync(int page, int pageSize);
+    Task<PagedResult<Course>> GetEnabledAsync(int page, int pageSize);
+    Task<PagedResult<Course>> GetDisabledAsync(int page, int pageSize);
 
     Task<Course?> GetByIdAsync(int id);
 

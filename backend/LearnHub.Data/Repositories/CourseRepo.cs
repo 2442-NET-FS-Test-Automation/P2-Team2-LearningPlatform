@@ -16,23 +16,66 @@ public class CourseRepo : ICourseRepo
     }
 
     // Function for get all the courses
-    public async Task<PagedResult<Course>> GetAllAsync(
-    int page,
-    int pageSize,
-    bool? active = null)
+    public async Task<PagedResult<Course>> GetAllAsync(int page, int pageSize)
     {
         // Create a query from the context of Courses
         var query = _context.Courses.AsQueryable();
 
-        // If active has a value (true or false) the query filters the result
-        // of the courses.
-        // In case active dont have any value, the query dont filter anything
-        // and the result are gonna be all the courses
-        if (active.HasValue)
+        // await for know the count of the items
+        var totalItems = await query.CountAsync();
+
+        // Create the var courses in base of the query, implemented pagination and selecting the specific
+        // data for our Dto
+        var courses = await query
+            .OrderBy(c => c.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        // return a PagedResult<T>
+        return new PagedResult<Course>
         {
-            // Query = courses who IsActive value equals to our active value
-            query = query.Where(c => c.IsActive == active.Value);
-        }
+            Items = courses,
+            Page = page,
+            PageSize = pageSize,
+            TotalItems = totalItems,
+            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+        };
+    }
+
+    public async Task<PagedResult<Course>> GetEnabledAsync(int page, int pageSize)
+    {
+        // Create a query from the context of Courses
+        var query = _context.Courses.AsQueryable();
+        query = query.Where(c => c.IsActive == true);
+
+        // await for know the count of the items
+        var totalItems = await query.CountAsync();
+
+        // Create the var courses in base of the query, implemented pagination and selecting the specific
+        // data for our Dto
+        var courses = await query
+            .OrderBy(c => c.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        // return a PagedResult<T>
+        return new PagedResult<Course>
+        {
+            Items = courses,
+            Page = page,
+            PageSize = pageSize,
+            TotalItems = totalItems,
+            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+        };
+    }
+
+    public async Task<PagedResult<Course>> GetDisabledAsync(int page, int pageSize)
+    {
+        // Create a query from the context of Courses
+        var query = _context.Courses.AsQueryable();
+        query = query.Where(c => c.IsActive == false);
 
         // await for know the count of the items
         var totalItems = await query.CountAsync();
