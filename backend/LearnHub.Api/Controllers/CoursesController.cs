@@ -1,6 +1,7 @@
 using LearnHub.Data;
 using LearnHub.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using LearnHub.Data.Repositories;
 using LearnHub.Api.DTOs.Courses;
 
@@ -65,6 +66,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet("{id}")]
+        [Authorize(Roles = "Admin,Professor,Student")]
     public async Task<ActionResult<CourseDetailDto>> GetCourse(int id)
     {
         // Verify the id is valid
@@ -113,6 +115,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPost]
+        [Authorize(Roles = "Admin,Professor")]
     public async Task<ActionResult<CourseDetailDto>> CreateCourse(CreateCourseDto dto)
     {
         // search for the Professor, if doesnt exist  then return BadRequest
@@ -146,6 +149,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPatch("{id}")]
+        [Authorize(Roles = "Admin,Professor")]
     public async Task<IActionResult> PatchCourse(int id, UpdateCourseDto dto)
     {
         if(DataTypeVerification.IsNumValid (id))
@@ -195,6 +199,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Professor")]
     public async Task<IActionResult> DeleteCourse(int id)
     {
         if(DataTypeVerification.IsNumValid(id))

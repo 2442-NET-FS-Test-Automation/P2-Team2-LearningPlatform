@@ -24,6 +24,7 @@ builder.Host.UseSerilog();
 // Add CourseRepo and ICourseRepo to the builder.Services
 builder.Services.AddScoped<ICourseRepo, CourseRepo>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
+builder.Services.AddScoped<IReportRepo, ReportRepo>();
 
 // DbContext
 var conn_string = builder.Configuration["Conn-String"]!;
@@ -37,6 +38,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Services
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IStudentRepo, StudentRepo>();
 builder.Services.AddScoped<IProfessorRepo, ProfessorRepo>();
