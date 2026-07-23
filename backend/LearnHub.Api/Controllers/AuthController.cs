@@ -88,6 +88,13 @@ public class AuthController : ControllerBase {
         });
     }
 
+    [HttpGet("test-error")]
+    public ActionResult TestError()
+    {
+        // Esto es solo para probar el ExceptionHandlingMiddleware
+        throw new ArgumentException("Este es un error provocado intencionalmente para probar el middleware.");
+    }
+
 
 
 

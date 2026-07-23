@@ -1,4 +1,3 @@
-using LearnHub.Data.Dtos.Reports;
 using LearnHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +12,7 @@ public class ReportRepo : IReportRepo
         _context = context;
     }
 
-    public async Task<AdminReportDto> GetGeneralReportAsync()
+    public async Task<AdminReportModel> GetGeneralReportAsync()
     {
         var totalCourses = await _context.Courses.CountAsync();
         
@@ -24,7 +23,7 @@ public class ReportRepo : IReportRepo
         var totalEnrollments = await _context.StudentCourses.CountAsync();
 
         var topCourses = await _context.Courses
-            .Select(c => new TopCourseDto
+            .Select(c => new TopCourseModel
             {
                 CourseId = c.Id,
                 CourseName = c.Name,
@@ -35,7 +34,7 @@ public class ReportRepo : IReportRepo
             .Take(5)
             .ToListAsync();
 
-        return new AdminReportDto
+        return new AdminReportModel
         {
             TotalCourses = totalCourses,
             TotalStudents = totalStudents,

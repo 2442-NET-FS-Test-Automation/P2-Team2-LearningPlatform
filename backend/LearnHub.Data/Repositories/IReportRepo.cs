@@ -1,8 +1,8 @@
-using LearnHub.Data.Dtos.Reports;
+using LearnHub.Data.Entities;
 
 namespace LearnHub.Data.Repositories;
 
 public interface IReportRepo
 {
-    Task<AdminReportDto> GetGeneralReportAsync();
+    Task<AdminReportModel> GetGeneralReportAsync();
 }

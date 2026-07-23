@@ -38,6 +38,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Services
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IStudentRepo, StudentRepo>();
 builder.Services.AddScoped<IProfessorRepo, ProfessorRepo>();

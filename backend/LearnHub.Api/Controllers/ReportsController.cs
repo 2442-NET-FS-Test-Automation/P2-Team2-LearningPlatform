@@ -1,4 +1,5 @@
-using LearnHub.Data.Dtos.Reports;
+using AutoMapper;
+using LearnHub.Api.DTOs.Reports;
 using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,17 +11,22 @@ namespace LearnHub.Api.Controllers;
 public class ReportsController : ControllerBase
 {
     private readonly IReportRepo _reportRepo;
+    private readonly IMapper _mapper;
 
-    public ReportsController(IReportRepo reportRepo)
+    public ReportsController(IReportRepo reportRepo, IMapper mapper)
     {
         _reportRepo = reportRepo;
+        _mapper = mapper;
     }
 
     [HttpGet("general")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<AdminReportDto>> GetGeneralReport()
     {
-        var report = await _reportRepo.GetGeneralReportAsync();
-        return Ok(report);
+        var model = await _reportRepo.GetGeneralReportAsync();
+        
+        var dto = _mapper.Map<AdminReportDto>(model);
+
+        return Ok(dto);
     }
 }
