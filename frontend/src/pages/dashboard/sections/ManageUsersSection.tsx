@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
 
 import type { UserDto } from "../../../lib/types";
-import CreateUserModal from "./CreateUserModal";
+import CreateUserModal from "../../../components/modals/CreateUserModal";
 import { getUsers } from "../../../api/usersRequest";
 
 export default function ManageUsersSection() {

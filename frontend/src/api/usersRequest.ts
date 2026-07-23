@@ -17,15 +17,8 @@ export async function createUser(
     dto: CreateUserDto
 ): Promise<UserDto> {
 
-    const roleMap = {
-        Student: 2,
-        Professor: 1,
-        Admin: 3
-    };
-
     const request = {
         ...dto,
-        role: roleMap[dto.role],
 
         birthDate:
             dto.role === "Student"

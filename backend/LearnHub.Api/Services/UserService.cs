@@ -92,21 +92,25 @@ public class UserService : IUserService
         if(await _userRepo.UsernameExistsAsync(dto.Username))
             throw new ArgumentException("Username already exists");
             
+        if (!Enum.TryParse<UserRoles>(dto.Role, true, out var role))
+        {
+            throw new ArgumentException("Invalid role");
+        }
         using var transaction = await _db.Database.BeginTransactionAsync();
 
         try
         {
             
-            var user = CreateBaseUser(dto);
+            var user = CreateBaseUser(dto, role);
 
             _userRepo.Add(user);
 
-            if(dto.Role == UserRoles.Professor)
+            if(role == UserRoles.Professor)
             {
                 if(dto.ShiftId == null || dto.ContractDate == null)
                     throw new ArgumentException("Professor data missing");
             }
-            switch(dto.Role)
+            switch(role)
             {
                 case UserRoles.Professor:
 
@@ -148,7 +152,7 @@ public class UserService : IUserService
         }
     }
 
-    private  User CreateBaseUser(CreateUserDto dto)
+    private  User CreateBaseUser(CreateUserDto dto, UserRoles role)
     {
         var user = new User
         {
@@ -157,7 +161,7 @@ public class UserService : IUserService
             LastName = dto.LastName,
             Email = dto.Email,
             Bio = dto.Bio,
-            Role = dto.Role
+            Role = role
         };
 
         user.PasswordHash =

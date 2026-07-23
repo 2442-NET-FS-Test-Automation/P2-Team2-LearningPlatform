@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { CreateUserDto } from "../../../lib/types";
-import * as UserService from "../../../api/usersRequest";
+import type { CreateUserDto } from "../../lib/types";
+import * as UserService from "../../api/usersRequest";
 
 interface Props {
     onClose: () => void;

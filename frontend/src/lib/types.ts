@@ -93,7 +93,7 @@ export interface UserDto {
     lastName: string;
     email: string;
     bio?: string;
-    role: "Student" | "Professor" | "Admin";
+    role: UserRole;
 }
 
 export interface CreateUserDto {
@@ -105,7 +105,7 @@ export interface CreateUserDto {
     email: string;
     bio: string;
 
-    role: "Student" | "Professor" | "Admin";
+    role: UserRole;
 
     // Student
     birthDate?: string;
@@ -113,12 +113,4 @@ export interface CreateUserDto {
     // Professor
     shiftId?: number;
     contractDate?: string;
-}
-
-export interface PagedResult<T> {
-    items: T[];
-    page: number;
-    pageSize: number;
-    totalItems: number;
-    totalPages: number;
 }
