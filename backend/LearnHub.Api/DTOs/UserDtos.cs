@@ -6,7 +6,7 @@ namespace LearnHub.Api.DTOs.Users;
 public class UserDto
 {
     public int Id{get; set;}
-    public UserRoles Role {get; set;}
+    public string Role { get; set; } = UserRoles.Student.ToString();
     public string Username {get; set;} = default!;
     public string FirstName {get; set;} = default!;
     public string LastName{get; set;} = default!;
@@ -29,7 +29,7 @@ public class CreateUserDto
 
     public string? Bio { get; set; }
 
-    public UserRoles Role { get; set; }
+    public string Role { get; set; } = UserRoles.Student.ToString();
 
 
     // Student

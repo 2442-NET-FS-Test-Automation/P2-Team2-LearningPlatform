@@ -43,7 +43,7 @@ public class UserController : ControllerBase
             Items = result.Items.Select(u => new UserDto
             {
                 Id = u.Id,
-                Role = u.Role,
+                Role = u.Role.ToString(),
                 Username = u.Username,
                 FirstName = u.FirstName,
                 LastName = u.LastName,
@@ -76,7 +76,7 @@ public class UserController : ControllerBase
         var response = users.Items.Select(u => new UserDto
         {
             Id = u.Id,
-            Role = u.Role,
+            Role = u.Role.ToString(),
             Username = u.Username,
             FirstName = u.FirstName,
             LastName = u.LastName,
@@ -99,7 +99,7 @@ public class UserController : ControllerBase
         var dto = new UserDto
         {
             Id = user.Id,
-            Role = user.Role,
+            Role = user.Role.ToString(),
             Username = user.Username,
             FirstName = user.FirstName,
             LastName = user.LastName,

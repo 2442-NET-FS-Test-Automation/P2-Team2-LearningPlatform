@@ -9,6 +9,7 @@ import { useAuth } from "../../ctx/AuthCtx";
 
 import type { TabItem } from "../../lib/types";
 import { handleLogout } from "../../lib/funcs";
+import ManageUsersSection from "./sections/ManageUsersSection";
 
 export default function ManagerDashboardPage() {
     const { user } = useAuth();
@@ -46,6 +47,7 @@ export default function ManagerDashboardPage() {
                             role={user.role}
                             bio={user.bio}
                         />}
+                        {activeTab === "manageusers" && <ManageUsersSection/>}
                     </div>
                 </div>
             </div>
