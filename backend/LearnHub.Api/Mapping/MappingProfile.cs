@@ -1,6 +1,6 @@
 using AutoMapper;
 using LearnHub.Api.DTOs.Reports;
-using LearnHub.Data.Entities;
+using LearnHub.Data.Tools;
 
 namespace LearnHub.Api.Mapping;
 

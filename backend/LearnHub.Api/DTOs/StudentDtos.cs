@@ -46,11 +46,11 @@ public class StudentCourseDto
 
     public string CourseName { get; set; } = default!;
 
-    public int Grade { get; set; }
+    public int? Grade { get; set; }
 
     public DateOnly EnrollmentDate { get; set; }
 
-    public DateOnly EndDate { get; set; }
+    public DateOnly? EndDate { get; set; }
 }
 
 public class UserInfoDto
