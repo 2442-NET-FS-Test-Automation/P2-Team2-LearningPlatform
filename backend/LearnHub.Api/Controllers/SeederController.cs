@@ -5,7 +5,7 @@ namespace LearnHub.Api.Controllers;
 
 
 [ApiController]
-[Route("api/")]
+[Route("api/[controller]")]
 
 
 public class SeederController : ControllerBase {
