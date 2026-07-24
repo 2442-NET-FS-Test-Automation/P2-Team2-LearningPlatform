@@ -5,8 +5,8 @@ namespace LearnHub.Data.Entities;
 public class Course
 {
     public int Id { get; set; }
-    public int ProfessorId { get; set; }
-    public Professor Professor { get; set; } = default!;
+    public int? ProfessorId { get; set; }
+    public Professor? Professor { get; set; } = default!;
     public string Name { get; set; } = default!;
     public string Description { get; set; } = default!;
     public string? About { get; set; } = null;

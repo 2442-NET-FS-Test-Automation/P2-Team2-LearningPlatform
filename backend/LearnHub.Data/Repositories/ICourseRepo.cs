@@ -19,5 +19,18 @@ public interface ICourseRepo
     Task DeleteAsync(Course course);
 
     Task<bool> ProfessorExistsAsync(int id);
+
     Task<int> GetEnrollmentCountAsync(int courseId);
+
+
+    // Nuevos
+
+    Task AddStudentAsync(int studentId, int courseId);
+
+    Task RemoveStudentAsync(int studentId, int courseId);
+
+    Task AssignProfessorAsync(int courseId, int professorId);
+
+    Task RemoveProfessorAsync(int courseId);
+    Task<List<Course>> GetByProfessorAsync(int professorId);
 }

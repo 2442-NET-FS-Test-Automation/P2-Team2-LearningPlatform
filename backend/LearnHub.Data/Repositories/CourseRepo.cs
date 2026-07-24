@@ -173,4 +173,94 @@ public class CourseRepo : ICourseRepo
     {
         return await _context.StudentCourses.CountAsync(sc => sc.CourseId == courseId);
     }
+
+    public async Task AddStudentAsync(
+        int studentId,
+        int courseId)
+    {
+        var exists = await _context.StudentCourses
+            .AnyAsync(sc =>
+                sc.StudentId == studentId &&
+                sc.CourseId == courseId);
+
+
+        if(exists)
+            return;
+
+
+        var studentCourse = new StudentCourse
+        {
+            StudentId = studentId,
+            CourseId = courseId
+        };
+
+
+        _context.StudentCourses.Add(studentCourse);
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task RemoveStudentAsync(
+        int studentId,
+        int courseId)
+    {
+        var studentCourse =
+            await _context.StudentCourses
+            .FirstOrDefaultAsync(sc =>
+                sc.StudentId == studentId &&
+                sc.CourseId == courseId);
+
+
+        if(studentCourse == null)
+            return;
+
+
+        _context.StudentCourses.Remove(studentCourse);
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task AssignProfessorAsync(
+        int courseId,
+        int professorId)
+    {
+        var course =
+            await _context.Courses
+            .FirstOrDefaultAsync(c => c.Id == courseId);
+
+
+        if(course == null)
+            return;
+
+
+        course.ProfessorId = professorId;
+
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task RemoveProfessorAsync(
+        int courseId)
+    {
+        var course =
+            await _context.Courses
+            .FirstOrDefaultAsync(c => c.Id == courseId);
+
+
+        if(course == null)
+            return;
+
+
+        course.ProfessorId = null;
+
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<Course>> GetByProfessorAsync(int professorId)
+    {
+        return await _context.Courses
+            .Where(c => c.ProfessorId == professorId)
+            .ToListAsync();
+    }
 }

@@ -202,8 +202,10 @@ public class CoursesController : ControllerBase
                 Certification = course.Certification,
 
                 Instructor =
-                    course.Professor.User.FirstName + " " +
-                    course.Professor.User.LastName,
+                    course.Professor != null
+                        ? course.Professor.User.FirstName + " " +
+                        course.Professor.User.LastName
+                        : "No assigned",
                 EnrolledStudents = enrolledStudents,
                 Schedule = schedule
                     .Select(s => new CourseScheduleDto
