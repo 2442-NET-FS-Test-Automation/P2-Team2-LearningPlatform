@@ -5,11 +5,15 @@ import { BookCopy, CalendarClock, NotebookText, User, UsersRound } from "lucide-
 import DashboardSideNav from "../../components/DashboardSideNav";
 import ProfileSection from "./sections/ProfileSection";
 
+import ManageUsersSection from "./sections/ManageUsersSection";
+import ManageCoursesSection from "./sections/ManageCoursesSection";
+import ManageShiftsSection from "./sections/ManageShiftsSection";
+import ManagerReportsSection from "./sections/ManagerReportsSection";
+
 import { useAuth } from "../../ctx/AuthCtx";
 
 import type { TabItem } from "../../lib/types";
 import { handleLogout } from "../../lib/funcs";
-import ManageUsersSection from "./sections/ManageUsersSection";
 
 export default function ManagerDashboardPage() {
     const { user } = useAuth();
@@ -47,7 +51,10 @@ export default function ManagerDashboardPage() {
                             role={user.role}
                             bio={user.bio}
                         />}
+                        {activeTab === "reports" && <ManagerReportsSection />}
                         {activeTab === "manageusers" && <ManageUsersSection />}
+                        {activeTab === "managecourses" && <ManageCoursesSection />}
+                        {activeTab === "manageshifts" && <ManageShiftsSection />}
                     </div>
                 </div>
             </div>
