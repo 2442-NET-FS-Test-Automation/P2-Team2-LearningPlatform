@@ -50,7 +50,7 @@ builder.Services.AddScoped<ISeeder, Seeder>();
 // CORS Configuration
 const string SpaCorsPolicy = "spa";
 builder.Services.AddCors(o => o.AddPolicy(SpaCorsPolicy, 
-    p => p.WithOrigins("http://localhost:5174")
+    p => p.WithOrigins("http://localhost:5173", "http://localhost:5174")
         .AllowAnyHeader()
         .AllowAnyMethod()));
 
