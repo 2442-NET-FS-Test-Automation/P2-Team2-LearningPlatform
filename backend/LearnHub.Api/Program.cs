@@ -34,6 +34,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMemoryCache();
 
 // Services
 builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
