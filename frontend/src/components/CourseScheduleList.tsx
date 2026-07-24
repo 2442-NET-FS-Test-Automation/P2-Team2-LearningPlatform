@@ -12,7 +12,7 @@ export default function CourseScheduleList({ Schedule }: CourseScheduleListProps
                 {Schedule.map((s, i) => (
                     <li key={i} className="flex items-center gap-2 text-muted">
                         <Calendar size={16} />
-                        {getDayName(s.Day)}, {s.StartTime} - {s.EndTime}
+                        {getDayName(s.day)}, {s.startTime} - {s.endTime}
                     </li>
                 ))}
             </ul>
