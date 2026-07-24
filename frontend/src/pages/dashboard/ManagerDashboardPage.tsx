@@ -15,13 +15,13 @@ export default function ManagerDashboardPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    const [activeTab, setActiveTab] = useState<string>("courses");
+    const [activeTab, setActiveTab] = useState<string>("reports");
     const tabs: TabItem[] = [
         { Id: "profile", Label: "Profile", Icon: <User size={18} /> },
+        { Id: "reports", Label: "Reports", Icon: <NotebookText size={18} /> },
         { Id: "manageusers", Label: "Manage Users", Icon: <UsersRound size={18} /> },
         { Id: "managecourses", Label: "Manage Courses", Icon: <BookCopy size={18} /> },
-        { Id: "manageshifts", Label: "Manage Shifts", Icon: <CalendarClock size={18} /> },
-        { Id: "reports", Label: "Reports", Icon: <NotebookText size={18} /> },
+        { Id: "manageshifts", Label: "Manage Shifts", Icon: <CalendarClock size={18} /> }
     ];
 
     if (user == null) {
@@ -39,18 +39,18 @@ export default function ManagerDashboardPage() {
 
                     {/* Main Content */}
                     <div className="flex-1">
-                        {activeTab === "profile" && <ProfileSection 
+                        {activeTab === "profile" && <ProfileSection
                             firstName={user.firstName}
                             lastName={user.lastName}
-                            email={user.email} 
-                            username={user.username} 
+                            email={user.email}
+                            username={user.username}
                             role={user.role}
                             bio={user.bio}
                         />}
-                        {activeTab === "manageusers" && <ManageUsersSection/>}
+                        {activeTab === "manageusers" && <ManageUsersSection />}
                     </div>
                 </div>
             </div>
         </div>
     );
- }
+}
