@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import CourseCard from "../../components/CourseCard";
 import PaginationControls from "../../components/layout/PaginationControls";
-import type { CourseCompact } from "../../lib/types";
+import { COURSE_CATEGORIES, type CourseCategory, type CourseCompact } from "../../lib/types";
 import { getEnabledCourses } from "../../api/coursesRequests";
+import { Search } from "lucide-react";
 
 export default function CoursesPage() {
     const [courses, setCourses] = useState<CourseCompact[]>([]);
 
     const [searchTerm, setSearchTerm] = useState("");
+    const [categoryFilter, setCategoryFilter] = useState<CourseCategory | "All">("All")
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(6);
     const [totalPages, setTotalPages] = useState(0);
@@ -18,30 +20,34 @@ export default function CoursesPage() {
     // Get Courses from the API    
     useEffect(() => {
         setIsLoading(true);
-        getEnabledCourses(currentPage, itemsPerPage, searchTerm.trim()).then((res) => {
-            setCourses(res.items);
-            setTotalPages(res.totalPages);
-        })
-        .catch((e) => {
-            setError(e.message)
-        })
-        .finally (() => {
-            setIsLoading(false);
-        });
-    }, [currentPage])
+        getEnabledCourses(currentPage, itemsPerPage, 
+            searchTerm.trim(), categoryFilter == "All" ? null : categoryFilter)
+            .then((res) => {
+                setCourses(res.items);
+                setTotalPages(res.totalPages);
+            })
+            .catch((e) => {
+                setError(e.message)
+            })
+            .finally (() => {
+                setIsLoading(false);
+            });
+    }, [currentPage, categoryFilter])
 
     useEffect(() => {
-        getEnabledCourses(currentPage, itemsPerPage, searchTerm.trim()).then((res) => {
-            setCourses(res.items);
-            setTotalPages(res.totalPages);
-        })
-        .catch((e: Error) => {
-            console.log(e)
-            setError(e.message)
-        })
-        .finally (() => {
-            setIsLoading(false);
-        });
+        getEnabledCourses(currentPage, itemsPerPage, 
+            searchTerm.trim(), categoryFilter == "All" ? null : categoryFilter)
+            .then((res) => {
+                setCourses(res.items);
+                setTotalPages(res.totalPages);
+            })
+            .catch((e: Error) => {
+                console.log(e)
+                setError(e.message)
+            })
+            .finally (() => {
+                setIsLoading(false);
+            });
     }, [itemsPerPage, searchTerm])
 
     useMemo(() => {
@@ -58,10 +64,31 @@ export default function CoursesPage() {
             <div className="flex-grow w-full container-page py-10 ">
                 {/* Title & SearchBar */}
                 <div>
-                    <h1 className="text-4xl font-extrabold leading-tight">All courses</h1>
-                    <input type="text" className="form-input mt-3" placeholder="Search courses"
-                        value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)}
-                    />
+                    <h1 className="text-4xl font-extrabold leading-tight my-2">{categoryFilter} courses</h1>
+                    
+                    <div className="flex flex-col gap-3 sm:flex-row">
+                        <div className="relative flex-1">
+                            <Search
+                                size={18}
+                                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Search by course name..."  
+                                className="form-input pl-10 w-full"
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                         <select
+                            value={categoryFilter}
+                            onChange={(e) => setCategoryFilter(e.target.value as CourseCategory | "All")}
+                            className="form-input sm:w-48 text-sm"
+                            defaultValue={"All"}
+                        >
+                            <option value="All">All</option>
+                            {COURSE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                    </div>
                 </div>
 
                 {/* Course Grid */}
