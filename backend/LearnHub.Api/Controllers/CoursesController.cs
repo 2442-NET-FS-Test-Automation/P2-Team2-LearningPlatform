@@ -26,7 +26,10 @@ public class CoursesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CourseListDto>>> GetCourses(
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? searchName = null,
+        [FromQuery] CourseCategory? categoryFilter = null
+
     )
     {   
         // Set pagination limits
@@ -35,7 +38,7 @@ public class CoursesController : ControllerBase
         if (pageSize > 50) pageSize = 50;
 
         // await for the courses
-        var result = await _repo.GetAllAsync(page, pageSize);
+        var result = await _repo.GetAllAsync(page, pageSize, searchName, categoryFilter);
         
         var response = new PagedResult<CourseListDto>
         {
@@ -60,7 +63,9 @@ public class CoursesController : ControllerBase
     [HttpGet("enabled")]
     public async Task<ActionResult<IEnumerable<CourseListDto>>> GetEnabledCourses(
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? searchName = null,
+        [FromQuery] CourseCategory? categoryFilter = null
     )
     {
         // Set pagination limits
@@ -69,8 +74,8 @@ public class CoursesController : ControllerBase
         if (pageSize > 50) pageSize = 50;
 
         // await for the courses
-        var result = await _repo.GetEnabledAsync(page, pageSize);
-
+        var result = await _repo.GetEnabledAsync(page, pageSize, searchName, categoryFilter);
+        
         var response = new PagedResult<CourseListDto>
         {
             Items = result.Items.Select(c => new CourseListDto
@@ -94,7 +99,9 @@ public class CoursesController : ControllerBase
     [HttpGet("disabled")]
     public async Task<ActionResult<IEnumerable<CourseListDto>>> GetDisabledCourses(
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? searchName = null,
+        [FromQuery] CourseCategory? categoryFilter = null
     )
     {
         // Set pagination limits
@@ -103,7 +110,7 @@ public class CoursesController : ControllerBase
         if (pageSize > 50) pageSize = 50;
 
         // await for the courses
-        var result = await _repo.GetDisabledAsync(page, pageSize);
+        var result = await _repo.GetDisabledAsync(page, pageSize, searchName, categoryFilter);
 
         var response = new PagedResult<CourseListDto>
         {

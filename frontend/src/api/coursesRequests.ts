@@ -1,21 +1,37 @@
-import type { CourseDetails } from "../lib/types";
+import type { CourseCategory, CourseDetails } from "../lib/types";
 import { api } from "./api";
 
-export async function getEnabledCourses(page: number = 1, pageSize: number = 6) {
-    const result = await api.get("/Courses/enabled", {
+export async function getAllCourses(page: number = 1, pageSize: number = 6, search: string | null = null, category: CourseCategory | null = null) {
+    const result = await api.get("/Courses", {
         params: {
             page: page,
-            pageSize: pageSize
+            pageSize: pageSize,
+            searchName: search,
+            categoryFilter: category
         }
     });
     return result.data;
 }
 
-export async function getDisabledCourses(page: number = 1, pageSize: number = 6) {
+export async function getEnabledCourses(page: number = 1, pageSize: number = 6, search: string | null = null, category: CourseCategory | null = null) {
+    const result = await api.get("/Courses/enabled", {
+        params: {
+            page: page,
+            pageSize: pageSize,
+            searchName: search,
+            categoryFilter: category
+        }
+    });
+    return result.data;
+}
+
+export async function getDisabledCourses(page: number = 1, pageSize: number = 6, search: string | null = null, category: CourseCategory | null = null) {
     const result = await api.get("/Courses/disabled", {
         params: {
             page: page,
-            pageSize: pageSize
+            pageSize: pageSize,
+            searchName: search,
+            categoryFilter: category
         }
     })
     return result.data;

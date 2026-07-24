@@ -16,10 +16,15 @@ public class CourseRepo : ICourseRepo
     }
 
     // Function for get all the courses
-    public async Task<PagedResult<Course>> GetAllAsync(int page, int pageSize)
+    public async Task<PagedResult<Course>> GetAllAsync(int page, int pageSize, string? search = null, CourseCategory? categoryFilter = null)
     {
         // Create a query from the context of Courses
         var query = _context.Courses.AsQueryable();
+
+        // filter first
+        if (search != null) query = query.Where(c => c.Name.ToLower() == search.ToLower());
+        if (categoryFilter != null) query = query.Where(c => c.CategoryName == categoryFilter);
+
 
         // await for know the count of the items
         var totalItems = await query.CountAsync();
@@ -43,12 +48,16 @@ public class CourseRepo : ICourseRepo
         };
     }
 
-    public async Task<PagedResult<Course>> GetEnabledAsync(int page, int pageSize)
+    public async Task<PagedResult<Course>> GetEnabledAsync(int page, int pageSize, string? search = null, CourseCategory? categoryFilter = null)
     {
         // Create a query from the context of Courses
         var query = _context.Courses.AsQueryable();
         query = query.Where(c => c.IsActive == true);
 
+        // filter first
+        if (search != null) query = query.Where(c => c.Name.ToLower().Contains(search.ToLower()));
+        if (categoryFilter != null) query = query.Where(c => c.CategoryName == categoryFilter);
+
         // await for know the count of the items
         var totalItems = await query.CountAsync();
 
@@ -71,11 +80,13 @@ public class CourseRepo : ICourseRepo
         };
     }
 
-    public async Task<PagedResult<Course>> GetDisabledAsync(int page, int pageSize)
+    public async Task<PagedResult<Course>> GetDisabledAsync(int page, int pageSize, string? search = null, CourseCategory? categoryFilter = null)
     {
         // Create a query from the context of Courses
         var query = _context.Courses.AsQueryable();
         query = query.Where(c => c.IsActive == false);
+        if (search != null) query = query.Where(c => c.Name.ToLower() == search.ToLower());
+        if (categoryFilter != null) query = query.Where(c => c.CategoryName == categoryFilter);
 
         // await for know the count of the items
         var totalItems = await query.CountAsync();
