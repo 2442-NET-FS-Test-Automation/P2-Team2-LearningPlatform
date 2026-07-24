@@ -5,55 +5,49 @@ import CreateUserModal from "../../../components/modals/CreateUserModal";
 
 import type { UserDto, UserRole } from "../../../lib/types";
 import { getUsers } from "../../../api/usersRequest";
+import PaginationControls from "../../../components/layout/PaginationControls";
 
 export default function ManageUsersSection() {
     const [users, setUsers] = useState<UserDto[]>([]);
-    const [filteredUsers, setFilteredUsers] = useState<UserDto[]>([]);
+
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState<UserRole | "All">("All");
 
-    const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(6);
+    const [totalPages, setTotalPages] = useState(0);
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [created, setCreated] = useState(false);
 
-    async function loadUsers() {
-        setLoading(true);
-
-        try {
-            const response = await getUsers();
-
-            setUsers(response.items);
-            setFilteredUsers(response.items);
-        } finally {
-            setLoading(false);
-        }
-    }
-
+    // Get Courses from the API    
     useEffect(() => {
-        loadUsers();
-    }, []);
+        //setLoading(true);
 
-    useEffect(() => {
-        let result = users;
+        getUsers(currentPage, itemsPerPage, search, roleFilter == "All" ? null : roleFilter)
+            .then((res) => {
+                setUsers(res.items);
+                setTotalPages(res.totalPages);
+            })
+            .catch((e) => {
+                setError(e.message);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [currentPage, roleFilter, itemsPerPage, created])
 
-        if (roleFilter !== "All") {
-            result = result.filter((u) => u.role === roleFilter);
-        }
-
-        if (search.trim() !== "") {
-            const value = search.toLowerCase();
-            result = result.filter(
-                (u) =>
-                    `${u.firstName} ${u.lastName}`.toLowerCase().includes(value) ||
-                    u.username.toLowerCase().includes(value)
-            );
-        }
-        setFilteredUsers(result);
-
-    }, [search, roleFilter, users]);
+    // Pagination handlers
+    const handlePrevious = () => {setCurrentPage((prev) => Math.max(prev - 1, 1))};
+    const handleNext = () => {setCurrentPage((prev) => Math.min(prev + 1, totalPages))};
+    const goToPage = (pagenum: number) => {setCurrentPage(Math.min(Math.max(pagenum, 1), totalPages))};
 
     return (
         <>
-            <div className="card space-y-6">
+            <div className="flex flex-col card dashboard-section space-y-6">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <h2 className="text-2xl font-bold">
                         Manage Users
@@ -84,7 +78,6 @@ export default function ManageUsersSection() {
                     </div>
 
                     <select
-                        value={roleFilter}
                         onChange={(e) => setRoleFilter(e.target.value as UserRole | "All")}
                         className="form-input sm:w-48"
                         defaultValue={"All"}
@@ -100,7 +93,7 @@ export default function ManageUsersSection() {
                     <p className="text-muted">
                         Loading users...
                     </p>
-                ) : filteredUsers.length === 0 ? (
+                ) : users.length === 0 ? (
                     <p className="text-muted">
                         No users found.
                     </p>
@@ -113,14 +106,14 @@ export default function ManageUsersSection() {
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Role</th>
-                                    <th className="text-right">
-                                        Actions
+                                    <th className="text-right pr-3">
+                                        Actions{" "}
                                     </th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                {filteredUsers.map((user) => (
+                                {users.map((user) => (
                                     <tr
                                         key={user.id}
                                         className="border-b transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
@@ -140,7 +133,7 @@ export default function ManageUsersSection() {
                                                     <Pencil size={18} />
                                                 </button>
 
-                                                <button className="btn-outline p-2 text-red-500/80 border-red-500/70">
+                                                <button className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70">
                                                     <Trash size={18} />
                                                 </button>
                                             </div>
@@ -151,12 +144,24 @@ export default function ManageUsersSection() {
                         </table>
                     </div>
                 )}
+                {!loading && !error && (
+                    <div className="mt-auto">
+                        <PaginationControls
+                            totalPages={totalPages} 
+                            currentPage={currentPage} 
+                            goToPage={goToPage} 
+                            handlePrevious={handlePrevious} 
+                            handleNext={handleNext} 
+                            setItemsPerPage={setItemsPerPage} 
+                        />
+                    </div>
+                )}
             </div>
 
             {showCreateModal && (
                 <CreateUserModal
                     onClose={() => setShowCreateModal(false)}
-                    onCreated={loadUsers}
+                    onCreated={() => {setCreated((c) => !c)}}
                 />
             )}
         </>

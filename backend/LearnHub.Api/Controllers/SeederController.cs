@@ -18,9 +18,16 @@ public class SeederController : ControllerBase {
     }
 
     [HttpPost("seed")]
-    public async Task<IActionResult> Seed()
+    public async Task<ActionResult<string?>> Seed()
     {
-        await _seeder.SeedAsync();
+        var result = await _seeder.SeedAsync();
+
+        if(result is not null)
+            return BadRequest(new {
+                message = "Seed failed",
+                error = result
+            });
+
         return Ok(new {
             message = "Seed completed"
         });

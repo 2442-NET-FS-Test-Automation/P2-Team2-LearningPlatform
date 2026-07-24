@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 export const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 export const DAY_NAMES_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-export type UserRole = "Anonymous" | "Student" | "Professor" | "Admin";
+export type UserRole = null | "Student" | "Professor" | "Admin";
 
 export const COURSE_CATEGORIES = [
     "Programming",
@@ -151,4 +151,17 @@ export interface CreateUserDto {
     // Professor
     shiftId?: number;
     contractDate?: string;
+}
+
+export type TopCourse = {
+    courseId: number;
+    courseName: string;
+    enrollmentCount: number;
+}
+
+export type AdminReport = {
+    totalCourses: number;
+    totalStudents: number;
+    totalEnrollments: number;
+    topCourses: TopCourse[];
 }

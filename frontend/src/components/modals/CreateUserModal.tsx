@@ -165,7 +165,7 @@ export default function CreateUserModal({
                         <select
                             className="form-input w-full"
                             name="role"
-                            value={form.role}
+                            value={form.role != null ? form.role : "Student"}
                             onChange={handleChange}
                         >
                             <option value="Student">Student</option>

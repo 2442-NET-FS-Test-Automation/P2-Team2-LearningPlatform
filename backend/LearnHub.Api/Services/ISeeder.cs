@@ -3,5 +3,5 @@
 namespace LearnHub.Api.Services;
 
 public interface ISeeder {
-    Task SeedAsync();
+    Task<string?> SeedAsync();
 }
