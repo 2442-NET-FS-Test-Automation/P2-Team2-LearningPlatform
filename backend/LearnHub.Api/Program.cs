@@ -32,9 +32,8 @@ builder.Services.AddScoped(sp =>
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// Service registration
-
-// Repositories
+// Services
+builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IStudentRepo, StudentRepo>();
 builder.Services.AddScoped<IProfessorRepo, ProfessorRepo>();
@@ -43,6 +42,7 @@ builder.Services.AddScoped<IReportRepo, ReportRepo>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ISeeder, Seeder>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -50,7 +50,7 @@ builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 // CORS Configuration
 const string SpaCorsPolicy = "spa";
 builder.Services.AddCors(o => o.AddPolicy(SpaCorsPolicy, 
-    p => p.WithOrigins("http://localhost:5173")
+    p => p.WithOrigins("http://localhost:5173", "http://localhost:5174")
         .AllowAnyHeader()
         .AllowAnyMethod()));
 

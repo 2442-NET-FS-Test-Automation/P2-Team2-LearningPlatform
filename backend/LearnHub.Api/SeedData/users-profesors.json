@@ -1,0 +1,222 @@
+[
+    {
+        "username": "ada",
+        "email": "ada@learnhub.com",
+        "password": "password123",
+        "firstName": "Ada",
+        "lastName": "Lovelace",
+        "bio": "Pioneer of computing",
+        "role": "Professor",
+        "shiftName": "Morning",
+        "contractDate": "2024-01-15",
+        "isActive": true
+    },
+    {
+        "username": "alan",
+        "email": "alan@learnhub.com",
+        "password": "password123",
+        "firstName": "Alan",
+        "lastName": "Turing",
+        "bio": "Father of computer science",
+        "role": "Professor",
+        "shiftName": "Afternoon",
+        "contractDate": "2024-02-01",
+        "isActive": true
+    },
+    {
+        "username": "grace",
+        "email": "grace@learnhub.com",
+        "password": "password123",
+        "firstName": "Grace",
+        "lastName": "Hopper",
+        "bio": "Compiler and COBOL pioneer",
+        "role": "Professor",
+        "shiftName": "Morning",
+        "contractDate": "2024-02-10",
+        "isActive": true
+    },
+    {
+        "username": "dennis",
+        "email": "dennis@learnhub.com",
+        "password": "password123",
+        "firstName": "Dennis",
+        "lastName": "Ritchie",
+        "bio": "Creator of the C language",
+        "role": "Professor",
+        "shiftName": "Afternoon",
+        "contractDate": "2024-02-20",
+        "isActive": true
+    },
+    {
+        "username": "linus",
+        "email": "linus@learnhub.com",
+        "password": "password123",
+        "firstName": "Linus",
+        "lastName": "Torvalds",
+        "bio": "Linux kernel maintainer",
+        "role": "Professor",
+        "shiftName": "Evening",
+        "contractDate": "2024-03-01",
+        "isActive": true
+    },
+    {
+        "username": "margaret",
+        "email": "margaret@learnhub.com",
+        "password": "password123",
+        "firstName": "Margaret",
+        "lastName": "Hamilton",
+        "bio": "Apollo software engineering lead",
+        "role": "Professor",
+        "shiftName": "Morning",
+        "contractDate": "2024-03-12",
+        "isActive": true
+    },
+    {
+        "username": "bjarne",
+        "email": "bjarne@learnhub.com",
+        "password": "password123",
+        "firstName": "Bjarne",
+        "lastName": "Stroustrup",
+        "bio": "Creator of C++",
+        "role": "Professor",
+        "shiftName": "Afternoon",
+        "contractDate": "2024-03-22",
+        "isActive": true
+    },
+    {
+        "username": "guido",
+        "email": "guido@learnhub.com",
+        "password": "password123",
+        "firstName": "Guido",
+        "lastName": "van Rossum",
+        "bio": "Creator of Python",
+        "role": "Professor",
+        "shiftName": "Evening",
+        "contractDate": "2024-04-01",
+        "isActive": true
+    },
+    {
+        "username": "barbara",
+        "email": "barbara@learnhub.com",
+        "password": "password123",
+        "firstName": "Barbara",
+        "lastName": "Liskov",
+        "bio": "Pioneer of abstract data types",
+        "role": "Professor",
+        "shiftName": "Morning",
+        "contractDate": "2024-04-15",
+        "isActive": true
+    },
+    {
+        "username": "tim",
+        "email": "tim@learnhub.com",
+        "password": "password123",
+        "firstName": "Tim",
+        "lastName": "Berners-Lee",
+        "bio": "Inventor of the World Wide Web",
+        "role": "Professor",
+        "shiftName": "Afternoon",
+        "contractDate": "2024-05-01",
+        "isActive": true
+    },
+    {
+        "username": "alice",
+        "email": "alice@learnhub.com",
+        "password": "password123",
+        "firstName": "Alice",
+        "lastName": "Nguyen",
+        "bio": "Aspiring full-stack developer",
+        "role": "Student",
+        "birthDate": "2002-03-14"
+    },
+    {
+        "username": "bob",
+        "email": "bob@learnhub.com",
+        "password": "password123",
+        "firstName": "Bob",
+        "lastName": "Martinez",
+        "bio": "Interested in backend APIs",
+        "role": "Student",
+        "birthDate": "2001-07-22"
+    },
+    {
+        "username": "carla",
+        "email": "carla@learnhub.com",
+        "password": "password123",
+        "firstName": "Carla",
+        "lastName": "Singh",
+        "bio": "Learning web development",
+        "role": "Student",
+        "birthDate": "2003-01-09"
+    },
+    {
+        "username": "diego",
+        "email": "diego@learnhub.com",
+        "password": "password123",
+        "firstName": "Diego",
+        "lastName": "Rossi",
+        "bio": "Mobile app enthusiast",
+        "role": "Student",
+        "birthDate": "2000-11-30"
+    },
+    {
+        "username": "emma",
+        "email": "emma@learnhub.com",
+        "password": "password123",
+        "firstName": "Emma",
+        "lastName": "Johnson",
+        "bio": "Data science student",
+        "role": "Student",
+        "birthDate": "2002-05-18"
+    },
+    {
+        "username": "frank",
+        "email": "frank@learnhub.com",
+        "password": "password123",
+        "firstName": "Frank",
+        "lastName": "Kim",
+        "bio": "Curious about cloud computing",
+        "role": "Student",
+        "birthDate": "2001-09-03"
+    },
+    {
+        "username": "gina",
+        "email": "gina@learnhub.com",
+        "password": "password123",
+        "firstName": "Gina",
+        "lastName": "Patel",
+        "bio": "Focusing on cybersecurity",
+        "role": "Student",
+        "birthDate": "2003-06-25"
+    },
+    {
+        "username": "hugo",
+        "email": "hugo@learnhub.com",
+        "password": "password123",
+        "firstName": "Hugo",
+        "lastName": "Andersen",
+        "bio": "DevOps and CI/CD learner",
+        "role": "Student",
+        "birthDate": "2000-12-12"
+    },
+    {
+        "username": "iris",
+        "email": "iris@learnhub.com",
+        "password": "password123",
+        "firstName": "Iris",
+        "lastName": "Chen",
+        "bio": "Excited about machine learning",
+        "role": "Student",
+        "birthDate": "2002-08-07"
+    },
+    {
+        "username": "jake",
+        "email": "jake@learnhub.com",
+        "password": "password123",
+        "firstName": "Jake",
+        "lastName": "Williams",
+        "bio": "Building projects in C# and React",
+        "role": "Student",
+        "birthDate": "2001-04-21"
+    }
+]
