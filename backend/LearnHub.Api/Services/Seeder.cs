@@ -32,68 +32,6 @@ public class Seeder: ISeeder {
         _db = db;
         _hasher = hasher;
     }
-
-    // public async Task SeedAsync() 
-    // {
-    //     if (await _db.Users.AnyAsync())
-    //     return;
-
-
-    //     //Generate shifts
-    //     var morning = new Shift
-    //     {
-    //         Name = "Morning",
-    //         StartTime  = new(8,0),
-    //         EndTime = new(12,0)
-    //     };
-    //     _db.Shifts.Add(morning);
-    //     await _db.SaveChangesAsync();
-
-        
-    //     //Generte users + professors
-    //     var user = new User 
-    //     {
-    //         Username = "prof1",
-    //         Email = "prof1@example.com",
-    //         FirstName = "Jhon",
-    //         LastName = "Doe",
-    //         Role = UserRoles.Professor,
-    //         Bio = "Demo professor"
-    //     };
-    //     user.PasswordHash = _hasher.HashPassword(user, "password123");
-
-    //     _db.Users.Add(user);
-
-
-    //     var professor = new Professor 
-    //     {
-    //         UserId = user.Id,
-    //         ShiftId = morning.Id,
-    //         ContractDate = DateOnly.FromDateTime(DateTime.Now),
-    //         IsActive = true
-    //     };
-    //     _db.Professors.Add(professor);
-    //     await _db.SaveChangesAsync();
-
-
-
-    //     //Courses
-    //     _db.Courses.Add( new Course {
-    //         ProfessorId = professor.Id,
-    //         Name = "Intro to C#",
-    //         Description = "A course about the basics of C#",
-    //         CategoryName = CourseCategory.Programming,
-    //         Capacity = 30,
-    //         EnrollmentPrice = 99.99m,
-    //         IsActive = true,
-    //         About = "This course is about the basics of C#",
-    //         Certification = true,
-    //         Hours = 40
-    //     });
-
-    //     await _db.SaveChangesAsync();
-    // }
-
     
     public async Task SeedAsync() {
         if(await _db.Users.AnyAsync()) return;
