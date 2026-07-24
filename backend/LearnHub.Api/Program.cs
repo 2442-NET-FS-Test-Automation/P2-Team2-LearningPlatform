@@ -44,7 +44,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ISeeder, Seeder>();
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 
 // CORS Configuration
