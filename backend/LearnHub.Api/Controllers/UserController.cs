@@ -59,6 +59,7 @@ public class UserController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("search")]
     public async Task<ActionResult<IEnumerable<UserDto>>> SearchUsersByFullName(
         [FromQuery] string FullName,
         [FromQuery] int page = 1,
