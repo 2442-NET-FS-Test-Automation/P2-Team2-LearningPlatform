@@ -7,14 +7,15 @@ import ProfileSection from "./sections/ProfileSection";
 import CoursesSection from "./sections/CoursesSection";
 import ProgressSection from "./sections/ProgressSection";
 import WeeklyScheduleSection from "./sections/WeeklyScheduleSection";
+import EditProfileModal from "../../components/modals/EditProfileModal";
 
 import { useAuth } from "../../ctx/AuthCtx";
 
-import type { StudentCourseInfo, StudentStats, TabItem } from "../../lib/types";
+import type { StudentCourseInfo, StudentStats, TabItem, UserInfo } from "../../lib/types";
 import { calculateAverage, handleLogout } from "../../lib/funcs";
 
 export default function StudentDashboardPage() {
-    const { user } = useAuth();
+    const { user, setUser } = useAuth();
     const navigate = useNavigate();
     
     const [courses, setCourses] = useState<StudentCourseInfo[]>([]);
@@ -42,6 +43,8 @@ export default function StudentDashboardPage() {
         { Id: "schedule", Label: "Schedule", Icon: <CalendarDays size={18} /> },
         { Id: "progress", Label: "Progress", Icon: <BarChart3 size={18} /> }
     ];
+
+    const [showEditModal, setShowEditModal] = useState(false);
     
     if (user == null) {
         navigate("/login"); 
@@ -65,6 +68,7 @@ export default function StudentDashboardPage() {
                             username={user.username} 
                             role={user.role}
                             bio={user.bio}
+                            onEdit={() => setShowEditModal(true)}
                         />}
                         {activeTab === "courses" && <CoursesSection courses={courses}  />}
                         {activeTab === "progress" && <ProgressSection TotalCourses={stats.TotalCourses} Completed={stats.Completed} AvgGrade={stats.AvgGrade} />}
@@ -72,6 +76,18 @@ export default function StudentDashboardPage() {
                     </div>
                 </div>
             </div>
+
+            {showEditModal && (
+                <EditProfileModal
+                    userId={user.Id}
+                    currentUser={user}
+                    onClose={() => setShowEditModal(false)}
+                    onUpdated={(updated: UserInfo) => {
+                        setUser({ ...user, ...updated });
+                        setShowEditModal(false);
+                    }}
+                />
+            )}
         </div>
     );
 }

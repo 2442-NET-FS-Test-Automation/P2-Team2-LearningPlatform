@@ -5,6 +5,7 @@ using LearnHub.Api.Services;
 using LearnHub.Data;
 using LearnHub.Data.Entities;
 using LearnHub.Data.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnHub.Api.Controllers;
@@ -25,6 +26,7 @@ public class UserController : ControllerBase
 
 
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers(
         [FromQuery] UserRoles? role,
         [FromQuery] int page = 1,
@@ -60,6 +62,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("search")]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<UserDto>>> SearchUsersByFullName(
         [FromQuery] string FullName,
         [FromQuery] int page = 1,
@@ -89,6 +92,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<UserDto>> GetUser(int id)
     {
         if (!DataTypeVerification.IsNumValid(id)) return BadRequest();
@@ -112,6 +116,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<UserDto>> CreateUser(CreateUserDto dto)
     {
         try

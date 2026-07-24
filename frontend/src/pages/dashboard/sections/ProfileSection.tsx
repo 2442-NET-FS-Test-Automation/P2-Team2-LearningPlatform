@@ -1,14 +1,19 @@
 import type { UserInfo } from "../../../lib/types";
 import { UserRound, UserRoundPen, UserRoundCog } from "lucide-react";
 
+interface ProfileSectionProps extends UserInfo {
+    onEdit?: () => void;
+}
+
 export default function ProfileSection({
     firstName,
     lastName,
     email,
     username,
     role,
-    bio
-}: UserInfo) {
+    bio,
+    onEdit
+}: ProfileSectionProps) {
     return (
         <div className="card space-y-6">
             <div className="flex items-center gap-6">
@@ -27,7 +32,7 @@ export default function ProfileSection({
                     <p className="text-muted">{role}</p>
                     <p className="text-muted text-sm dark:text-slate-400">{email}</p>
                 </div>
-                <button className="btn-outline ml-auto text-sm">Edit Profile</button>
+                <button className="btn-outline ml-auto text-sm" onClick={onEdit}>Edit Profile</button>
             </div>
             <div>
                 <h3 className="font-semibold">Bio</h3>

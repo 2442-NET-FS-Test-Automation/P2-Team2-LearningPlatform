@@ -1,5 +1,5 @@
 import {api} from "./api";
-import type { UserDto, CreateUserDto } from "../lib/types";
+import type { UserDto, CreateUserDto, UpdateProfileDto } from "../lib/types";
 
 
 export async function getUsers(page = 1, pageSize = 10) {
@@ -40,3 +40,11 @@ export async function createUser(
 
     return response.data;
 }
+
+export async function updateUser(
+    id: number,
+    dto: UpdateProfileDto
+): Promise<UserDto> {
+    const response = await api.patch<UserDto>(`/User/${id}`, dto);
+    return response.data;
+}

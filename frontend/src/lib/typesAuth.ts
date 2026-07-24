@@ -20,6 +20,7 @@ export type AuthUser = UserInfo & {
 
 export type AuthContextType = {
     user: AuthUser | null;
+    setUser: (user: AuthUser) => void;
     isLoading: boolean;
     login: (credentials: LoginCredentials) => Promise<AuthUser>;
     register: (data: RegisterData) => Promise<AuthUser>;

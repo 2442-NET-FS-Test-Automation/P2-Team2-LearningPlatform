@@ -9,14 +9,15 @@ import ManageUsersSection from "./sections/ManageUsersSection";
 import ManageCoursesSection from "./sections/ManageCoursesSection";
 import ManageShiftsSection from "./sections/ManageShiftsSection";
 import ManagerReportsSection from "./sections/ManagerReportsSection";
+import EditProfileModal from "../../components/modals/EditProfileModal";
 
 import { useAuth } from "../../ctx/AuthCtx";
 
-import type { TabItem } from "../../lib/types";
+import type { TabItem, UserInfo } from "../../lib/types";
 import { handleLogout } from "../../lib/funcs";
 
 export default function ManagerDashboardPage() {
-    const { user } = useAuth();
+    const { user, setUser } = useAuth();
     const navigate = useNavigate();
 
     const [activeTab, setActiveTab] = useState<string>("reports");
@@ -27,6 +28,8 @@ export default function ManagerDashboardPage() {
         { Id: "managecourses", Label: "Manage Courses", Icon: <BookCopy size={18} /> },
         { Id: "manageshifts", Label: "Manage Shifts", Icon: <CalendarClock size={18} /> }
     ];
+
+    const [showEditModal, setShowEditModal] = useState(false);
 
     if (user == null) {
         navigate("/login");
@@ -50,6 +53,7 @@ export default function ManagerDashboardPage() {
                             username={user.username}
                             role={user.role}
                             bio={user.bio}
+                            onEdit={() => setShowEditModal(true)}
                         />}
                         {activeTab === "reports" && <ManagerReportsSection />}
                         {activeTab === "manageusers" && <ManageUsersSection />}
@@ -58,6 +62,18 @@ export default function ManagerDashboardPage() {
                     </div>
                 </div>
             </div>
+
+            {showEditModal && (
+                <EditProfileModal
+                    userId={user.Id}
+                    currentUser={user}
+                    onClose={() => setShowEditModal(false)}
+                    onUpdated={(updated: UserInfo) => {
+                        setUser({ ...user, ...updated });
+                        setShowEditModal(false);
+                    }}
+                />
+            )}
         </div>
     );
 }

@@ -165,3 +165,11 @@ export type AdminReport = {
     totalEnrollments: number;
     topCourses: TopCourse[];
 }
+
+export type UpdateProfileDto = {
+    username?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    bio?: string;
+}
