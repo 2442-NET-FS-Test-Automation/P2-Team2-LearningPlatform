@@ -2,6 +2,7 @@ using LearnHub.Data;
 using LearnHub.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 using System.Text.Json;
 using LearnHub.Api.SeedData;
@@ -33,8 +34,9 @@ public class Seeder: ISeeder {
         _hasher = hasher;
     }
     
-    public async Task SeedAsync() {
-        if(await _db.Users.AnyAsync()) return;
+    public async Task<string?> SeedAsync() {
+        if(await _db.Users.AnyAsync())
+            return "Users already seeded";
 
         var shiftDtos = await LoadAsync<List<ShiftSeedDto>>("shifts.json");
         var usersProfessorsDtos = await LoadAsync<List<UserProfessorsSeedDto>>("users-profesors.json");
@@ -101,6 +103,7 @@ public class Seeder: ISeeder {
             }
 
             await _db.SaveChangesAsync();
+
         }
 
 
@@ -135,9 +138,9 @@ public class Seeder: ISeeder {
             _db.Courses.Add(course);
             await _db.SaveChangesAsync();
         }
+
+        return null;
     }
-
-
 
 
 
