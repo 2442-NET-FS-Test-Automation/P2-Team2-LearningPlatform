@@ -11,6 +11,8 @@ using LearnHub.Data;
 using LearnHub.Api.Services;
 using LearnHub.Data.Entities;
 using LearnHub.Api.Middleware;
+using Microsoft.OpenApi.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,8 @@ builder.Services.AddScoped(sp =>
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 // Services
 builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
@@ -85,6 +89,8 @@ app.UseCors(SpaCorsPolicy);
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
@@ -95,6 +101,15 @@ app.UseAuthorization();
 app.MapGet("/", () => {
     return "Learnhub API";
 });
+
+// Test Endpoints for Role Enforcement
+app.MapGet("/api/test-protected", () => {
+    return Results.Ok(new { message = "You are authenticated!" });
+}).RequireAuthorization();
+
+app.MapGet("/api/test-admin", () => {
+    return Results.Ok(new { message = "You have Admin access!" });
+}).RequireAuthorization(new Microsoft.AspNetCore.Authorization.AuthorizeAttribute { Roles = "Admin" });
 app.MapControllers();
 
 app.Run();
