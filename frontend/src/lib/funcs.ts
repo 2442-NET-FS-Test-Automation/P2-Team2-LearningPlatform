@@ -13,7 +13,7 @@ export function getDashboardRoute(role: UserRole): string {
     }
 }
 
-export function getGradeColor (grade: number): string {
+export function getGradeColor(grade: number): string {
     if (grade >= 80) return 'text-green-600 dark:text-green-400';
     if (grade >= 60) return 'text-yellow-600 dark:text-yellow-400';
     return 'text-red-600 dark:text-red-400';
@@ -33,7 +33,7 @@ export function getDayName(day: number, short: boolean = false): string {
 
 export function formatSchedule(schedule: CourseSchedule[]): string {
     return schedule
-        .map(s => `${getDayName(s.Day, true)} ${s.StartTime}-${s.EndTime}`)
+        .map(s => `${getDayName(s.day, true)} ${s.startTime}-${s.endTime}`)
         .join(", ");
 }
 
@@ -43,5 +43,14 @@ export function minutesFromMidnight(time: string): number {
 }
 
 export function isAlphanumeric(text: string): boolean {
-  return /^[a-zA-Z0-9]+$/.test(text);
+    return /^[a-zA-Z0-9]+$/.test(text);
+}
+
+export function isBirthDateValid(birthDate: string): boolean {
+    const birthDateMs: number = Date.parse(birthDate);
+    const minDate: Date = new Date();
+    minDate.setFullYear(minDate.getFullYear() - 12);
+
+    if (birthDateMs > minDate.getTime()) return false;
+    return true;
 }
