@@ -11,7 +11,6 @@ using LearnHub.Data;
 using LearnHub.Api.Services;
 using LearnHub.Data.Entities;
 using LearnHub.Api.Middleware;
-using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
