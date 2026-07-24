@@ -152,3 +152,16 @@ export interface CreateUserDto {
     shiftId?: number;
     contractDate?: string;
 }
+
+export type TopCourse = {
+    courseId: number;
+    courseName: string;
+    enrollmentCount: number;
+}
+
+export type AdminReport = {
+    totalCourses: number;
+    totalStudents: number;
+    totalEnrollments: number;
+    topCourses: TopCourse[];
+}
