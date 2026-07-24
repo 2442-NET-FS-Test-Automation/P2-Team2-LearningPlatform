@@ -21,11 +21,6 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog();
 
-// Add CourseRepo and ICourseRepo to the builder.Services
-builder.Services.AddScoped<ICourseRepo, CourseRepo>();
-builder.Services.AddScoped<IUserRepo, UserRepo>();
-builder.Services.AddScoped<IReportRepo, ReportRepo>();
-
 // DbContext
 var conn_string = builder.Configuration["Conn-String"]!;
 
@@ -42,10 +37,15 @@ builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IStudentRepo, StudentRepo>();
 builder.Services.AddScoped<IProfessorRepo, ProfessorRepo>();
+builder.Services.AddScoped<ICourseRepo, CourseRepo>();
+builder.Services.AddScoped<IReportRepo, ReportRepo>();
+
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ISeeder, Seeder>();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 
 // CORS Configuration
 const string SpaCorsPolicy = "spa";
@@ -55,20 +55,23 @@ builder.Services.AddCors(o => o.AddPolicy(SpaCorsPolicy,
         .AllowAnyMethod()));
 
 // JWT Authentication
-var jwtKey = builder.Configuration["Jwt:key"];
-const string jwtIssuer = "learnhub";
-const string jwtAudience = "learnhub-clients";
+var jwtSettings = new JwtSettings();
+builder.Configuration.GetSection(JwtSettings.SectionName).Bind(jwtSettings);
+
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection(JwtSettings.SectionName)
+);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(o => o.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
-        ValidIssuer = jwtIssuer,
         ValidateAudience = true,
-        ValidAudience = jwtAudience,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!)),
         ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
     });
 
 builder.Services.AddAuthorization();

@@ -1,4 +1,4 @@
-using LearnHub.Data.Entities;
+using LearnHub.Data.Tools;
 using Microsoft.EntityFrameworkCore;
 
 namespace LearnHub.Data.Repositories;

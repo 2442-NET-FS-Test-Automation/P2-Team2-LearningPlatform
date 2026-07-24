@@ -9,15 +9,15 @@ public class Course
     public Professor Professor { get; set; } = default!;
     public string Name { get; set; } = default!;
     public string Description { get; set; } = default!;
-    public string About { get; set; } = default!;
+    public string? About { get; set; } = null;
     public CourseCategory CategoryName { get; set; }
     public int Capacity { get; set; }
-    public bool Certification {get; set;}
-    public int Hours {get; set;}
-    public ICollection<CourseSchedule> Schedule { get; set; } = new List<CourseSchedule>();
+    public bool Certification { get; set; }
+    public int? Hours { get; set; } = null;
+    public ICollection<CourseSchedule> Schedule { get; set; } = [];
 
     [Precision(10, 2)]
     public decimal EnrollmentPrice { get; set; }
-    public bool IsActive { get; set; }
-    public ICollection<StudentCourse> StudentCourses { get; set; } = new List<StudentCourse>();
+    public bool IsActive { get; set; } = true;
+    public ICollection<StudentCourse> StudentCourses { get; set; } = [];
 }

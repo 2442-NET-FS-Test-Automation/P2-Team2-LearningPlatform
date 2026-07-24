@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
@@ -9,22 +10,22 @@ namespace LearnHub.Api.Services;
 
 public class TokenService : ITokenService
 {
-    private readonly string? _key;
+    private readonly JwtSettings _jwtSettings;
 
-    public TokenService(IConfiguration config)
+    public TokenService(IOptions<JwtSettings> jwtOptions)
     {
-        _key = config["Jwt:key"];
+        _jwtSettings = jwtOptions.Value;
     }
 
     public string Issue(string username, UserRoles role)
     {
          var creds = new SigningCredentials(
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key!)), SecurityAlgorithms.HmacSha256
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key)), SecurityAlgorithms.HmacSha256
         );
 
         var token = new JwtSecurityToken(
-            "learnhub",
-            "learnhub-clients",
+            _jwtSettings.Issuer,
+            _jwtSettings.Audience,
             new[] {
                 new Claim(ClaimTypes.Name, username),
                 new Claim(ClaimTypes.Role, role.ToString())

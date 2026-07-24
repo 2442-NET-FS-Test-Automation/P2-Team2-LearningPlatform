@@ -31,7 +31,7 @@ public class CourseDetailDto
 
     public string Description { get; set; } = default!;
 
-    public string About { get; set; } = default!;
+    public string? About { get; set; } = default!;
 
     public string Category { get; set; } = default!;
 
@@ -41,7 +41,7 @@ public class CourseDetailDto
 
     public int EnrolledStudents { get; set; }
 
-    public int Hours { get; set; }
+    public int? Hours { get; set; }
 
     public bool Certification { get; set; }
 

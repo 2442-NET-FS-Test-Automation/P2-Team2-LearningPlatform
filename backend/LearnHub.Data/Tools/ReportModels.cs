@@ -1,4 +1,4 @@
-namespace LearnHub.Data.Entities;
+namespace LearnHub.Data.Tools;
 
 public class AdminReportModel
 {
