@@ -6,6 +6,7 @@ using LearnHub.Data;
 using LearnHub.Data.Entities;
 using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace LearnHub.Api.Controllers;
 
@@ -16,27 +17,36 @@ public class UserController : ControllerBase
 {
     private readonly IUserRepo _repo;
     private readonly IUserService _service;
+    private readonly IMapper _mapper;
 
-    public UserController(IUserRepo repo, IUserService service)
+    public UserController(
+        IUserRepo repo,
+        IUserService service,
+        IMapper mapper)
     {
         _repo = repo;
         _service = service;
+        _mapper = mapper;
     }
 
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers(
-        [FromQuery] UserRoles? role,
+    public async Task<ActionResult<PagedResult<UserDto>>> GetUsers(
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10
-    )
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? fullName = null,
+        [FromQuery] UserRoles? role = null
+        )
     {
-        // Set pagination limits
         if (page < 1) page = 1;
         if (pageSize < 1) pageSize = 10;
         if (pageSize > 50) pageSize = 50;
 
-        var result = await _repo.GetAllAsync(page, pageSize, role);
+        var result = await _repo.GetAllAsync(
+            page,
+            pageSize,
+            role,
+            fullName);
 
         var response = new PagedResult<UserDto>
         {
@@ -50,6 +60,7 @@ public class UserController : ControllerBase
                 Email = u.Email,
                 Bio = u.Bio
             }).ToList(),
+
             Page = result.Page,
             PageSize = result.PageSize,
             TotalItems = result.TotalItems,
@@ -59,55 +70,18 @@ public class UserController : ControllerBase
         return Ok(response);
     }
 
-    public async Task<ActionResult<IEnumerable<UserDto>>> SearchUsersByFullName(
-        [FromQuery] string FullName,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10
-    )
-    {
-        // Set pagination limits
-        if (page < 1) page = 1;
-        if (pageSize < 1) pageSize = 10;
-        if (pageSize > 50) pageSize = 50;
-        if(!DataTypeVerification.IsStringValid(FullName)) return BadRequest();
-
-        var users = await _repo.SearchByFullNameAsync(FullName , page , pageSize);
-
-        var response = users.Items.Select(u => new UserDto
-        {
-            Id = u.Id,
-            Role = u.Role.ToString(),
-            Username = u.Username,
-            FirstName = u.FirstName,
-            LastName = u.LastName,
-            Email = u.Email,
-            Bio = u.Bio
-        });
-
-        return Ok(response);
-    }
-
     [HttpGet("{id}")]
-    public async Task<ActionResult<UserDto>> GetUser(int id)
+    public async Task<ActionResult<UserDetailsDto>> GetUser(int id)
     {
-        if (!DataTypeVerification.IsNumValid(id)) return BadRequest();
+        if (!DataTypeVerification.IsNumValid(id))
+            return BadRequest();
 
         var user = await _repo.GetByIdAsync(id);
 
-        if(user == null) return NotFound();
+        if (user is null)
+            return NotFound();
 
-        var dto = new UserDto
-        {
-            Id = user.Id,
-            Role = user.Role.ToString(),
-            Username = user.Username,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
-            Bio = user.Bio
-        };
-
-        return Ok(dto);
+        return Ok(_mapper.Map<UserDetailsDto>(user));
     }
 
     [HttpPost]
@@ -128,6 +102,22 @@ public class UserController : ControllerBase
         }
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUser(
+        int id,
+        UpdateUserDto dto)
+    {
+        var user = await _repo.GetByIdAsync(id);
+
+        if(user == null)
+            return NotFound();
+
+
+        await _service.UpdateUserAsync(user, dto);
+
+
+        return NoContent();
+    }
     
 
 }

@@ -22,7 +22,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // DbContext
-var conn_string = builder.Configuration["Conn-String"]!;
+var conn_string = builder.Configuration["Conn-String:DefaultConnection"]!;
 
 builder.Services.AddDbContextFactory<LearnHubDbContext>(o => o.UseSqlServer(conn_string));
 
@@ -43,6 +43,9 @@ builder.Services.AddScoped<IReportRepo, ReportRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ISeeder, Seeder>();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -77,6 +80,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseExceptionHandlingMiddleware();
 

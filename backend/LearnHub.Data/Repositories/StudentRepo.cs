@@ -37,4 +37,5 @@ public class StudentRepo: IStudentRepo
         await _context.SaveChangesAsync();
         return student.User;
     }
+
 }
