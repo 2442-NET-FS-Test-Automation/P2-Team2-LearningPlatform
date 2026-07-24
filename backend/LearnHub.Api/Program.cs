@@ -22,7 +22,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // DbContext
-var conn_string = builder.Configuration["Conn-String:DefaultConnection"]!;
+var conn_string = builder.Configuration["Conn-String"]!;
 
 builder.Services.AddDbContextFactory<LearnHubDbContext>(o => o.UseSqlServer(conn_string));
 
@@ -47,7 +47,6 @@ builder.Services.AddScoped<ISeeder, Seeder>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 
 // CORS Configuration
