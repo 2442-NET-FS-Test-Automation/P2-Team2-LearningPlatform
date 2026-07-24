@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Morning",
+        "startTime": "8:00",
+        "endTime": "12:00"
+    },
+    {
+        "name": "Afternoon",
+        "startTime": "13:00",
+        "endTime": "17:00"
+    },
+    {
+        "name": "Evening",
+        "startTime": "18:00",
+        "endTime": "22:00"
+    }
+]
