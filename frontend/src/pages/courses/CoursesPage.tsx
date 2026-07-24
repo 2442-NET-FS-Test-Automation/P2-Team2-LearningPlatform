@@ -10,16 +10,39 @@ export default function CoursesPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(6);
-    const [totalPages, setTotalPages] = useState(0)
+    const [totalPages, setTotalPages] = useState(0);
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     
-    // Get Courses from the API
+    // Get Courses from the API    
     useEffect(() => {
+        setIsLoading(true);
         getEnabledCourses(currentPage, itemsPerPage, searchTerm.trim()).then((res) => {
-            console.log(res);
             setCourses(res.items);
             setTotalPages(res.totalPages);
+        })
+        .catch((e) => {
+            setError(e.message)
+        })
+        .finally (() => {
+            setIsLoading(false);
         });
-    }, [itemsPerPage, searchTerm, currentPage])
+    }, [currentPage])
+
+    useEffect(() => {
+        getEnabledCourses(currentPage, itemsPerPage, searchTerm.trim()).then((res) => {
+            setCourses(res.items);
+            setTotalPages(res.totalPages);
+        })
+        .catch((e: Error) => {
+            console.log(e)
+            setError(e.message)
+        })
+        .finally (() => {
+            setIsLoading(false);
+        });
+    }, [itemsPerPage, searchTerm])
 
     useMemo(() => {
         setCurrentPage(1);
@@ -42,24 +65,38 @@ export default function CoursesPage() {
                 </div>
 
                 {/* Course Grid */}
-                {courses.length > 0 ? (
-                    <div className="card-grid py-8 px-8">
-                        {courses.map(c => <CourseCard key={c.id} Id={c.id} Name={c.name} Description={c.description} CategoryName={c.category}/>) }
-                    </div>
-                ): (
+                {isLoading ? (
                     <p className="mt-8 text-center text-slate-500 dark:text-slate-400">
-                        No course matches the search.
+                        Loading...
                     </p>
+                ) : (
+                    error ? (
+                        <p className="mt-8 text-center text-slate-500 dark:text-slate-400">
+                            {error}
+                        </p>
+                    ) : (
+                        courses.length > 0 ? (
+                            <div className="card-grid py-8 px-8">
+                                {courses.map(c => <CourseCard key={c.id} Id={c.id} Name={c.name} Description={c.description} CategoryName={c.category}/>) }
+                            </div>
+                        ) : (
+                            <p className="mt-8 text-center text-slate-500 dark:text-slate-400">
+                                No course matches the search.
+                            </p>
+                        )
+                    )
                 )}
-
-                <PaginationControls
-                    totalPages={totalPages} 
-                    currentPage={currentPage} 
-                    goToPage={goToPage} 
-                    handlePrevious={handlePrevious} 
-                    handleNext={handleNext} 
-                    setItemsPerPage={setItemsPerPage} 
-                />
+                
+                {!isLoading && !error && (
+                    <PaginationControls
+                        totalPages={totalPages} 
+                        currentPage={currentPage} 
+                        goToPage={goToPage} 
+                        handlePrevious={handlePrevious} 
+                        handleNext={handleNext} 
+                        setItemsPerPage={setItemsPerPage} 
+                    />
+                )}
             </div>
         </div>
     );
