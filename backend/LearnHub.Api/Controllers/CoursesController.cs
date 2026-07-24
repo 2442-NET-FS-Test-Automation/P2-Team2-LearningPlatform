@@ -178,7 +178,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPost]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CourseDetailDto>> CreateCourse(CreateCourseDto dto)
     {
         // search for the Professor, if doesnt exist  then return BadRequest
