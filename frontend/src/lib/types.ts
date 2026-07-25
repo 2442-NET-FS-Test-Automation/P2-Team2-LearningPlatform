@@ -173,6 +173,8 @@ export interface UpdateProfileDto {
     email?: string;
     bio?: string;
 
+    role?: UserRole;
+
     // Student
     birthDate?: string;
     studentCourseIds?: number[];
@@ -196,28 +198,14 @@ export type CreateShiftDto = Omit<ShiftDto, "id" | "assignees">;
 
 export type UpdateShiftDto = Partial<CreateShiftDto>
 
-export interface UserDto{
-    id:number;
-    username:string;
-    firstName:string;
-    lastName:string;
-    email:string;
-    bio?:string;
+export interface StudentInfoDto {
+    birthDate?: string;
+    courses: CourseSelectDto[];
 }
 
-export interface CourseSelectDto {
-    id: number;
-    name: string;
-}
-
-export interface StudentInfoDto{
-    birthDate:string;
-    courses:CourseSelectDto[];
-}
-
-export interface ProfessorInfoDto{
-    contractDate:string;
-    shiftId:number;
+export interface ProfessorInfoDto {
+    contractDate?: string;
+    shiftId?: number;
     isActive:boolean;
     courses:CourseSelectDto[];
 }
@@ -227,9 +215,7 @@ export interface UserDetailsDto extends UserDto{
     professor?:ProfessorInfoDto;
 }
 
-export interface CourseListDto {
-    id: number;
-    name: string;
-    description: string;
-    category: CourseCategory;
+export interface CourseSelectDto {
+    id:number;
+    name:string;
 }

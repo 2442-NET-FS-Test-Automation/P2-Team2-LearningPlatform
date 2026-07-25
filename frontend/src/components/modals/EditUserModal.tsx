@@ -3,8 +3,7 @@ import { X } from "lucide-react";
 
 import type { UserDetailsDto ,UpdateProfileDto, CourseSelectDto } from "../../lib/types";
 import { updateUser } from "../../api/usersRequest";
-import { getCoursesForSelect } from "../../api/coursesRequest";
-import type { CourseListDto  } from "../../lib/types";
+import { getCoursesForSelect } from "../../api/coursesRequests";
 
 interface Props {
     user: UserDetailsDto;
@@ -36,7 +35,7 @@ export default function EditUserModal({
         professorCourseIds: user.professor?.courses.map(c => c.id) ?? []
     });
 
-    const [courses, setCourses] = useState<CourseListDto[]>([]);
+    const [courses, setCourses] = useState<CourseSelectDto[]>([]);
     const [loading,setLoading] = useState(false);
     const [error,setError] = useState<string|null>(null);
 
@@ -68,23 +67,6 @@ export default function EditUserModal({
         });
     };
 
-    const handleCourseChange = (
-        e: React.ChangeEvent<HTMLSelectElement>,
-        type: "student" | "professor"
-    ) => {
-
-        const selected = Array.from(
-            e.target.selectedOptions,
-            option => Number(option.value)
-        );
-
-        setForm(prev => ({
-            ...prev,
-            [type === "student"
-                ? "studentCourseIds"
-                : "professorCourseIds"]: selected
-        }));
-    };
 
     async function handleSubmit(e:React.FormEvent){
 
@@ -110,23 +92,24 @@ export default function EditUserModal({
         if(form.bio !== (user.bio ?? ""))
             dto.bio = form.bio;
         
-        if (user.role === "Student") {
-
-            if (form.birthDate !== user.student?.birthDate)
+        if(user.student)
+        {
+            if(form.birthDate !== user.student.birthDate)
                 dto.birthDate = form.birthDate;
 
             dto.studentCourseIds = form.studentCourseIds;
         }
 
-        if (user.role === "Professor") {
 
-            if (form.shiftId !== user.professor?.shiftId)
+        if(user.professor)
+        {
+            if(form.shiftId !== user.professor.shiftId)
                 dto.shiftId = Number(form.shiftId);
 
-            if (form.contractDate !== user.professor?.contractDate)
+            if(form.contractDate !== user.professor.contractDate)
                 dto.contractDate = form.contractDate;
 
-            if (form.isActive !== user.professor?.isActive)
+            if(form.isActive !== user.professor.isActive)
                 dto.isActive = form.isActive;
 
             dto.professorCourseIds = form.professorCourseIds;
@@ -204,7 +187,7 @@ export default function EditUserModal({
                     onChange={handleChange}
                     />
 
-                    {user.role === "Student" && (
+                    {user.student && (
                         <div>
                             <label className="form-label">
                                 Courses
@@ -238,7 +221,7 @@ export default function EditUserModal({
                         </div>
                     )}
 
-                    {user.role === "Professor" && (
+                    {user.professor && (
                         <>
                             <div>
                                 <label className="form-label">
