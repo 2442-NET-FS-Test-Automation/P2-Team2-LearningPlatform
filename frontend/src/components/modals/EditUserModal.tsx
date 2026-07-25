@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
-import type { UserDto, UpdateProfileDto } from "../../lib/types";
+import type { UserDetailsDto ,UpdateProfileDto, CourseSelectDto } from "../../lib/types";
 import { updateUser } from "../../api/usersRequest";
+import { getCoursesForSelect } from "../../api/coursesRequest";
+import type { CourseListDto  } from "../../lib/types";
 
 interface Props {
-    user: UserDto;
+    user: UserDetailsDto;
     onClose: () => void;
     onUpdated: () => void;
 }
@@ -21,20 +23,68 @@ export default function EditUserModal({
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        bio: user.bio ?? ""
+        bio: user.bio ?? "",
+
+        // Student
+        birthDate: user.student?.birthDate ?? "",
+        studentCourseIds: user.student?.courses.map(c => c.id) ?? [],
+
+        // Professor
+        shiftId: user.professor?.shiftId ?? 0,
+        contractDate: user.professor?.contractDate ?? "",
+        isActive: user.professor?.isActive ?? true,
+        professorCourseIds: user.professor?.courses.map(c => c.id) ?? []
     });
 
+    const [courses, setCourses] = useState<CourseListDto[]>([]);
     const [loading,setLoading] = useState(false);
     const [error,setError] = useState<string|null>(null);
 
+    useEffect(() => {
+        async function loadCourses() {
+            try {
+                const result = await getCoursesForSelect();
+                setCourses(result);
+            } catch {
+                setError("Couldn't load courses.");
+            }
+        }
+
+        loadCourses();
+    }, []);
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    )=>{
+    ) => {
+
+        const { name, value } = e.target;
+
         setForm({
             ...form,
-            [e.target.name]: e.target.value
+            [name]:
+                name === "shiftId"
+                    ? Number(value)
+                    : value
         });
-    }
+    };
+
+    const handleCourseChange = (
+        e: React.ChangeEvent<HTMLSelectElement>,
+        type: "student" | "professor"
+    ) => {
+
+        const selected = Array.from(
+            e.target.selectedOptions,
+            option => Number(option.value)
+        );
+
+        setForm(prev => ({
+            ...prev,
+            [type === "student"
+                ? "studentCourseIds"
+                : "professorCourseIds"]: selected
+        }));
+    };
 
     async function handleSubmit(e:React.FormEvent){
 
@@ -59,6 +109,28 @@ export default function EditUserModal({
 
         if(form.bio !== (user.bio ?? ""))
             dto.bio = form.bio;
+        
+        if (user.role === "Student") {
+
+            if (form.birthDate !== user.student?.birthDate)
+                dto.birthDate = form.birthDate;
+
+            dto.studentCourseIds = form.studentCourseIds;
+        }
+
+        if (user.role === "Professor") {
+
+            if (form.shiftId !== user.professor?.shiftId)
+                dto.shiftId = Number(form.shiftId);
+
+            if (form.contractDate !== user.professor?.contractDate)
+                dto.contractDate = form.contractDate;
+
+            if (form.isActive !== user.professor?.isActive)
+                dto.isActive = form.isActive;
+
+            dto.professorCourseIds = form.professorCourseIds;
+        }
 
         if(Object.keys(dto).length === 0)
         {
@@ -132,6 +204,121 @@ export default function EditUserModal({
                     onChange={handleChange}
                     />
 
+                    {user.role === "Student" && (
+                        <div>
+                            <label className="form-label">
+                                Courses
+                            </label>
+
+                            <select
+                                multiple
+                                className="form-input w-full h-40"
+                                value={form.studentCourseIds.map(String)}
+                                onChange={(e) => {
+                                    const values = Array.from(
+                                        e.target.selectedOptions,
+                                        o => Number(o.value)
+                                    );
+
+                                    setForm(prev => ({
+                                        ...prev,
+                                        studentCourseIds: values
+                                    }));
+                                }}
+                            >
+                                {courses.map(course => (
+                                    <option
+                                        key={course.id}
+                                        value={course.id}
+                                    >
+                                        {course.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+
+                    {user.role === "Professor" && (
+                        <>
+                            <div>
+                                <label className="form-label">
+                                    Shift
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="shiftId"
+                                    className="form-input w-full"
+                                    value={form.shiftId}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="form-label">
+                                    Contract Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    name="contractDate"
+                                    className="form-input w-full"
+                                    value={form.contractDate}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <input
+                                    id="isActive"
+                                    type="checkbox"
+                                    checked={form.isActive}
+                                    onChange={(e) =>
+                                        setForm({
+                                            ...form,
+                                            isActive: e.target.checked
+                                        })
+                                    }
+                                />
+
+                                <label htmlFor="isActive">
+                                    Active Professor
+                                </label>
+                                <div>
+                                    <label className="form-label">
+                                        Courses
+                                    </label>
+
+                                    <select
+                                        multiple
+                                        className="form-input w-full h-40"
+                                        value={form.professorCourseIds.map(String)}
+                                        onChange={(e) => {
+                                            const values = Array.from(
+                                                e.target.selectedOptions,
+                                                o => Number(o.value)
+                                            );
+
+                                            setForm(prev => ({
+                                                ...prev,
+                                                professorCourseIds: values
+                                            }));
+                                        }}
+                                    >
+                                        {courses.map(course => (
+                                            <option
+                                                key={course.id}
+                                                value={course.id}
+                                            >
+                                                {course.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                    
                     {
                     error &&
                     <p className="text-red-500">

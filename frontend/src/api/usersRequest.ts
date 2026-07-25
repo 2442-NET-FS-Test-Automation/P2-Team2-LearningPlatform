@@ -63,3 +63,8 @@ export async function promoteToProfessor(
 ) {
     await api.post(`/Users/${id}/promote`, dto);
 }
+
+export async function getUser(id: number) {
+    const response = await api.get(`/Users/${id}`);
+    return response.data;
+}

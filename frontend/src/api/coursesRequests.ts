@@ -1,4 +1,4 @@
-import type { CourseCategory, CourseDetails } from "../lib/types";
+import type { CourseCategory, CourseDetails, CourseListDto } from "../lib/types";
 import { api } from "./api";
 
 export async function getAllCourses(page: number = 1, pageSize: number = 6, search: string | null = null, category: CourseCategory | null = null, isActiveFilter: boolean | null = null) {
@@ -41,4 +41,15 @@ export async function getCourseDetails(id: number) {
     } catch {
         throw Error("Timeout: API did not respond in time.")
     }
+}
+
+export async function getCoursesForSelect(): Promise<CourseListDto[]> {
+    const response = await api.get("/Courses", {
+        params: {
+            page: 1,
+            pageSize: 1000
+        }
+    });
+
+    return response.data.items;
 }
