@@ -73,7 +73,7 @@
         @apply mx-auto max-w-7xl px-8;
     }
     .dashboard-section {
-        @apply h-screen;
+        @apply h-[80vh];
     }
     .divider-block {
         @apply border-t border-slate-200 pt-6 dark:border-slate-700;

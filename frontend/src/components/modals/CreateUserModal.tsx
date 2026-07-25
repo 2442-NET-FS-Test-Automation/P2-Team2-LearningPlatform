@@ -72,7 +72,7 @@ export default function CreateUserModal({
             onClose();
         } catch (err: any) {
             console.error(err.response?.data);
-            alert(JSON.stringify(err.response?.data));
+            setError(err.response?.data.error);
         }
     }
 
