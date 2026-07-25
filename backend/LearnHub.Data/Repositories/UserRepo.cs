@@ -15,11 +15,13 @@ public class UserRepo : IUserRepo
         _context = context;
     }
 
-    public async Task<PagedResult<User>> GetAllAsync(int page, int pageSize, UserRoles? role, string? fullName = null)
+    public async Task<PagedResult<User>> GetAllAsync(int page, int pageSize, UserRoles? role, string? fullName = null, bool? isActive = null)
     {
         IQueryable<User> query = _context.Users;
 
-        if(role.HasValue)  query = query.Where(u => u.Role == role.Value);
+        if (isActive != null) query = query.Where(u => u.IsActive == isActive);
+
+        if (role.HasValue) query = query.Where(u => u.Role == role.Value);
 
         if (!string.IsNullOrWhiteSpace(fullName))
         {

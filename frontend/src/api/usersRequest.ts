@@ -1,10 +1,10 @@
 import {api} from "./api";
 import type { UserDto, CreateUserDto, UpdateProfileDto, UserRole } from "../lib/types";
 
-export async function getUsers(page = 1, pageSize = 10, search: string | null = null, role: UserRole = null) {
+export async function getUsers(page = 1, pageSize = 10, search: string | null = null, role: UserRole = null, isActive: boolean | null = null) {
     try {
         const response = await api.get("/User", {
-            params: { page, pageSize, fullName:search, role },
+            params: { page, pageSize, fullName:search, role, isActive },
         });
         return response.data;
     } catch {

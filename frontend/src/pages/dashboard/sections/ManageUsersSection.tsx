@@ -12,6 +12,7 @@ export default function ManageUsersSection() {
 
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState<UserRole | "All">("All");
+    const [isActiveFilter, setIsActiveFilter] = useState<boolean | null>(null);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(6);
@@ -27,7 +28,7 @@ export default function ManageUsersSection() {
     useEffect(() => {
         //setLoading(true);
 
-        getUsers(currentPage, itemsPerPage, search, roleFilter == "All" ? null : roleFilter)
+        getUsers(currentPage, itemsPerPage, search, roleFilter == "All" ? null : roleFilter, isActiveFilter)
             .then((res) => {
                 setUsers(res.items);
                 setTotalPages(res.totalPages);
@@ -38,7 +39,7 @@ export default function ManageUsersSection() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [currentPage, roleFilter, itemsPerPage, created, search])
+    }, [currentPage, roleFilter, itemsPerPage, created, search, isActiveFilter])
 
     useMemo(() => {
         setCurrentPage(1);
@@ -80,16 +81,15 @@ export default function ManageUsersSection() {
                             onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
-
+                    
                     <select
-                        onChange={(e) => setRoleFilter(e.target.value as UserRole | "All")}
+                        onChange={(e) => setIsActiveFilter(e.target.value === "All" ? null : (e.target.value === "Active" ? true : false))}
                         className="form-input sm:w-48"
                         defaultValue={"All"}
                     >
                         <option value="All">All</option>
-                        <option value="Student">Student</option>
-                        <option value="Professor">Professor</option>
-                        <option value="Admin">Admin</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
                     </select>
                 </div>
 
@@ -109,7 +109,22 @@ export default function ManageUsersSection() {
                                     <th className="py-3">Username</th>
                                     <th>Name</th>
                                     <th>Email</th>
-                                    <th>Role</th>
+                                    <th>
+                                        <div className="flex items-center">
+                                            <p className="mx-2">Role</p>
+                                            
+                                            <select
+                                                onChange={(e) => setRoleFilter(e.target.value as UserRole | "All")}
+                                                className="p-2 w-22 text-xs form-input"
+                                                defaultValue={"All"}
+                                            >
+                                                <option value="All">All</option>
+                                                <option value="Student">Student</option>
+                                                <option value="Professor">Professor</option>
+                                                <option value="Admin">Admin</option>
+                                            </select>
+                                        </div>
+                                    </th>
                                     <th className="text-right pr-3">
                                         Actions{" "}
                                     </th>
