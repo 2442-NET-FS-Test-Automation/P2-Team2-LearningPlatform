@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { BookCopy, CalendarClock, NotebookText, User, UsersRound } from "lucide-react";
 
 import DashboardSideNav from "../../components/DashboardSideNav";
@@ -10,15 +9,11 @@ import ManageCoursesSection from "./sections/ManageCoursesSection";
 import ManageShiftsSection from "./sections/ManageShiftsSection";
 import ManagerReportsSection from "./sections/ManagerReportsSection";
 
-import { useAuth } from "../../ctx/AuthCtx";
 
 import type { TabItem } from "../../lib/types";
 import { handleLogout } from "../../lib/funcs";
 
 export default function ManagerDashboardPage() {
-    const { user } = useAuth();
-    const navigate = useNavigate();
-
     const [activeTab, setActiveTab] = useState<string>("reports");
     const tabs: TabItem[] = [
         { Id: "profile", Label: "Profile", Icon: <User size={18} /> },
@@ -27,11 +22,6 @@ export default function ManagerDashboardPage() {
         { Id: "managecourses", Label: "Manage Courses", Icon: <BookCopy size={18} /> },
         { Id: "manageshifts", Label: "Manage Shifts", Icon: <CalendarClock size={18} /> }
     ];
-
-    if (user == null) {
-        navigate("/login");
-        return;
-    };
 
     return (
         <div className="section-white min-h-screen py-10">
@@ -43,14 +33,7 @@ export default function ManagerDashboardPage() {
 
                     {/* Main Content */}
                     <div className="flex-1">
-                        {activeTab === "profile" && <ProfileSection
-                            firstName={user.firstName}
-                            lastName={user.lastName}
-                            email={user.email}
-                            username={user.username}
-                            role={user.role}
-                            bio={user.bio}
-                        />}
+                        {activeTab === "profile" && <ProfileSection />}
                         {activeTab === "reports" && <ManagerReportsSection />}
                         {activeTab === "manageusers" && <ManageUsersSection />}
                         {activeTab === "managecourses" && <ManageCoursesSection />}

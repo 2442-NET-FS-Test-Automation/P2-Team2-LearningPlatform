@@ -15,7 +15,7 @@ export type RegisterData = {
 }
 
 export type AuthUser = UserInfo & {
-    Id: number;
+    id: number;
 }
 
 export type AuthContextType = {
@@ -25,4 +25,5 @@ export type AuthContextType = {
     login: (credentials: LoginCredentials) => Promise<AuthUser>;
     register: (data: RegisterData) => Promise<AuthUser>;
     logout: () => void;
+    setToken: (token: string) => void;
 }

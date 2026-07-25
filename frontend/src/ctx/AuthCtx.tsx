@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { api } from "../api/api";
 import type { AuthUser, AuthContextType, LoginCredentials, RegisterData } from "../lib/typesAuth";
+import type { UserRole } from "../lib/types";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -16,12 +17,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
         api.get("/auth/me")
             .then((res) => {
-                switch (res.data.user.result.role){
-                    case 0: res.data.user.result.role = "Admin"; break;
-                    case 1: res.data.user.result.role = "Professor"; break;
-                    case 2: res.data.user.result.role = "Student"; break;
-                }
-                setUser(res.data.user.result); 
+                setUser(parseAuthUser(res.data.user.result));
             })
             .catch(() => localStorage.removeItem("token"))
             .finally(() => setIsLoading(false));
@@ -30,25 +26,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const login = async (credentials: LoginCredentials) => {
         const res = await api.post("/auth/login", credentials);
         localStorage.setItem("token", res.data.token);
-        switch (res.data.user.role){
-            case 0: res.data.user.role = "Admin"; break;
-            case 1: res.data.user.role = "Professor"; break;
-            case 2: res.data.user.role = "Student"; break;
-        }
-        setUser(res.data.user);
-        return res.data.user;
+        const logged = parseAuthUser(res.data.user)
+        setUser(logged);
+        return logged;
     };
 
     const register = async (data: RegisterData) => {
         const res = await api.post("/auth/register", data);
         localStorage.setItem("token", res.data.token);
-        switch (res.data.user.role){
-            case 0: res.data.user.role = "Admin"; break;
-            case 1: res.data.user.role = "Professor"; break;
-            case 2: res.data.user.role = "Student"; break;
-        }
-        setUser(res.data.user);
-        return res.data.user;
+        const registered = parseAuthUser(res.data.user)
+        setUser(registered);
+        return registered;
     };
 
     const logout = () => {
@@ -56,8 +44,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(null);
     };
 
+    const setToken = (token: string) => {
+        localStorage.setItem("token", token);
+    }
+
     return (
-        <AuthContext.Provider value={{ user, setUser, isLoading, login, register, logout }}>
+        <AuthContext.Provider value={{ user, setUser, isLoading, login, register, logout, setToken }}>
             {children}
         </AuthContext.Provider>
     );
@@ -68,3 +60,26 @@ export const useAuth = () => {
     if (!context) throw new Error("useAuth must be used within an AuthProvider");
     return context;
 };
+
+function parseAuthUser(res: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    username: string;
+    role: string;
+    bio?: string;
+}): AuthUser {
+    console.log("res", res)
+    const authUser: AuthUser = {
+        id: res.id,
+        firstName: res.firstName,
+        lastName: res.lastName,
+        username: res.username,
+        email: res.email,
+        role: res.role as UserRole,
+        bio: res.bio
+    };
+    console.log("parsed", authUser)
+    return authUser;
+}
