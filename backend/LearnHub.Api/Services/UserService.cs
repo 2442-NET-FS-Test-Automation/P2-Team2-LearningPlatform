@@ -351,4 +351,48 @@ public class UserService : IUserService
     {
         return await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
     }
+
+    public async Task<bool> PromoteToProfessorAsync(
+        int userId,
+        PromoteProfessorDto dto)
+    {
+        using var transaction = await _db.Database.BeginTransactionAsync();
+
+        try
+        {
+            var user = await _userRepo.GetByIdAsync(userId);
+
+            if (user == null)
+                return false;
+
+            if (user.Student == null)
+                return false;
+
+            if (user.Professor != null)
+                return false;
+
+            user.Role = UserRoles.Professor;
+
+            var professor = new Professor
+            {
+                UserId = user.Id,
+                ShiftId = dto.ShiftId,
+                ContractDate = dto.ContractDate,
+                IsActive = true
+            };
+
+            _professorRepo.Add(professor);
+
+            await _db.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return true;
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
 }

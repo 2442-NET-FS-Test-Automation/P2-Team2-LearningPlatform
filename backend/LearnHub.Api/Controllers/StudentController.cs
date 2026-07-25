@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
-public class StudentController: ControllerBase
+public class StudentsController: ControllerBase
 {
     private readonly IUserRepo _userRepo;
     private readonly IStudentRepo _studentRepo;
 
-    public StudentController(IUserRepo userRepo, IStudentRepo studentRepo)
+    public StudentsController(IUserRepo userRepo, IStudentRepo studentRepo)
     {
         _userRepo = userRepo;
         _studentRepo = studentRepo;

@@ -20,4 +20,5 @@ public interface IUserService {
     Task<User?> UpdateUserAsync(User user,UpdateUserDto dto);
     Task<bool> UpdateStudentCoursesAsync(int studentId,List<int> courseIds);
     Task<bool> UpdateProfessorCoursesAsync(int professorId,List<int> courseIds);
+    Task<bool> PromoteToProfessorAsync(int userId, PromoteProfessorDto dto);
 }

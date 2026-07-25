@@ -3,7 +3,7 @@ import type { UserDto, CreateUserDto, UpdateProfileDto, UserRole } from "../lib/
 
 export async function getUsers(page = 1, pageSize = 10, search: string | null = null, role: UserRole = null, isActive: boolean | null = null) {
     try {
-        const response = await api.get("/User", {
+        const response = await api.get("/Users", {
             params: { page, pageSize, fullName:search, role, isActive },
         });
         return response.data;
@@ -35,7 +35,7 @@ export async function createUser(
                 : null
     };
 
-    const response = await api.post("/User", request);
+    const response = await api.post("/Users", request);
 
     return response.data;
 }
@@ -44,11 +44,21 @@ export async function updateUser(
     id: number,
     dto: UpdateProfileDto
 ): Promise<{ user: UserDto, token: string }>  {
-    const response = await api.patch(`/User/${id}`, dto);
+    const response = await api.patch(`/Users/${id}`, dto);
     return response.data;
 }
 
 
 export async function deactivateUser(id: number): Promise<void> {
-    await api.delete(`/User/${id}`);
+    await api.delete(`/Users/${id}`);
+}
+
+export async function promoteToProfessor(
+    id: number,
+    dto: {
+        shiftId: number;
+        contractDate: string;
+    }
+) {
+    await api.post(`/Users/${id}/promote`, dto);
 }

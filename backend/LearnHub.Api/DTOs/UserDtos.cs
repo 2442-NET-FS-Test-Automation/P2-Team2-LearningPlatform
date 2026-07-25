@@ -15,6 +15,13 @@ public class UserDto
     public string? Bio {get; set;}
 }
 
+public class PromoteProfessorDto
+{
+    public int ShiftId { get; set; }
+
+    public DateOnly ContractDate { get; set; }
+}
+
 public class UserDetailsDto
 {
     public int Id {get;set;}

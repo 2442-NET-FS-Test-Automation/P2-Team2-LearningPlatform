@@ -37,4 +37,10 @@ public class ProfessorRepo: IProfessorRepo
         await _context.SaveChangesAsync();
         return professor.User;
     }
+    
+    public async Task<bool> ExistsByUserIdAsync(int userId)
+    {
+        return await _context.Professors
+            .AnyAsync(p => p.UserId == userId);
+    }
 }
