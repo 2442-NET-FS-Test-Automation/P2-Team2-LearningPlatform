@@ -5,6 +5,7 @@ using LearnHub.Api.Services;
 using LearnHub.Data;
 using LearnHub.Data.Entities;
 using LearnHub.Data.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 
@@ -85,6 +86,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<UserDto>> CreateUser(CreateUserDto dto)
     {
         try

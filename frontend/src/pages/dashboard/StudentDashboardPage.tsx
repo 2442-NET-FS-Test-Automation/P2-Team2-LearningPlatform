@@ -10,7 +10,7 @@ import WeeklyScheduleSection from "./sections/WeeklyScheduleSection";
 
 import { useAuth } from "../../ctx/AuthCtx";
 
-import type { StudentCourseInfo, StudentStats, TabItem } from "../../lib/types";
+import type { StudentCourseInfo, StudentStats, TabItem, UserInfo } from "../../lib/types";
 import { calculateAverage, handleLogout } from "../../lib/funcs";
 
 export default function StudentDashboardPage() {
