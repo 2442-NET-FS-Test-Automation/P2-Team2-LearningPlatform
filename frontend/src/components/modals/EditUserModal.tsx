@@ -137,200 +137,198 @@ export default function EditUserModal({
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-                <div className="card w-full max-w-3xl max-h-[90vh] flex flex-col">
-                    <h2 className="text-2xl font-bold">
-                        Edit User
-                    </h2>
-                    <button onClick={onClose}>
-                        <X/>
-                    </button>
-                </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+            <div className="card w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+                <h2 className="text-2xl font-bold">
+                    Edit User
+                </h2>
+                <button onClick={onClose}>
+                    <X/>
+                </button>
+            </div>
 
-                <form 
-                onSubmit={handleSubmit}
-                className="space-y-5 overflow-y-auto pr-2 flex-1"
-                >
-                    <input
-                    className="form-input w-full"
-                    name="username"
-                    value={form.username}
-                    onChange={handleChange}
-                    />
+            <form 
+            onSubmit={handleSubmit}
+            className="space-y-5 overflow-y-auto pr-2 flex-1"
+            >
+                <input
+                className="form-input w-full"
+                name="username"
+                value={form.username}
+                onChange={handleChange}
+                />
 
-                    <input
-                    className="form-input w-full"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    />
+                <input
+                className="form-input w-full"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                />
 
-                    <input
-                    className="form-input w-full"
-                    name="firstName"
-                    value={form.firstName}
-                    onChange={handleChange}
-                    />
+                <input
+                className="form-input w-full"
+                name="firstName"
+                value={form.firstName}
+                onChange={handleChange}
+                />
 
-                    <input
-                    className="form-input w-full"
-                    name="lastName"
-                    value={form.lastName}
-                    onChange={handleChange}
-                    />
+                <input
+                className="form-input w-full"
+                name="lastName"
+                value={form.lastName}
+                onChange={handleChange}
+                />
 
-                    <textarea
-                    className="form-input w-full"
-                    name="bio"
-                    value={form.bio}
-                    onChange={handleChange}
-                    />
+                <textarea
+                className="form-input w-full"
+                name="bio"
+                value={form.bio}
+                onChange={handleChange}
+                />
 
-                    {user.student && (
+                {user.student && (
+                    <div>
+                        <label className="form-label">
+                            Courses
+                        </label>
+
+                        <select
+                            multiple
+                            className="form-input w-full h-32"
+                            value={form.studentCourseIds.map(String)}
+                            onChange={(e) => {
+                                const values = Array.from(
+                                    e.target.selectedOptions,
+                                    o => Number(o.value)
+                                );
+
+                                setForm(prev => ({
+                                    ...prev,
+                                    studentCourseIds: values
+                                }));
+                            }}
+                        >
+                            {courses.map(course => (
+                                <option
+                                    key={course.id}
+                                    value={course.id}
+                                >
+                                    {course.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                )}
+
+                {user.professor && (
+                    <>
                         <div>
                             <label className="form-label">
-                                Enrolled Courses
+                                Shift
                             </label>
 
-                            <select
-                                multiple
-                                className="form-input w-full h-32"
-                                value={form.studentCourseIds.map(String)}
-                                onChange={(e) => {
-                                    const values = Array.from(
-                                        e.target.selectedOptions,
-                                        o => Number(o.value)
-                                    );
-
-                                    setForm(prev => ({
-                                        ...prev,
-                                        studentCourseIds: values
-                                    }));
-                                }}
-                            >
-                                {courses.map(course => (
-                                    <option
-                                        key={course.id}
-                                        value={course.id}
-                                    >
-                                        {course.name}
-                                    </option>
-                                ))}
-                            </select>
+                            <input
+                                type="number"
+                                name="shiftId"
+                                className="form-input w-full"
+                                value={form.shiftId}
+                                onChange={handleChange}
+                            />
                         </div>
-                    )}
 
-                    {user.professor && (
-                        <>
+                        <div>
+                            <label className="form-label">
+                                Contract Date
+                            </label>
+
+                            <input
+                                type="date"
+                                name="contractDate"
+                                className="form-input w-full"
+                                value={form.contractDate}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <input
+                                id="isActive"
+                                type="checkbox"
+                                checked={form.isActive}
+                                onChange={(e) =>
+                                    setForm({
+                                        ...form,
+                                        isActive: e.target.checked
+                                    })
+                                }
+                            />
+
+                            <label htmlFor="isActive">
+                                Active Professor
+                            </label>
                             <div>
                                 <label className="form-label">
-                                    Shift
+                                    Teaching Courses
                                 </label>
 
-                                <input
-                                    type="number"
-                                    name="shiftId"
-                                    className="form-input w-full"
-                                    value={form.shiftId}
-                                    onChange={handleChange}
-                                />
+                                <select
+                                    multiple
+                                    className="form-input w-full h-40"
+                                    value={form.professorCourseIds.map(String)}
+                                    onChange={(e) => {
+                                        const values = Array.from(
+                                            e.target.selectedOptions,
+                                            o => Number(o.value)
+                                        );
+
+                                        setForm(prev => ({
+                                            ...prev,
+                                            professorCourseIds: values
+                                        }));
+                                    }}
+                                >
+                                    {courses.map(course => (
+                                        <option
+                                            key={course.id}
+                                            value={course.id}
+                                        >
+                                            {course.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
+                        </div>
+                    </>
+                )}
+                
+                {
+                error &&
+                <p className="text-red-500">
+                    {error}
+                </p>
+                }
 
-                            <div>
-                                <label className="form-label">
-                                    Contract Date
-                                </label>
+                <div className="flex justify-end gap-3">
+                    <button
+                    type="button"
+                    className="btn-outline"
+                    onClick={onClose}
+                    >
+                        Cancel
+                    </button>
 
-                                <input
-                                    type="date"
-                                    name="contractDate"
-                                    className="form-input w-full"
-                                    value={form.contractDate}
-                                    onChange={handleChange}
-                                />
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <input
-                                    id="isActive"
-                                    type="checkbox"
-                                    checked={form.isActive}
-                                    onChange={(e) =>
-                                        setForm({
-                                            ...form,
-                                            isActive: e.target.checked
-                                        })
-                                    }
-                                />
-
-                                <label htmlFor="isActive">
-                                    Active Professor
-                                </label>
-                                <div>
-                                    <label className="form-label">
-                                        Teaching Courses
-                                    </label>
-
-                                    <select
-                                        multiple
-                                        className="form-input w-full h-40"
-                                        value={form.professorCourseIds.map(String)}
-                                        onChange={(e) => {
-                                            const values = Array.from(
-                                                e.target.selectedOptions,
-                                                o => Number(o.value)
-                                            );
-
-                                            setForm(prev => ({
-                                                ...prev,
-                                                professorCourseIds: values
-                                            }));
-                                        }}
-                                    >
-                                        {courses.map(course => (
-                                            <option
-                                                key={course.id}
-                                                value={course.id}
-                                            >
-                                                {course.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    
-                    {
-                    error &&
-                    <p className="text-red-500">
-                        {error}
-                    </p>
-                    }
-
-                    <div className="flex justify-end gap-3">
-                        <button
-                        type="button"
-                        className="btn-outline"
-                        onClick={onClose}
-                        >
-                            Cancel
-                        </button>
-
-                        <button
-                        className="btn-primary"
-                        disabled={loading}
-                        >
-                            {
-                                loading 
-                                ? "Saving..."
-                                : "Save"
-                            }
-                        </button>
-                    </div>
-                </form>
-            </div>
+                    <button
+                    className="btn-primary"
+                    disabled={loading}
+                    >
+                        {
+                            loading 
+                            ? "Saving..."
+                            : "Save"
+                        }
+                    </button>
+                </div>
+            </form>
         </div>
     )
 }
