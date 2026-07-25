@@ -24,8 +24,7 @@ public class CourseRepo : ICourseRepo
         // filter first
         if (isActiveFilter != null) query = query.Where(c => c.IsActive == isActiveFilter);
         if (categoryFilter != null) query = query.Where(c => c.CategoryName == categoryFilter);
-        if (search != null) query = query.Where(c => c.Name.ToLower() == search.ToLower());
-
+        if (search != null) query = query.Where(c => c.Name.ToLower().Contains(search.ToLower()));
 
         // await for know the count of the items
         var totalItems = await query.CountAsync();
