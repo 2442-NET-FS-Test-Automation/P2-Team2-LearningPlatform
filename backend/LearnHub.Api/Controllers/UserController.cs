@@ -14,14 +14,14 @@ namespace LearnHub.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : ControllerBase
+public class UsersController : ControllerBase
 {
     private readonly IUserRepo _repo;
     private readonly IUserService _service;
     private readonly IMapper _mapper;
     private readonly ITokenService _tokens;
 
-    public UserController(
+    public UsersController(
         IUserRepo repo,
         IUserService service,
         IMapper mapper,
@@ -148,5 +148,18 @@ public class UserController : ControllerBase
             return NoContent();
         }
         return BadRequest();
+    }
+
+    [HttpPost("{id}/promote")]
+    public async Task<IActionResult> PromoteToProfessor(
+        int id,
+        PromoteProfessorDto dto)
+    {
+        var success = await _service.PromoteToProfessorAsync(id, dto);
+
+        if (!success)
+            return BadRequest();
+
+        return NoContent();
     }
 }

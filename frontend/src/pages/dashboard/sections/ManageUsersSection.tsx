@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Plus, Pencil, Trash } from "lucide-react";
+import { Search, Plus, Pencil, Trash, GraduationCap } from "lucide-react";
 
 import CreateUserModal from "../../../components/modals/CreateUserModal";
+import PromoteProfessorModal from "../../../components/modals/PromoteProfessorModal";
 
 import type { UserDto, UserRole } from "../../../lib/types";
 import { getUsers, deactivateUser } from "../../../api/usersRequest";
@@ -23,6 +24,9 @@ export default function ManageUsersSection() {
 
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [created, setCreated] = useState(false);
+
+    const [showPromoteModal, setShowPromoteModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<UserDto | null>(null);
 
     // Get Courses from the API    
     useEffect(() => {
@@ -65,6 +69,10 @@ export default function ManageUsersSection() {
         catch {
             alert("Couldn't deactivate user.");
         }
+    };
+    const handlePromoteClick = (user: UserDto) => {
+        setSelectedUser(user);
+        setShowPromoteModal(true);
     };
 
     return (
@@ -170,6 +178,16 @@ export default function ManageUsersSection() {
                                                         <Pencil size={18} />
                                                     </button>
 
+                                                    {user.role === "Student" && (
+                                                        <button
+                                                            className="btn-outline p-2 text-emerald-600 border-emerald-600"
+                                                            onClick={() => handlePromoteClick(user)}
+                                                            title="Promote to Professor"
+                                                        >
+                                                            <GraduationCap size={18} />
+                                                        </button>
+                                                    )}
+
                                                     <button className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70"
                                                         onClick={() => handleDeactivateUser(user.id)} >
                                                         <Trash size={18} />
@@ -201,6 +219,20 @@ export default function ManageUsersSection() {
                 <CreateUserModal
                     onClose={() => setShowCreateModal(false)}
                     onCreated={() => {setCreated((c) => !c)}}
+                />
+            )}
+            {showPromoteModal && selectedUser && (
+                <PromoteProfessorModal
+                    user={selectedUser}
+                    onClose={() => {
+                        setShowPromoteModal(false);
+                        setSelectedUser(null);
+                    }}
+                    onPromoted={() => {
+                        setCreated(c => !c);
+                        setShowPromoteModal(false);
+                        setSelectedUser(null);
+                    }}
                 />
             )}
         </>
