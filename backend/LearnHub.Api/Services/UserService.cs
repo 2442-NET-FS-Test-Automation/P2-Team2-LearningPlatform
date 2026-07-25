@@ -46,12 +46,12 @@ public class UserService : IUserService
     {
         //validate if email exists
         if(await _userRepo.EmailExistsAsync(email))
-            return "Email already registered -- testing";
+            return "Email already registered";
         
         
         //validate if user exists
         if(await _userRepo.UsernameExistsAsync(username))
-            return "Username already registered -- testing";
+            return "Username already registered";
 
             
 

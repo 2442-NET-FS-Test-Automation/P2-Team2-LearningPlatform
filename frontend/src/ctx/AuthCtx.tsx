@@ -24,12 +24,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const login = async (credentials: LoginCredentials) => {
-        const res = await api.post("/auth/login", credentials);
-        localStorage.setItem("token", res.data.token);
-        const logged = parseAuthUser(res.data.user)
-        setUser(logged);
-        return logged;
-    };
+        setIsLoading(true);
+        try {
+            const res = await api.post("/auth/login", credentials);
+            localStorage.setItem("token", res.data.token);
+            const loggedUser = parseAuthUser(res.data.user);
+            setUser(loggedUser);
+            return loggedUser;
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     const register = async (data: RegisterData) => {
         const res = await api.post("/auth/register", data);
