@@ -1,17 +1,16 @@
 import {api} from "./api";
 import type { UserDto, CreateUserDto, UpdateProfileDto } from "../lib/types";
 
-
-export async function getUsers(page = 1, pageSize = 10) {
-    console.log(api.defaults.baseURL);
-
-    const response = await api.get("/User", {
-        params: { page, pageSize },
-    });
-
-    return response.data;
+export async function getUsers(page = 1, pageSize = 10, search: string | null = null, role: UserRole = null) {
+    try {
+        const response = await api.get("/User", {
+            params: { page, pageSize, fullName:search, role },
+        });
+        return response.data;
+    } catch {
+        throw Error("Timeout: API did not respond in time.")
+    }
 }
-
 
 export async function createUser(
     dto: CreateUserDto
@@ -47,4 +46,4 @@ export async function updateUser(
 ): Promise<UserDto> {
     const response = await api.patch<UserDto>(`/User/${id}`, dto);
     return response.data;
-}
+}

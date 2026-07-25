@@ -40,12 +40,40 @@
     h3 {
         @apply dark:text-white/90;
     }
+
+    /* WebKit scrollbar (Chrome, Edge, Safari) */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--scrollbar-track, #f1f1f1);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb, #888);
+        border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--scrollbar-thumb-hover, #555);
+    }
+
+    /* Firefox */
+    * {
+        scrollbar-color: var(--scrollbar-thumb, #888) var(--scrollbar-track, #f1f1f1);
+        scrollbar-width: thin;
+    }
 }
 
 @layer components {
     /* General */
     .container-page {
         @apply mx-auto max-w-7xl px-8;
+    }
+    .dashboard-section {
+        @apply h-screen;
     }
     .divider-block {
         @apply border-t border-slate-200 pt-6 dark:border-slate-700;
@@ -194,4 +222,18 @@
     .animate-float-slower {
         animation: none;
     }
+}
+
+:root {
+  /* ... your existing variables ... */
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #c1c1c1;
+  --scrollbar-thumb-hover: #a8a8a8;
+}
+
+/* Dark theme overrides */
+.dark {
+  --scrollbar-track: #1e293b;   /* slate-800-ish */
+  --scrollbar-thumb: #475569;   /* slate-600 */
+  --scrollbar-thumb-hover: #64748b; /* slate-500 */
 }
