@@ -37,7 +37,6 @@ export default function CreateUserModal({
         setIsSubmitting(true);
 
         try {
-            console.log("form", form)
             await createShift(form).finally(() => setIsSubmitting(false));
 
             await onCreated();

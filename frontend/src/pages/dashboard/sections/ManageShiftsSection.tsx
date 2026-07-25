@@ -26,7 +26,6 @@ export default function ManageShiftsSection() {
 
         getShifts(currentPage, itemsPerPage)
             .then((res) => {
-                console.log(res)
                 setShifts(res.items);
                 setTotalPages(res.totalPages);
             })
