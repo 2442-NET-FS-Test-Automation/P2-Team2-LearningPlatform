@@ -178,23 +178,19 @@ public class UserService : IUserService
         User user,
         UpdateUserDto dto)
     {
+        if (user == null) return null;
 
-        if(user == null)
-            return null;
-
+        if (dto.Email != null && await _userRepo.EmailExistsAsync(dto.Email)) throw new Exception("Email is already taken");
+        if (dto.Username != null && await _userRepo.UsernameExistsAsync(dto.Username)) throw new Exception("Username is already taken");
 
         // USER DATA
-
         user.Username = dto.Username ?? user.Username;
         user.FirstName = dto.FirstName ?? user.FirstName;
         user.LastName = dto.LastName ?? user.LastName;
         user.Email = dto.Email ?? user.Email;
         user.Bio = dto.Bio ?? user.Bio;
 
-
-
         // STUDENT DATA
-
         if(user.Student != null)
         {
             if(dto.BirthDate.HasValue)
@@ -210,10 +206,7 @@ public class UserService : IUserService
             }
         }
 
-
-
         // PROFESSOR DATA
-
         if(user.Professor != null)
         {
             if(dto.ShiftId.HasValue)
@@ -221,12 +214,10 @@ public class UserService : IUserService
                 user.Professor.ShiftId = dto.ShiftId.Value;
             }
 
-
             if(dto.ContractDate.HasValue)
             {
                 user.Professor.ContractDate = dto.ContractDate.Value;
             }
-
 
             if(dto.IsActive.HasValue)
             {
@@ -241,7 +232,6 @@ public class UserService : IUserService
                 );
             }
         }
-
 
         await _userRepo.UpdateAsync(user);
 

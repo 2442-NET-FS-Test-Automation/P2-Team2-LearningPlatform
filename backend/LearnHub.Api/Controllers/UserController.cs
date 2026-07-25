@@ -116,10 +116,17 @@ public class UserController : ControllerBase
 
         if(user == null) return NotFound();
 
-        user = await _service.UpdateUserAsync(user, dto);
+        try
+        {
+            user = await _service.UpdateUserAsync(user, dto);
 
-        var token = _tokens.Issue(user!.Username, user.Role);
+            var token = _tokens.Issue(user!.Username, user.Role);
 
-        return Ok(new { user = AuthController.ToPublicUser(user), token });
+            return Ok(new { user = AuthController.ToPublicUser(user), token });
+        }
+        catch (Exception e)
+        {
+            return Conflict(error: e.Message);
+        }
     }
 }

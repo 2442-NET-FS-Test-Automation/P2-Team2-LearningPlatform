@@ -89,8 +89,7 @@ export default function EditProfileModal({
             });
             onClose();
         } catch (err: any) {
-            console.error(err.response?.data);
-            setError(err.response?.data?.error ?? "Failed to update profile.");
+            setError(err.response?.data ?? "Failed to update profile.");
         } finally {
             setIsSubmitting(false);
         }
@@ -127,42 +126,54 @@ export default function EditProfileModal({
                         </h3>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <input
-                                className="form-input"
-                                placeholder="Username"
-                                name="username"
-                                value={form.username}
-                                onChange={handleChange}
-                                required
-                            />
+                            <div className="flex-col">
+                                <label className="form-label">Username</label>
+                                <input
+                                    className="form-input"
+                                    placeholder="Username"
+                                    name="username"
+                                    value={form.username}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
 
-                            <input
-                                className="form-input"
-                                placeholder="First name"
-                                name="firstName"
-                                value={form.firstName}
-                                onChange={handleChange}
-                                required
-                            />
+                            <div className="flex-col">
+                                <label className="form-label">Email</label>
+                                <input
+                                    className="form-input"
+                                    type="email"
+                                    placeholder="Email address"
+                                    name="email"
+                                    value={form.email}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
 
-                            <input
-                                className="form-input"
-                                placeholder="Last name"
-                                name="lastName"
-                                value={form.lastName}
-                                onChange={handleChange}
-                                required
-                            />
+                            <div className="flex-col">
+                                <label className="form-label">First name</label>
+                                <input
+                                    className="form-input"
+                                    placeholder="First name"
+                                    name="firstName"
+                                    value={form.firstName}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
 
-                            <input
-                                className="form-input"
-                                type="email"
-                                placeholder="Email address"
-                                name="email"
-                                value={form.email}
-                                onChange={handleChange}
-                                required
-                            />
+                            <div className="flex-col">
+                                <label className="form-label">Last name</label>
+                                <input
+                                    className="form-input"
+                                    placeholder="Last name"
+                                    name="lastName"
+                                    value={form.lastName}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
                         </div>
                     </div>
 
