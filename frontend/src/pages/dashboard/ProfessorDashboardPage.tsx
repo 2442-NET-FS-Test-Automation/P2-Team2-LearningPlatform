@@ -5,15 +5,14 @@ import { BookOpen, CalendarDays, User } from "lucide-react";
 import DashboardSideNav from "../../components/DashboardSideNav";
 import ProfileSection from "./sections/ProfileSection";
 import WeeklyScheduleSection from "./sections/WeeklyScheduleSection";
-import EditProfileModal from "../../components/modals/EditProfileModal";
 
 import { useAuth } from "../../ctx/AuthCtx";
 
-import type { TabItem, UserInfo } from "../../lib/types";
+import type { TabItem } from "../../lib/types";
 import { handleLogout } from "../../lib/funcs";
 
 export default function ProfessorDashboardPage() {
-    const { user, setUser } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
     
     const [activeTab, setActiveTab] = useState<string>("courses");
@@ -22,8 +21,6 @@ export default function ProfessorDashboardPage() {
         { Id: "courses", Label: "My Courses", Icon: <BookOpen size={18} />},
         { Id: "schedule", Label: "Schedule", Icon: <CalendarDays size={18} />}
     ];
-
-    const [showEditModal, setShowEditModal] = useState(false);
 
     if (user == null) {
         navigate("/login");
@@ -47,24 +44,11 @@ export default function ProfessorDashboardPage() {
                             username={user.username} 
                             role={user.role}
                             bio={user.bio}
-                            onEdit={() => setShowEditModal(true)}
                         />}
                         {activeTab === "schedule" && <WeeklyScheduleSection Courses={[]} />}
                     </div>
                 </div>
             </div>
-
-            {showEditModal && (
-                <EditProfileModal
-                    userId={user.Id}
-                    currentUser={user}
-                    onClose={() => setShowEditModal(false)}
-                    onUpdated={(updated: UserInfo) => {
-                        setUser({ ...user, ...updated });
-                        setShowEditModal(false);
-                    }}
-                />
-            )}
         </div>
     );
  }

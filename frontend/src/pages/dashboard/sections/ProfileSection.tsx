@@ -1,9 +1,11 @@
-import type { UserInfo } from "../../../lib/types";
+import { useState } from "react";
 import { UserRound, UserRoundPen, UserRoundCog } from "lucide-react";
 
-interface ProfileSectionProps extends UserInfo {
-    onEdit?: () => void;
-}
+import EditProfileModal from "../../../components/modals/EditProfileModal";
+
+import type { UserInfo } from "../../../lib/types";
+import { useAuth } from "../../../ctx/AuthCtx";
+
 
 export default function ProfileSection({
     firstName,
@@ -11,10 +13,16 @@ export default function ProfileSection({
     email,
     username,
     role,
-    bio,
-    onEdit
-}: ProfileSectionProps) {
+    bio
+}: UserInfo) {
+    const { user, setUser } = useAuth();
+    
+    const [showEditModal, setShowEditModal] = useState(false);
+
+    if (user == null) return;
+    
     return (
+        <>
         <div className="card space-y-6">
             <div className="flex items-center gap-6">
                 {role === "Admin" &&
@@ -32,12 +40,24 @@ export default function ProfileSection({
                     <p className="text-muted">{role}</p>
                     <p className="text-muted text-sm dark:text-slate-400">{email}</p>
                 </div>
-                <button className="btn-outline ml-auto text-sm" onClick={onEdit}>Edit Profile</button>
+                <button className="btn-outline ml-auto text-sm" onClick={() => setShowEditModal(true)}>Edit Profile</button>
             </div>
             <div>
                 <h3 className="font-semibold">Bio</h3>
                 <p className="text-muted">{bio || "No bio provided."}</p>
             </div>
         </div>
+        {showEditModal && (
+            <EditProfileModal
+                userId={user.Id}
+                currentUser={user}
+                onClose={() => setShowEditModal(false)}
+                onUpdated={(updated: UserInfo) => {
+                    setUser({ ...user, ...updated });
+                    setShowEditModal(false);
+                }}
+            />
+        )}
+        </>
     );
 }
