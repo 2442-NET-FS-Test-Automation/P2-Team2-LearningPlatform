@@ -77,7 +77,6 @@ export default function EditProfileModal({
 
         try {
             const result = await updateUser(userId, dto);
-            console.log("updated", result)
             setToken(result.token);
             onUpdated({
                 id: userId,
@@ -96,7 +95,6 @@ export default function EditProfileModal({
             setIsSubmitting(false);
         }
     }
-    console.log("useridmodal", userId)
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">

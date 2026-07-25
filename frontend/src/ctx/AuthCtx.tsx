@@ -70,7 +70,6 @@ function parseAuthUser(res: {
     role: string;
     bio?: string;
 }): AuthUser {
-    console.log("res", res)
     const authUser: AuthUser = {
         id: res.id,
         firstName: res.firstName,
@@ -80,6 +79,5 @@ function parseAuthUser(res: {
         role: res.role as UserRole,
         bio: res.bio
     };
-    console.log("parsed", authUser)
     return authUser;
 }

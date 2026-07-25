@@ -14,7 +14,6 @@ export default function ProfileSection() {
 
     if (user == null) return;
     
-    console.log("useridsection", user.id)
     return (
         <>
         <div className="card space-y-6">
