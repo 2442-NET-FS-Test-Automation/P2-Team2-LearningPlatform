@@ -112,7 +112,7 @@
 
     /* Cards */
     .card-grid {
-        @apply grid gap-8 md:grid-cols-3;
+        @apply grid grid-cols-1 gap-6 auto-rows-fr sm:grid-cols-2 lg:grid-cols-3;
     }
     .card {
         @apply rounded-xl border border-slate-200 bg-white/80 p-6 shadow-md transition-all;
