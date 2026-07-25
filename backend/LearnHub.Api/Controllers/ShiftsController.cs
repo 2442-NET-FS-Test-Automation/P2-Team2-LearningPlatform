@@ -1,3 +1,4 @@
+using LearnHub.Data;
 using LearnHub.Data.Entities;
 using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -20,8 +21,17 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
         if (pageSize < 1) pageSize = 10;
         if (pageSize > 50) pageSize = 50;
 
-        var shifts = await _repo.GetShiftsAsync();
+        var result = await _repo.GetShiftsAsync(page, pageSize);
 
-        return Ok(shifts);
+        var response = new PagedResult<Shift>
+        {
+            Items = result.Items,
+            Page = result.Page,
+            PageSize = result.PageSize,
+            TotalItems = result.TotalItems,
+            TotalPages = result.TotalPages
+        };
+
+        return Ok(response);
     }
 }

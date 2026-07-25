@@ -4,5 +4,5 @@ namespace LearnHub.Data.Repositories;
 
 public interface IShiftsRepo
 {
-    Task<List<Shift>> GetShiftsAsync();
+    Task<PagedResult<Shift>> GetShiftsAsync(int page = 1, int pageSize = 10);
 }

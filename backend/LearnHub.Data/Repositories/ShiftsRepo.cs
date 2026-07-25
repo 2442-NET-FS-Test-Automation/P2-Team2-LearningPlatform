@@ -12,8 +12,26 @@ public class ShiftsRepo : IShiftsRepo
         _context = context;
     }
 
-    public async Task<List<Shift>> GetShiftsAsync()
+    public async Task<PagedResult<Shift>> GetShiftsAsync(int page = 1, int pageSize = 10)
     {
-        return await _context.Shifts.ToListAsync();
+        var query = _context.Shifts.AsQueryable();
+
+        var totalItems = await query.CountAsync();
+
+        var shifts = await query
+            .OrderBy(s => s.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+
+        return new PagedResult<Shift>
+        {
+            Items = shifts,
+            Page = page,
+            PageSize = pageSize,
+            TotalItems = totalItems,
+            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+        };
     }
 }
