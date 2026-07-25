@@ -35,7 +35,8 @@ public class CoursesController : ControllerBase
         [FromQuery] int pageSize = 10,
         [FromQuery] string? searchName = null,
         [FromQuery] CourseCategory? categoryFilter = null,
-        [FromQuery] bool? isActiveFilter = null
+        [FromQuery] bool? isActiveFilter = null,
+        [FromQuery] bool detail = false
 
     )
     {   
@@ -47,7 +48,7 @@ public class CoursesController : ControllerBase
 
 
         //cache key
-        var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}:isActive:{isActiveFilter}";
+        var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}:isActive:{isActiveFilter}:detail:{detail}";
 
 
         if(_cache.TryGetValue(cacheKey, out PagedResult<CourseListDto>? cachedResponse) && cachedResponse is not null)
@@ -61,28 +62,34 @@ public class CoursesController : ControllerBase
 
         var result = await _repo.GetAllAsync(page, pageSize, searchName, categoryFilter, isActiveFilter);
         
-        var response = new PagedResult<CourseListDto>
+        if (detail == false)
         {
-            Items = result.Items.Select(c => new CourseListDto
+            var response = new PagedResult<CourseListDto>
             {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                Category = c.CategoryName.ToString()
-            }).ToList(),
+                Items = result.Items.Select(c => new CourseListDto
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    Category = c.CategoryName.ToString()
+                }).ToList(),
 
-            Page = result.Page,
-            PageSize = result.PageSize,
-            TotalItems = result.TotalItems,
-            TotalPages = result.TotalPages
-        };
+                Page = result.Page,
+                PageSize = result.PageSize,
+                TotalItems = result.TotalItems,
+                TotalPages = result.TotalPages
+            };
 
+            //set cache response
+            _cache.Set(cacheKey, response, TimeSpan.FromMinutes(15));
 
-        //set cache response
-        _cache.Set(cacheKey, response, TimeSpan.FromMinutes(15));
-
-        // return message + response
-        return Ok(response);
+            // return message + response
+            return Ok(response);
+        }   
+        else
+        {
+            return Ok("details");
+        }
     }
 
     [HttpGet("enabled")]

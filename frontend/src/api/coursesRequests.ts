@@ -12,6 +12,7 @@ export async function getAllCourses(page: number = 1, pageSize: number = 6, sear
                 isActiveFilter: isActiveFilter
             }
         });
+        console.log(result.data)
         return result.data;
     } catch {
         throw Error("Timeout: API did not respond in time.")
