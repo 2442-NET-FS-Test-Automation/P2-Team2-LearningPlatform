@@ -96,7 +96,7 @@ public class UserController : ControllerBase
         {
             var user = await _service.CreateUserAsync(dto);
 
-            return Ok(user);
+            return Ok(new { user = AuthController.ToPublicUser(user!) });
         }
         catch(ArgumentException ex)
         {
