@@ -26,9 +26,8 @@ public class UserRepo : IUserRepo
             fullName = fullName.Trim();
 
             query = query.Where(u =>
-                (u.FirstName + " " + u.LastName)
-                    .ToLower()
-                    .Contains(fullName.ToLower()));   
+                (u.FirstName + " " + u.LastName).ToLower().Contains(fullName.ToLower())
+                || u.Username.ToLower().Contains(fullName.ToLower()));   
         }
 
         var totalItems = await query.CountAsync();

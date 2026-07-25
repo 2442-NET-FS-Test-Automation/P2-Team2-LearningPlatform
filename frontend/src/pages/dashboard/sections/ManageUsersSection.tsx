@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search, Plus, Pencil, Trash } from "lucide-react";
 
 import CreateUserModal from "../../../components/modals/CreateUserModal";
@@ -38,7 +38,11 @@ export default function ManageUsersSection() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [currentPage, roleFilter, itemsPerPage, created])
+    }, [currentPage, roleFilter, itemsPerPage, created, search])
+
+    useMemo(() => {
+        setCurrentPage(1);
+    }, [search, itemsPerPage]);
 
     // Pagination handlers
     const handlePrevious = () => {setCurrentPage((prev) => Math.max(prev - 1, 1))};
