@@ -14,4 +14,5 @@ public interface IUserRepo
 
     Task<bool> EmailExistsAsync(string email);
     Task<bool> UsernameExistsAsync(string username);
+    Task DeleteAsync(User user);
 }
