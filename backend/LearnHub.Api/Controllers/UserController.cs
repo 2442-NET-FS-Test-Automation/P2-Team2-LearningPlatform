@@ -19,15 +19,18 @@ public class UserController : ControllerBase
     private readonly IUserRepo _repo;
     private readonly IUserService _service;
     private readonly IMapper _mapper;
+    private readonly ITokenService _tokens;
 
     public UserController(
         IUserRepo repo,
         IUserService service,
-        IMapper mapper)
+        IMapper mapper,
+        ITokenService tokens)
     {
         _repo = repo;
         _service = service;
         _mapper = mapper;
+        _tokens = tokens;
     }
 
 
@@ -104,22 +107,19 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPatch("{id:int}")]
     public async Task<IActionResult> UpdateUser(
         int id,
         UpdateUserDto dto)
     {
         var user = await _repo.GetByIdAsync(id);
 
-        if(user == null)
-            return NotFound();
+        if(user == null) return NotFound();
 
+        user = await _service.UpdateUserAsync(user, dto);
 
-        await _service.UpdateUserAsync(user, dto);
+        var token = _tokens.Issue(user!.Username, user.Role);
 
-
-        return NoContent();
+        return Ok(new { user = AuthController.ToPublicUser(user), token });
     }
-    
-
 }

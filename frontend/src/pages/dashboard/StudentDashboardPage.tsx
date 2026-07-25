@@ -8,15 +8,10 @@ import CoursesSection from "./sections/CoursesSection";
 import ProgressSection from "./sections/ProgressSection";
 import WeeklyScheduleSection from "./sections/WeeklyScheduleSection";
 
-import { useAuth } from "../../ctx/AuthCtx";
-
-import type { StudentCourseInfo, StudentStats, TabItem, UserInfo } from "../../lib/types";
+import type { StudentCourseInfo, StudentStats, TabItem } from "../../lib/types";
 import { calculateAverage, handleLogout } from "../../lib/funcs";
 
 export default function StudentDashboardPage() {
-    const { user } = useAuth();
-    const navigate = useNavigate();
-    
     const [courses, setCourses] = useState<StudentCourseInfo[]>([]);
     useEffect(() => {
         // TODO: Endpoint not done yet so no info can be obtained
@@ -43,11 +38,6 @@ export default function StudentDashboardPage() {
         { Id: "progress", Label: "Progress", Icon: <BarChart3 size={18} /> }
     ];
     
-    if (user == null) {
-        navigate("/login"); 
-        return;
-    };
-
     return (
         <div className="section-white min-h-screen py-10">
             <div className="container-page">
@@ -58,14 +48,7 @@ export default function StudentDashboardPage() {
 
                     {/* Main Content */}
                     <div className="flex-1">
-                        {activeTab === "profile" && <ProfileSection 
-                            firstName={user.firstName}
-                            lastName={user.lastName}
-                            email={user.email} 
-                            username={user.username} 
-                            role={user.role}
-                            bio={user.bio}
-                        />}
+                        {activeTab === "profile" && <ProfileSection />}
                         {activeTab === "courses" && <CoursesSection courses={courses}  />}
                         {activeTab === "progress" && <ProgressSection TotalCourses={stats.TotalCourses} Completed={stats.Completed} AvgGrade={stats.AvgGrade} />}
                         {activeTab === "schedule" && <WeeklyScheduleSection Courses={courses.filter(c => c.Completed === false)} />}

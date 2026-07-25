@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 
-import type { UpdateProfileDto, UserInfo } from "../../lib/types";
+import type { UpdateProfileDto } from "../../lib/types";
 import { isAlphanumeric } from "../../lib/funcs";
 import { updateUser } from "../../api/usersRequest";
+import type { AuthUser } from "../../lib/typesAuth";
+import { useAuth } from "../../ctx/AuthCtx";
 
 interface Props {
     userId: number;
-    currentUser: UserInfo;
+    currentUser: AuthUser;
     onClose: () => void;
-    onUpdated: (updated: UserInfo) => void;
+    onUpdated: (updated: AuthUser) => void;
 }
 
 export default function EditProfileModal({
@@ -18,6 +20,8 @@ export default function EditProfileModal({
     onClose,
     onUpdated,
 }: Props) {
+    const { setToken } = useAuth();
+
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -73,14 +77,15 @@ export default function EditProfileModal({
 
         try {
             const result = await updateUser(userId, dto);
-
+            setToken(result.token);
             onUpdated({
-                username: result.username,
-                firstName: result.firstName,
-                lastName: result.lastName,
-                email: result.email,
+                id: userId,
+                username: result.user.username,
+                firstName: result.user.firstName,
+                lastName: result.user.lastName,
+                email: result.user.email,
                 role: currentUser.role,
-                bio: result.bio,
+                bio: result.user.bio,
             });
             onClose();
         } catch (err: any) {

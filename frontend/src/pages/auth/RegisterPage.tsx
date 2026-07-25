@@ -55,7 +55,10 @@ export default function RegisterPage() {
 
             navigate(getDashboardRoute(user.role));
         } catch (err: any) {
-            setError(err.response?.data?.error || "Could not create account. Try again.");
+            try {
+                setError(err.response.data.error || "Could not create account. Try again.");
+            } catch { setError("API is down. Try again later."); }
+            
         } finally {
             setIsSubmitting(false);
         }

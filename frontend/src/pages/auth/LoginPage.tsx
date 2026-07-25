@@ -16,15 +16,24 @@ export default function LoginPage() {
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (password.length < 8) {
+            setError("Password should be at least 8 characters long");
+            return;
+        }
+
         setError(null);
         setIsSubmitting(true);
         try {
             const user = await login({ EmailOrUsername: emailOrUsername, Password: password });
-            console.log(getDashboardRoute(user.role));
             navigate(getDashboardRoute(user.role));
-        } catch (e) {
-            console.log(e)
-            setError("Invalid username/email or password.");
+        } catch (e: any) {
+            try {
+                switch (e.response.status) {
+                    case 401: { setError("Invalid username/email or password."); break; }
+                    default: setError("Something went wrong. Try again later.");
+                }
+            } catch { setError("API is down. Try again later."); }
         } finally {
             setIsSubmitting(false);
         }
