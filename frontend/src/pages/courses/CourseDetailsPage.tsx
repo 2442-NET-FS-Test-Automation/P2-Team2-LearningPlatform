@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Clock, Trophy } from "lucide-react";
+import { CheckCircle2, Clock, Loader2, Trophy, Users } from "lucide-react";
 
 import CourseScheduleList from "../../components/CourseScheduleList";
 import NotFoundPage from "../NotFoundPage";
@@ -18,12 +18,36 @@ export default function CourseDetailsPage() {
 
     const [loading, setLoading] = useState(true);
 
+    const [isEnrolled, setIsEnrolled] = useState(false);
+    const [isEnrolling, setIsEnrolling] = useState(false);
+    const [enrolledCount, setEnrolledCount] = useState(0);
+
     useEffect(() => {
         getCourseDetails(Number(id))
-            .then(res => setCourse(res))
+            .then(res => {
+                setCourse(res);
+                setEnrolledCount(res.enrolledStudents)                
+            })
             .catch(e => console.log(e))
             .finally(() => setLoading(false));
     }, [id])
+
+    const handleEnroll = () => {
+        if (!user) {
+            navigate("/login");
+            return;
+        }
+        if (isEnrolled || isEnrolling) return;
+
+        setIsEnrolling(true);
+        // TODO: replace with real enrollment API call
+        setTimeout(() => {
+            setIsEnrolled(true);
+            setEnrolledCount((prev) => prev + 1);
+            setIsEnrolling(false);
+        }, 700);
+    };
+
 
     if (loading) {
         return (
@@ -58,8 +82,8 @@ export default function CourseDetailsPage() {
             </div>
 
             {/* Course Details */}
-            <section className="section-white py-12">
-                <div className="container-page">
+            <section className="section-white py-12 overflow-hidden py-12">
+                <div className="container-page relative">
                     <nav className="mb-6 text-sm text-slate-500 dark:text-slate-400">
                         <Link to="/courses" className="hover:text-blue-600 dark:hover:text-blue-400">
                             Courses
@@ -74,7 +98,7 @@ export default function CourseDetailsPage() {
                         {/* Main content */}
                         <div className="lg:col-span-2 space-y-6">
                             <div>
-                                <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
+                                <span className="blue-accent-chip rounded-full px-3 py-1 text-xs font-semibold">
                                     {course.category}
                                 </span>
                                 <h1 className="mt-3 text-4xl font-extrabold leading-tight">
@@ -100,23 +124,42 @@ export default function CourseDetailsPage() {
 
                         {/* Enrollment card */}
                         <div className="lg:col-span-1">
-                            <div className="card sticky top-24 space-y-6">
+                            <div className="card sticky top-24 space-y-6 transition-shadow hover:shadow-lg">
                                 <div className="flex items-baseline justify-between">
                                     <span className="big-stat">
                                         {course.price === 0 ? ("Free") : (`${course.price}$`)}
                                     </span>
-                                    <span className="text-sm text-slate-500 dark:text-slate-400">
-                                        {course.enrolledStudents} enrolled
+                                    <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+                                        <Users size={16} />
+                                        {enrolledCount} enrolled
                                     </span>
                                 </div>
-
-                                {user ? (
-                                    <button className="btn-primary w-full justify-center text-center">
-                                        Enroll Now
+                                {isEnrolled ? (
+                                    <button
+                                        disabled
+                                        className="btn-primary w-full justify-center gap-2 text-center bg-emerald-600 opacity-100 hover:bg-emerald-600 dark:bg-emerald-500 dark:hover:bg-emerald-500"
+                                    >
+                                        <div className="flex items-center">
+                                            <CheckCircle2 size={18} />
+                                            <p className="mx-auto">Enrolled</p>
+                                        </div>
                                     </button>
                                 ) : (
-                                    <button onClick={() => navigate("/login")} className="btn-primary w-full justify-center text-center">
-                                        Login to enroll
+                                    <button
+                                        onClick={handleEnroll}
+                                        disabled={isEnrolling}
+                                        className="btn-primary w-full justify-center gap-2 text-center disabled:opacity-70"
+                                    >
+                                        <div className="flex items-center">
+                                            {isEnrolling && <Loader2 size={18} className="animate-spin" />}
+                                            <p className="mx-auto">
+                                                {!user
+                                                    ? "Login to enroll"
+                                                    : isEnrolling
+                                                        ? "Enrolling..."
+                                                        : "Enroll Now"}
+                                            </p>
+                                        </div>
                                     </button>
                                 )}
 

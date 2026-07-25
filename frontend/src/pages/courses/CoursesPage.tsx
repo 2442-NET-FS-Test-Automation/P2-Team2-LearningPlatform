@@ -3,7 +3,7 @@ import CourseCard from "../../components/CourseCard";
 import PaginationControls from "../../components/layout/PaginationControls";
 import { COURSE_CATEGORIES, type CourseCategory, type CourseCompact } from "../../lib/types";
 import { getEnabledCourses } from "../../api/coursesRequests";
-import { Search, SearchX } from "lucide-react";
+import { Search } from "lucide-react";
 
 export default function CoursesPage() {
     const [courses, setCourses] = useState<CourseCompact[]>([]);
