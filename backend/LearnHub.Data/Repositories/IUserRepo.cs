@@ -5,7 +5,7 @@ namespace LearnHub.Data.Repositories;
 
 public interface IUserRepo
 {
-    Task<PagedResult<User>> GetAllAsync(int page,int pageSize,UserRoles? role = null,string? fullName = null);    
+    Task<PagedResult<User>> GetAllAsync(int page,int pageSize,UserRoles? role = null,string? fullName = null, bool? isActive = null);    
     Task<User?> GetByIdAsync(int id);
     Task<User> CreateAsync(User user);
     Task UpdateAsync(User user);

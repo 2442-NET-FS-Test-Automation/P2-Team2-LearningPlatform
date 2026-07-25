@@ -39,7 +39,8 @@ public class UserController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
         [FromQuery] string? fullName = null,
-        [FromQuery] UserRoles? role = null
+        [FromQuery] UserRoles? role = null,
+        [FromQuery] bool? isActive = null
         )
     {
         if (page < 1) page = 1;
@@ -50,7 +51,8 @@ public class UserController : ControllerBase
             page,
             pageSize,
             role,
-            fullName);
+            fullName,
+            isActive);
 
         var response = new PagedResult<UserDto>
         {
