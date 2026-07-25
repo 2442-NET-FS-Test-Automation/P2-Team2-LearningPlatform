@@ -12,9 +12,11 @@ public class ShiftsRepo : IShiftsRepo
         _context = context;
     }
 
-    public async Task<PagedResult<Shift>> GetShiftsAsync(int page = 1, int pageSize = 10)
+    public async Task<PagedResult<Shift>> GetShiftsAsync(int page = 1, int pageSize = 10, string? search = null)
     {
         var query = _context.Shifts.AsQueryable();
+
+        if (search != null) query = query.Where(s => s.Name.ToLower().Contains(search.ToLower()));
 
         var totalItems = await query.CountAsync();
 

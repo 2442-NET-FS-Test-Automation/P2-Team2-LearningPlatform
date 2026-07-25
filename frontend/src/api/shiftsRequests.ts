@@ -1,11 +1,12 @@
 import type { CreateShiftDto, UpdateShiftDto } from "../lib/types";
 import { api } from "./api";
 
-export async function getShifts(page: number | null, pageSize: number | null) {
+export async function getShifts(page: number | null, pageSize: number | null, search: string) {
     const res = await api.get("/Shifts", {
         params: {
             page,
-            pageSize
+            pageSize,
+            search
         }
     });
     return res.data;
@@ -13,7 +14,7 @@ export async function getShifts(page: number | null, pageSize: number | null) {
 
 export async function createShift(dto: CreateShiftDto) {
     console.log("dto", dto)
-    const res = await api.post("/Shifts", null, { params: { Name: dto.name, StartTime: dto.startTime, EndTime: dto.endTime } });
+    const res = await api.post("/Shifts", dto);
     return res.data;
 }
 

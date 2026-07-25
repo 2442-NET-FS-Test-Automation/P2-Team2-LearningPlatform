@@ -24,7 +24,7 @@ export default function ManageShiftsSection() {
     useEffect(() => {
         setLoading(true);
 
-        getShifts(currentPage, itemsPerPage)
+        getShifts(currentPage, itemsPerPage, search)
             .then((res) => {
                 setShifts(res.items);
                 setTotalPages(res.totalPages);
@@ -35,7 +35,18 @@ export default function ManageShiftsSection() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [search, itemsPerPage, created]);
+    }, [itemsPerPage, created]);
+
+    useEffect(() => {
+        getShifts(currentPage, itemsPerPage, search)
+            .then((res) => {
+                setShifts(res.items);
+                setTotalPages(res.totalPages);
+            })
+            .catch((e) => {
+                setError(e);
+            });
+    }, [search]);
 
     useMemo(() => {
         setCurrentPage(1);

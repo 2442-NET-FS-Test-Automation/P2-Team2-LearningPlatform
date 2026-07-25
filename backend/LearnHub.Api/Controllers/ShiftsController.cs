@@ -18,7 +18,8 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     [Authorize]
     public async Task<ActionResult<IEnumerable<Shift>>> GetAllShifts(
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? search = null
     )
     {
         // Set pagination limits
@@ -26,7 +27,7 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
         if (pageSize < 1) pageSize = 10;
         if (pageSize > 50) pageSize = 50;
 
-        var result = await _repo.GetShiftsAsync(page, pageSize);
+        var result = await _repo.GetShiftsAsync(page, pageSize, search);
 
         var response = new PagedResult<Shift>
         {

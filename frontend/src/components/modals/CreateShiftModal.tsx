@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import { useState } from "react";
 import { createShift } from "../../api/shiftsRequests";
+import { isValidTimeRange } from "../../lib/funcs";
 
 interface Props {
     onClose: () => void;
@@ -36,6 +37,12 @@ export default function CreateUserModal({
         setError(null);
         setIsSubmitting(true);
 
+        if(!isValidTimeRange(form.startTime, form.endTime)) {
+            setError("Shift time should be at least one hour");
+            setIsSubmitting(false);
+            return;
+        }
+
         try {
             await createShift(form).finally(() => setIsSubmitting(false));
 
@@ -43,7 +50,7 @@ export default function CreateUserModal({
             onClose();
         } catch (err: any) {
             console.error(err.response?.data);
-            setError(err.response?.data.error);
+            setError(err.response?.data);
         }
     }
 
