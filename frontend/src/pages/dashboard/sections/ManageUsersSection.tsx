@@ -97,10 +97,6 @@ export default function ManageUsersSection() {
                     <p className="text-muted">
                         Loading users...
                     </p>
-                ) : users.length === 0 ? (
-                    <p className="text-muted">
-                        No users found.
-                    </p>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
@@ -132,33 +128,39 @@ export default function ManageUsersSection() {
                             </thead>
 
                             <tbody>
-                                {users.map((user) => (
-                                    <tr
-                                        key={user.id}
-                                        className="border-b transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
-                                    >
-                                        <td className="py-3">{user.username}</td>
-                                        <td>{user.firstName}{" "}{user.lastName}</td>
-                                        <td>{user.email}</td>
-                                        <td>
-                                            <span className="blue-accent-chip rounded-full px-2.5 py-0.5 text-xs font-semibold">
-                                                {user.role}
-                                            </span>
-                                        </td>
+                                {users.length === 0 ? (
+                                <p className="text-muted">
+                                    No users found.
+                                </p>
+                                ) : (
+                                    users.map((user) => (
+                                        <tr
+                                            key={user.id}
+                                            className="border-b transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                                        >
+                                            <td className="py-3">{user.username}</td>
+                                            <td>{user.firstName}{" "}{user.lastName}</td>
+                                            <td>{user.email}</td>
+                                            <td>
+                                                <span className="blue-accent-chip rounded-full px-2.5 py-0.5 text-xs font-semibold">
+                                                    {user.role}
+                                                </span>
+                                            </td>
 
-                                        <td className="text-right">
-                                            <div className="flex justify-end gap-2">
-                                                <button className="btn-outline p-2" >
-                                                    <Pencil size={18} />
-                                                </button>
+                                            <td className="text-right">
+                                                <div className="flex justify-end gap-2">
+                                                    <button className="btn-outline p-2" >
+                                                        <Pencil size={18} />
+                                                    </button>
 
-                                                <button className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70">
-                                                    <Trash size={18} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+                                                    <button className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70">
+                                                        <Trash size={18} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>
