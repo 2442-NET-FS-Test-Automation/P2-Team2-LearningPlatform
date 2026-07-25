@@ -6,10 +6,12 @@ using LearnHub.Data.Repositories;
 using LearnHub.Api.DTOs.Courses;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
+using LearnHub.Api.Filters;
 
 namespace LearnHub.Api.Controllers;
 
 // Define Controller route
+[ServiceFilter(typeof(LogActionDurationFilter))]
 [Route("api/[controller]")]
 [ApiController]
 public class CoursesController : ControllerBase
@@ -167,7 +169,7 @@ public class CoursesController : ControllerBase
         var cts = GetCoursesCacheToken();
 
         var options = new MemoryCacheEntryOptions()
-            .SetAbsoluteExpiration(TimeSpan.FromMinutes(0.5))
+            .SetAbsoluteExpiration(TimeSpan.FromMinutes(15))
             .AddExpirationToken(new CancellationChangeToken(cts.Token));
 
         _cache.Set(cacheKey, response, options);

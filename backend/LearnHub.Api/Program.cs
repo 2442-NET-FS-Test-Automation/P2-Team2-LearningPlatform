@@ -11,6 +11,7 @@ using LearnHub.Data;
 using LearnHub.Api.Services;
 using LearnHub.Data.Entities;
 using LearnHub.Api.Middleware;
+using LearnHub.Api.Filters;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,6 +49,7 @@ builder.Services.AddScoped<IShiftsRepo, ShiftsRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ISeeder, Seeder>();
+builder.Services.AddScoped<LogActionDurationFilter>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
