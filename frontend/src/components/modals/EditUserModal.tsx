@@ -137,17 +137,15 @@ export default function EditUserModal({
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-                <div className="card w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-                    <h2 className="text-2xl font-bold">
-                        Edit User
-                    </h2>
-                    <button onClick={onClose}>
-                        <X/>
-                    </button>
-                </div>
-
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+            <div className="card w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+                <h2 className="text-2xl font-bold">
+                    Edit User
+                </h2>
+                <button onClick={onClose}>
+                    <X/>
+                </button>
+                
                 <form 
                 onSubmit={handleSubmit}
                 className="space-y-5 overflow-y-auto pr-2 flex-1"
