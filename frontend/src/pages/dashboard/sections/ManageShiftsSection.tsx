@@ -1,41 +1,50 @@
-import { useEffect, useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Pencil, Plus, Search, Trash } from "lucide-react";
+
+import PaginationControls from "../../../components/layout/PaginationControls";
+import CreateShiftModal from "../../../components/modals/CreateShiftModal";
+
+import { getShifts } from "../../../api/shiftsRequests";
+import type { ShiftDto } from "../../../lib/types";
 
 export default function ManageShiftsSection() {
-    const [shifts, setShifts] = useState<[]>([]); // TODO: Specify type
-    const [filteredShifts, setFilteredShifts] = useState<[]>([]); // TODO: Specify type
+    const [shifts, setShifts] = useState<ShiftDto[]>([]); // TODO: Specify type
     const [search, setSearch] = useState("");
 
-    const [loading, setLoading] = useState(true);
-    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(6);
+    const [totalPages, setTotalPages] = useState(0);
 
-    async function loadShifts() {
-            setLoading(true);
-    
-            try {
-                const response = await getShifts();
-    
-                setShifts(response.items);
-                setFilteredShifts(response.items);
-            } finally {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [created, setCreated] = useState(false);
+
+    useEffect(() => {
+        setLoading(true);
+
+        getShifts(currentPage, itemsPerPage)
+            .then((res) => {
+                setShifts(res.items);
+                setTotalPages(res.totalPages);
+            })
+            .catch((e) => {
+                setError(e);
+            })
+            .finally(() => {
                 setLoading(false);
-            }
-        }
-    
-        useEffect(() => {
-            loadShifts();
-        }, []);
-    
-        useEffect(() => {
-            let result = shifts;
-    
-            if (search.trim() !== "") {
-                const value = search.toLowerCase();
-                result = result.filter((u) => u.name.toLowerCase().includes(value));
-            }
-            setFilteredShifts(result);
-    
-        }, [search, shifts]);
+            });
+    }, [search, itemsPerPage, created]);
+
+    useMemo(() => {
+        setCurrentPage(1);
+    }, [search, itemsPerPage, created]);
+
+    // Pagination handlers
+    const handlePrevious = () => { setCurrentPage((prev) => Math.max(prev - 1, 1)) };
+    const handleNext = () => { setCurrentPage((prev) => Math.min(prev + 1, totalPages)) };
+    const goToPage = (pagenum: number) => { setCurrentPage(Math.min(Math.max(pagenum, 1), totalPages)) };
 
     return (
         <>
@@ -53,7 +62,7 @@ export default function ManageShiftsSection() {
                     </button>
                 </div>
 
-                {/* Search + role filter */}
+                {/* Search */}
                 <div className="flex flex-col gap-3 sm:flex-row">
                     <div className="relative flex-1">
                         <Search
@@ -74,7 +83,7 @@ export default function ManageShiftsSection() {
                     <p className="text-muted">
                         Loading shifts...
                     </p>
-                ) : filteredShifts.length === 0 ? (
+                ) : shifts.length === 0 ? (
                     <p className="text-muted">
                         No shifts found.
                     </p>
@@ -83,30 +92,60 @@ export default function ManageShiftsSection() {
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="border-b text-left text-slate-500 dark:text-slate-400">
-                                    <th className="py-3">Username</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th className="text-right">
-                                        Actions
-                                    </th>
+                                    <th className="py-3">Name</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Assignees</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                {/* TODO: Map the courses once its done same style as ManageUsers*/}
+                                {shifts.map((shift) => (
+                                    <tr
+                                        key={shift.id}
+                                        className="border-b transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                                    >
+                                        <td className="py-3">{shift.name}</td>
+                                        <td>{shift.startTime}</td>
+                                        <td>{shift.endTime}</td>
+                                        <td>{shift.assignees ? shift.assignees : 0}</td>
+
+                                        <td className="text-right">
+                                            <div className="flex justify-end gap-2">
+                                                <button className="btn-outline p-2" >
+                                                    <Pencil size={18} />
+                                                </button>
+
+                                                <button className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70">
+                                                    <Trash size={18} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
+                    </div>
+                )}
+                {!loading && !error && (
+                    <div className="mt-auto">
+                        <PaginationControls
+                            totalPages={totalPages}
+                            currentPage={currentPage}
+                            goToPage={goToPage}
+                            handlePrevious={handlePrevious}
+                            handleNext={handleNext}
+                            setItemsPerPage={setItemsPerPage}
+                        />
                     </div>
                 )}
             </div>
 
             {showCreateModal && (
-                <></> // TODO: Make the CreateShiftModal
-                // <CreateUserModal
-                //     onClose={() => setShowCreateModal(false)}
-                //     onCreated={loadUsers}
-                // />
+                <CreateShiftModal
+                    onClose={() => setShowCreateModal(false)}
+                    onCreated={() => { setCreated((c) => !c) }}
+                />
             )}
         </>
     );

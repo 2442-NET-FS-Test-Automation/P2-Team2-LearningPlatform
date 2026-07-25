@@ -15,13 +15,15 @@ export type RegisterData = {
 }
 
 export type AuthUser = UserInfo & {
-    Id: number;
+    id: number;
 }
 
 export type AuthContextType = {
     user: AuthUser | null;
+    setUser: (user: AuthUser) => void;
     isLoading: boolean;
     login: (credentials: LoginCredentials) => Promise<AuthUser>;
     register: (data: RegisterData) => Promise<AuthUser>;
     logout: () => void;
+    setToken: (token: string) => void;
 }

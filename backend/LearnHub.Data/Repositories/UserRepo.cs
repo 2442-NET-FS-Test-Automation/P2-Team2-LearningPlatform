@@ -15,20 +15,22 @@ public class UserRepo : IUserRepo
         _context = context;
     }
 
-    public async Task<PagedResult<User>> GetAllAsync(int page, int pageSize, UserRoles? role)
+    public async Task<PagedResult<User>> GetAllAsync(int page, int pageSize, UserRoles? role, string? fullName = null, bool? isActive = null)
     {
-        var query = _context.Users.Select(u => new User
-            {
-                Id = u.Id,
-                Role = u.Role,
-                Username = u.Username,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                Email = u.Email,
-                Bio = u.Bio
-            });
+        IQueryable<User> query = _context.Users;
 
-        if(role != null) query = query.Where(u => u.Role == role);
+        if (isActive != null) query = query.Where(u => u.IsActive == isActive);
+
+        if (role.HasValue) query = query.Where(u => u.Role == role.Value);
+
+        if (!string.IsNullOrWhiteSpace(fullName))
+        {
+            fullName = fullName.Trim();
+
+            query = query.Where(u =>
+                (u.FirstName + " " + u.LastName).ToLower().Contains(fullName.ToLower())
+                || u.Username.ToLower().Contains(fullName.ToLower()));   
+        }
 
         var totalItems = await query.CountAsync();
         
@@ -51,7 +53,17 @@ public class UserRepo : IUserRepo
     public async Task<User?> GetByIdAsync(int id)
     {
         return await _context.Users
-            .FirstOrDefaultAsync(o => o.Id == id);
+            .Include(u => u.Student)
+                .ThenInclude(s => s!.StudentCourses)
+                    .ThenInclude(sc => sc.Course)
+
+            .Include(u => u.Professor)
+                .ThenInclude(p => p!.Courses)
+
+            .Include(u => u.Professor)
+                .ThenInclude(p => p!.Shift)
+
+            .FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public async Task<User> CreateAsync(User user)
@@ -73,34 +85,6 @@ public class UserRepo : IUserRepo
             .AnyAsync(o => o.Id == id);
     }
 
-    [HttpGet("search")]
-    public async Task<PagedResult<User>> SearchByFullNameAsync(string fullName, int page, int pageSize)
-    {
-        fullName = fullName.ToLower();
-        var query = _context.Users
-            .Where(u => 
-                (u.FirstName + " " + u.LastName)
-                .ToLower()
-                .Contains(fullName))
-            .OrderBy (u => u.FirstName)
-            .ThenBy(u => u.LastName);
-
-        var totalItems = await query.CountAsync();
-        
-        var users = await query
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-        
-        return new PagedResult<User>
-        {
-            Items = users,
-            Page = page,
-            PageSize = pageSize,
-            TotalItems = totalItems,
-            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
-        };
-    }
 
     public void Add(User user)
     {
@@ -119,4 +103,13 @@ public class UserRepo : IUserRepo
         return await _context.Users
             .AnyAsync(u => u.Username == username);
     }
+
+    public async Task DeleteAsync(User user)
+    {
+        user.IsActive = false;
+
+        await _context.SaveChangesAsync();
+    }
+
+    
 }

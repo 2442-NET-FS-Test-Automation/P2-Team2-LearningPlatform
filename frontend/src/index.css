@@ -40,12 +40,40 @@
     h3 {
         @apply dark:text-white/90;
     }
+
+    /* WebKit scrollbar (Chrome, Edge, Safari) */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--scrollbar-track, #f1f1f1);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb, #888);
+        border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--scrollbar-thumb-hover, #555);
+    }
+
+    /* Firefox */
+    * {
+        scrollbar-color: var(--scrollbar-thumb, #888) var(--scrollbar-track, #f1f1f1);
+        scrollbar-width: thin;
+    }
 }
 
 @layer components {
     /* General */
     .container-page {
         @apply mx-auto max-w-7xl px-8;
+    }
+    .dashboard-section {
+        @apply h-[80vh];
     }
     .divider-block {
         @apply border-t border-slate-200 pt-6 dark:border-slate-700;
@@ -84,7 +112,7 @@
 
     /* Cards */
     .card-grid {
-        @apply grid gap-8 md:grid-cols-3;
+        @apply grid grid-cols-1 gap-6 auto-rows-fr sm:grid-cols-2 lg:grid-cols-3;
     }
     .card {
         @apply rounded-xl border border-slate-200 bg-white/80 p-6 shadow-md transition-all;
@@ -194,4 +222,40 @@
     .animate-float-slower {
         animation: none;
     }
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.4s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-fade-in-up {
+        animation: none;
+    }
+}
+
+/* Colors for scrollbar */
+:root {
+    --scrollbar-track: #f1f1f1;
+    --scrollbar-thumb: #c1c1c1;
+    --scrollbar-thumb-hover: #a8a8a8;
+}
+
+/* Dark theme overrides */
+.dark {
+    --scrollbar-track: #1e293b;         /* slate-800-ish */
+    --scrollbar-thumb: #475569;         /* slate-600 */
+    --scrollbar-thumb-hover: #64748b;   /* slate-500 */
 }

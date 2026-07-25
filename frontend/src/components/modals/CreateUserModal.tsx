@@ -72,13 +72,13 @@ export default function CreateUserModal({
             onClose();
         } catch (err: any) {
             console.error(err.response?.data);
-            alert(JSON.stringify(err.response?.data));
+            setError(err.response?.data.error);
         }
     }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-            <div className="card w-full max-w-3xl shadow-xl animate-in fade-in zoom-in duration-200">
+            <div className="card w-full max-w-3xl max-h-screen shadow-xl overflow-auto animate-in fade-in zoom-in duration-200">
                 {/* Header */}
                 <div className="flex items-center justify-between border-b pb-4 mb-6">
                     <div>
@@ -165,7 +165,7 @@ export default function CreateUserModal({
                         <select
                             className="form-input w-full"
                             name="role"
-                            value={form.role}
+                            value={form.role != null ? form.role : "Student"}
                             onChange={handleChange}
                         >
                             <option value="Student">Student</option>

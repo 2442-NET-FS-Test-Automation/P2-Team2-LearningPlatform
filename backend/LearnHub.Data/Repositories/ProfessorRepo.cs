@@ -4,6 +4,7 @@ using LearnHub.Data;
 using LearnHub.Data.Entities;
 using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 public class ProfessorRepo: IProfessorRepo
 {
@@ -19,5 +20,21 @@ public class ProfessorRepo: IProfessorRepo
     public void Add(Professor professor)
     {
         _context.Professors.Add(professor);
+    }
+
+    public async Task<Professor?> GetByIdAsync(int id)
+    {
+        return await _context.Professors
+            .Include(p => p.User)
+            .Include(p => p.Shift)
+            .Include(p => p.Courses)
+            .FirstOrDefaultAsync(s => s.Id == id);
+    }
+
+    public async Task<User> AddAsync(Professor professor)
+    {
+        _context.Professors.Add(professor);
+        await _context.SaveChangesAsync();
+        return professor.User;
     }
 }

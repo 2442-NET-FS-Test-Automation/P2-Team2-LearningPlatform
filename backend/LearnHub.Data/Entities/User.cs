@@ -19,4 +19,6 @@ public class User
     [Required]
     public string Email { get; set; } = default!;
     public bool IsActive { get; set; } = true;
+    public Professor? Professor {get; set;}
+    public Student? Student{get; set;}
 }

@@ -43,12 +43,15 @@ builder.Services.AddScoped<IStudentRepo, StudentRepo>();
 builder.Services.AddScoped<IProfessorRepo, ProfessorRepo>();
 builder.Services.AddScoped<ICourseRepo, CourseRepo>();
 builder.Services.AddScoped<IReportRepo, ReportRepo>();
+builder.Services.AddScoped<IShiftsRepo, ShiftsRepo>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ISeeder, Seeder>();
 
-builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 
 // CORS Configuration
@@ -81,6 +84,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseExceptionHandlingMiddleware();
 

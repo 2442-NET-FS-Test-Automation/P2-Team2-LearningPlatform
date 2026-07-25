@@ -56,11 +56,14 @@ public class CoursesController : ControllerBase
 
     // Define endpoint route
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<CourseListDto>>> GetCourses(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
         [FromQuery] string? searchName = null,
-        [FromQuery] CourseCategory? categoryFilter = null
+        [FromQuery] CourseCategory? categoryFilter = null,
+        [FromQuery] bool? isActiveFilter = null,
+        [FromQuery] bool detail = false
 
     )
     {   
@@ -69,52 +72,52 @@ public class CoursesController : ControllerBase
         if (pageSize < 1) pageSize = 10;
         if (pageSize > 50) pageSize = 50;
 
-
-
         //cache key
-        var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}";
-
+        var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}:isActive:{isActiveFilter}:detail:{detail}";
 
         if(_cache.TryGetValue(cacheKey, out PagedResult<CourseListDto>? cachedResponse) && cachedResponse is not null)
         {    
             return Ok(cachedResponse);
         }
 
-
-
         // await for the courses
-
-        var result = await _repo.GetAllAsync(page, pageSize, searchName, categoryFilter);
+        var result = await _repo.GetAllAsync(page, pageSize, searchName, categoryFilter, isActiveFilter);
         
-        var response = new PagedResult<CourseListDto>
+        if (detail == false)
         {
-            Items = result.Items.Select(c => new CourseListDto
+            var response = new PagedResult<CourseListDto>
             {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                Category = c.CategoryName.ToString()
-            }).ToList(),
+                Items = result.Items.Select(c => new CourseListDto
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    Category = c.CategoryName.ToString()
+                }).ToList(),
 
-            Page = result.Page,
-            PageSize = result.PageSize,
-            TotalItems = result.TotalItems,
-            TotalPages = result.TotalPages
-        };
+                Page = result.Page,
+                PageSize = result.PageSize,
+                TotalItems = result.TotalItems,
+                TotalPages = result.TotalPages
+            };
+
+            //set cache response
+            var cts = GetCoursesCacheToken();
+
+            var options = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(15))
+                .AddExpirationToken(new CancellationChangeToken(cts.Token));
 
 
-        //set cache response
-        var cts = GetCoursesCacheToken();
+            _cache.Set(cacheKey, response, options);
 
-        var options = new MemoryCacheEntryOptions()
-            .SetAbsoluteExpiration(TimeSpan.FromMinutes(15))
-            .AddExpirationToken(new CancellationChangeToken(cts.Token));
-
-
-        _cache.Set(cacheKey, response, options);
-
-        // return message + response
-        return Ok(response);
+            // return message + response
+            return Ok(response);
+        }   
+        else
+        {
+            return Ok("details");
+        }
     }
 
     [HttpGet("enabled")]
@@ -132,18 +135,15 @@ public class CoursesController : ControllerBase
 
 
         //cache key
-        var cacheKey = $"courses:enabled:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}";
-
+        var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}:isActive:{true}";
 
         if(_cache.TryGetValue(cacheKey, out PagedResult<CourseListDto>? cachedResponse) && cachedResponse is not null)
         {
             return Ok(cachedResponse);
         }
 
-        
-
         // await for the courses
-        var result = await _repo.GetEnabledAsync(page, pageSize, searchName, categoryFilter);
+        var result = await _repo.GetAllAsync(page, pageSize, searchName, categoryFilter, true);
         
         var response = new PagedResult<CourseListDto>
         {
@@ -171,43 +171,6 @@ public class CoursesController : ControllerBase
             .AddExpirationToken(new CancellationChangeToken(cts.Token));
 
         _cache.Set(cacheKey, response, options);
-
-
-        // return message + response
-        return Ok(response);
-    }
-
-    [HttpGet("disabled")]
-    public async Task<ActionResult<IEnumerable<CourseListDto>>> GetDisabledCourses(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10,
-        [FromQuery] string? searchName = null,
-        [FromQuery] CourseCategory? categoryFilter = null
-    )
-    {
-        // Set pagination limits
-        if (page < 1) page = 1;
-        if (pageSize < 1) pageSize = 10;
-        if (pageSize > 50) pageSize = 50;
-
-        // await for the courses
-        var result = await _repo.GetDisabledAsync(page, pageSize, searchName, categoryFilter);
-
-        var response = new PagedResult<CourseListDto>
-        {
-            Items = result.Items.Select(c => new CourseListDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                Category = c.CategoryName.ToString()
-            }).ToList(),
-
-            Page = result.Page,
-            PageSize = result.PageSize,
-            TotalItems = result.TotalItems,
-            TotalPages = result.TotalPages
-        };
 
         // return message + response
         return Ok(response);
@@ -243,8 +206,10 @@ public class CoursesController : ControllerBase
                 Certification = course.Certification,
 
                 Instructor =
-                    course.Professor.User.FirstName + " " +
-                    course.Professor.User.LastName,
+                    course.Professor != null
+                        ? course.Professor.User.FirstName + " " +
+                        course.Professor.User.LastName
+                        : "No assigned",
                 EnrolledStudents = enrolledStudents,
                 Schedule = schedule
                     .Select(s => new CourseScheduleDto
@@ -292,9 +257,6 @@ public class CoursesController : ControllerBase
         var createdCourse = await _repo.CreateAsync(course);
         InvalidateCoursesCache();
 
-
-        
-
         // Return where you can consult the createdCourse and the required parameters
         return CreatedAtAction(
             nameof(GetCourse),
@@ -304,7 +266,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPatch("{id:int}")]
-        [Authorize(Roles = "Admin,Professor")]
+    [Authorize(Roles = "Admin,Professor")]
     public async Task<IActionResult> PatchCourse(int id, UpdateCourseDto dto)
     {
         if(DataTypeVerification.IsNumValid (id))
@@ -355,7 +317,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-        [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteCourse(int id)
     {
         if(DataTypeVerification.IsNumValid(id))

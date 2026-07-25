@@ -70,20 +70,24 @@ public class AuthController : ControllerBase {
         }
 
         var token = _tokens.Issue(user.Username, user.Role);
-
+        var publicUser = ToPublicUser(user!);
         return Ok(new {
-            user,
+            user = publicUser,
             token
         });
     }
 
     [HttpGet("me")]
-    public ActionResult Me()
+    public async Task<ActionResult> Me()
     {
-        var userFound = User.Identity?.Name == null ? null : _users.GetUserByUsernameAsync(User.Identity.Name);
+        var user = User.Identity?.Name == null ? null : await _users.GetUserByUsernameAsync(User.Identity.Name);
+        if (user == null) return Unauthorized();
+        
+        var publicUser = ToPublicUser(user);
+
         return Ok(new
         {
-            user = userFound,
+            user = publicUser,
             role = User.FindFirstValue(ClaimTypes.Role)
         });
     }
@@ -95,14 +99,11 @@ public class AuthController : ControllerBase {
         throw new ArgumentException("Este es un error provocado intencionalmente para probar el middleware.");
     }
 
-
-
-
     // -- Helper methods --
-    private static UserDto ToPublicUser(User user)
+    public static UserDto ToPublicUser(User user)
     {
         return new UserDto(
-            user.Id.ToString(),
+            user.Id,
             user.Username,
             user.FirstName,
             user.LastName,

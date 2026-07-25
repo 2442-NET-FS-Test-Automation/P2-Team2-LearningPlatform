@@ -16,17 +16,21 @@ public class UserService : IUserService
     private readonly IProfessorRepo _professorRepo;
     private readonly IStudentRepo _studentRepo;
     private readonly IUserRepo _userRepo;
+    private readonly ICourseRepo _courseRepo;
+
 
     public UserService(LearnHubDbContext db, IPasswordHasher<User> hasher, 
         IProfessorRepo professorRepo, 
         IStudentRepo studentRepo,
-        IUserRepo userRepo)
+        IUserRepo userRepo,
+        ICourseRepo courseRepo)
     {
         _db = db;
         _hasher = hasher;
         _professorRepo = professorRepo;
         _studentRepo = studentRepo;
         _userRepo = userRepo;
+        _courseRepo = courseRepo;
     }
 
     // -- Regster user task --
@@ -42,12 +46,12 @@ public class UserService : IUserService
     {
         //validate if email exists
         if(await _userRepo.EmailExistsAsync(email))
-            return "Email already registered -- testing";
+            return "Email already registered";
         
         
         //validate if user exists
         if(await _userRepo.UsernameExistsAsync(username))
-            return "Username already registered -- testing";
+            return "Username already registered";
 
             
 
@@ -170,6 +174,69 @@ public class UserService : IUserService
         return user;
     }
 
+    public async Task<User?> UpdateUserAsync(
+        User user,
+        UpdateUserDto dto)
+    {
+        if (user == null) return null;
+
+        if (dto.Email != null && await _userRepo.EmailExistsAsync(dto.Email)) throw new Exception("Email is already taken");
+        if (dto.Username != null && await _userRepo.UsernameExistsAsync(dto.Username)) throw new Exception("Username is already taken");
+
+        // USER DATA
+        user.Username = dto.Username ?? user.Username;
+        user.FirstName = dto.FirstName ?? user.FirstName;
+        user.LastName = dto.LastName ?? user.LastName;
+        user.Email = dto.Email ?? user.Email;
+        user.Bio = dto.Bio ?? user.Bio;
+
+        // STUDENT DATA
+        if(user.Student != null)
+        {
+            if(dto.BirthDate.HasValue)
+            {
+                user.Student.BirthDate = dto.BirthDate.Value;
+            }
+            if(dto.StudentCourseIds != null)
+            {
+                await UpdateStudentCoursesAsync(
+                    user.Student.Id,
+                    dto.StudentCourseIds
+                );
+            }
+        }
+
+        // PROFESSOR DATA
+        if(user.Professor != null)
+        {
+            if(dto.ShiftId.HasValue)
+            {
+                user.Professor.ShiftId = dto.ShiftId.Value;
+            }
+
+            if(dto.ContractDate.HasValue)
+            {
+                user.Professor.ContractDate = dto.ContractDate.Value;
+            }
+
+            if(dto.IsActive.HasValue)
+            {
+                user.Professor.IsActive = dto.IsActive.Value;
+            }
+
+            if(dto.ProfessorCourseIds != null)
+            {
+                await UpdateProfessorCoursesAsync(
+                    user.Professor.Id,
+                    dto.ProfessorCourseIds
+                );
+            }
+        }
+
+        await _userRepo.UpdateAsync(user);
+
+        return user;
+    }
     public async Task<User?> LoginUserAsync(string emailOrUsername, string password)
     {
         //validate if user exists
@@ -183,6 +250,101 @@ public class UserService : IUserService
         var result = _hasher.VerifyHashedPassword(foundUser, foundUser.PasswordHash, password);
 
         return result == PasswordVerificationResult.Success ? foundUser : null;
+    }
+
+    public async Task<bool> UpdateStudentCoursesAsync(
+        int studentId,
+        List<int> courseIds)
+    {
+        var student = await _studentRepo.GetByIdAsync(studentId);
+
+        if(student == null)
+            return false;
+
+
+        var currentCourses = student.StudentCourses
+            .Select(sc => sc.CourseId)
+            .ToList();
+
+
+        // Cursos que se deben agregar
+        var coursesToAdd = courseIds
+            .Except(currentCourses)
+            .ToList();
+
+
+        // Cursos que se deben eliminar
+        var coursesToRemove = currentCourses
+            .Except(courseIds)
+            .ToList();
+
+
+
+        foreach(var courseId in coursesToAdd)
+        {
+            await _courseRepo.AddStudentAsync(
+                studentId,
+                courseId);
+        }
+
+
+
+        foreach(var courseId in coursesToRemove)
+        {
+            await _courseRepo.RemoveStudentAsync(
+                studentId,
+                courseId);
+        }
+
+
+        return true;
+    }
+
+    public async Task<bool> UpdateProfessorCoursesAsync(
+        int professorId,
+        List<int> courseIds)
+    {
+        var professor = await _professorRepo.GetByIdAsync(professorId);
+
+        if(professor == null)
+            return false;
+
+
+        var currentCourses = professor.Courses
+            .Select(c => c.Id)
+            .ToList();
+
+
+
+        var coursesToAdd = courseIds
+            .Except(currentCourses)
+            .ToList();
+
+
+
+        var coursesToRemove = currentCourses
+            .Except(courseIds)
+            .ToList();
+
+
+
+        foreach(var courseId in coursesToAdd)
+        {
+            await _courseRepo.AssignProfessorAsync(
+                courseId,
+                professorId);
+        }
+
+
+
+        foreach(var courseId in coursesToRemove)
+        {
+            await _courseRepo.RemoveProfessorAsync(
+                courseId);
+        }
+
+
+        return true;
     }
 
     public async Task<User?> GetUserByUsernameAsync(string username)

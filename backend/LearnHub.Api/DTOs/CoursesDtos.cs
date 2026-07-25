@@ -12,6 +12,8 @@ public class CourseListDto
     public string Description { get; set; } = default!;
 
     public string Category { get; set; } = default!;
+
+    public bool IsActive { get; set; }
 }
 
 public class CourseScheduleDto

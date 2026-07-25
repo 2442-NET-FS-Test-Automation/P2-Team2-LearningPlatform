@@ -21,7 +21,7 @@ public record LoginUserDto(
 
 // Client data returns
 public record UserDto(
-    string Id,
+    int Id,
     string Username,
     string FirstName,
     string LastName,
