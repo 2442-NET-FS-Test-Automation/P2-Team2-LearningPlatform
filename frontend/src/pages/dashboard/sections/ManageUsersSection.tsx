@@ -3,6 +3,7 @@ import { Search, Plus, Pencil, Trash, GraduationCap } from "lucide-react";
 
 import CreateUserModal from "../../../components/modals/CreateUserModal";
 import PromoteProfessorModal from "../../../components/modals/PromoteProfessorModal";
+import EditUserModal from "../../../components/modals/EditUserModal";
 
 import type { UserDto, UserRole } from "../../../lib/types";
 import { getUsers, deactivateUser } from "../../../api/usersRequest";
@@ -27,6 +28,9 @@ export default function ManageUsersSection() {
 
     const [showPromoteModal, setShowPromoteModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<UserDto | null>(null);
+
+    const [showEditModal,setShowEditModal] = useState(false);
+    const [selectedEditUser,setSelectedEditUser] = useState<UserDto|null>(null);
 
     // Get Courses from the API    
     useEffect(() => {
@@ -174,8 +178,12 @@ export default function ManageUsersSection() {
 
                                             <td className="text-right">
                                                 <div className="flex justify-end gap-2">
-                                                    <button className="btn-outline p-2" >
-                                                        <Pencil size={18} />
+                                                    <button className="btn-outline p-2" onClick={()=>{
+                                                        setSelectedEditUser(user);
+                                                        setShowEditModal(true);
+                                                    }}
+                                                    >
+                                                        <Pencil size={18}/>
                                                     </button>
 
                                                     {user.role === "Student" && (
@@ -234,6 +242,18 @@ export default function ManageUsersSection() {
                         setSelectedUser(null);
                     }}
                 />
+            )}
+            {showEditModal && selectedEditUser && (
+            <EditUserModal
+                user={selectedEditUser}
+                onClose={()=>{
+                    setShowEditModal(false);
+                    setSelectedEditUser(null);
+                }}
+                onUpdated={()=>{
+                    setCreated(c=>!c);
+                }}
+            />
             )}
         </>
     );
