@@ -173,3 +173,11 @@ export type UpdateProfileDto = {
     email?: string;
     bio?: string;
 }
+
+export type ShiftDto = {
+    id: number,
+    name: string,
+    startTime: string,
+    endTime: string,
+    assignees: string | null
+}
