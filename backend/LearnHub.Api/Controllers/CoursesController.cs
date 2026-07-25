@@ -29,11 +29,14 @@ public class CoursesController : ControllerBase
 
     // Define endpoint route
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<CourseListDto>>> GetCourses(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
         [FromQuery] string? searchName = null,
-        [FromQuery] CourseCategory? categoryFilter = null
+        [FromQuery] CourseCategory? categoryFilter = null,
+        [FromQuery] bool? isActiveFilter = null,
+        [FromQuery] bool detail = false
 
     )
     {   
@@ -45,7 +48,7 @@ public class CoursesController : ControllerBase
 
 
         //cache key
-        var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}";
+        var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}:isActive:{isActiveFilter}:detail:{detail}";
 
 
         if(_cache.TryGetValue(cacheKey, out PagedResult<CourseListDto>? cachedResponse) && cachedResponse is not null)
@@ -57,30 +60,36 @@ public class CoursesController : ControllerBase
 
         // await for the courses
 
-        var result = await _repo.GetAllAsync(page, pageSize, searchName, categoryFilter);
+        var result = await _repo.GetAllAsync(page, pageSize, searchName, categoryFilter, isActiveFilter);
         
-        var response = new PagedResult<CourseListDto>
+        if (detail == false)
         {
-            Items = result.Items.Select(c => new CourseListDto
+            var response = new PagedResult<CourseListDto>
             {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                Category = c.CategoryName.ToString()
-            }).ToList(),
+                Items = result.Items.Select(c => new CourseListDto
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    Category = c.CategoryName.ToString()
+                }).ToList(),
 
-            Page = result.Page,
-            PageSize = result.PageSize,
-            TotalItems = result.TotalItems,
-            TotalPages = result.TotalPages
-        };
+                Page = result.Page,
+                PageSize = result.PageSize,
+                TotalItems = result.TotalItems,
+                TotalPages = result.TotalPages
+            };
 
+            //set cache response
+            _cache.Set(cacheKey, response, TimeSpan.FromMinutes(15));
 
-        //set cache response
-        _cache.Set(cacheKey, response, TimeSpan.FromMinutes(15));
-
-        // return message + response
-        return Ok(response);
+            // return message + response
+            return Ok(response);
+        }   
+        else
+        {
+            return Ok("details");
+        }
     }
 
     [HttpGet("enabled")]
@@ -98,18 +107,15 @@ public class CoursesController : ControllerBase
 
 
         //cache key
-        var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}";
-
+        var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}:isActive:{true}";
 
         if(_cache.TryGetValue(cacheKey, out PagedResult<CourseListDto>? cachedResponse) && cachedResponse is not null)
         {
             return Ok(cachedResponse);
         }
 
-        
-
         // await for the courses
-        var result = await _repo.GetEnabledAsync(page, pageSize, searchName, categoryFilter);
+        var result = await _repo.GetAllAsync(page, pageSize, searchName, categoryFilter, true);
         
         var response = new PagedResult<CourseListDto>
         {
@@ -131,42 +137,6 @@ public class CoursesController : ControllerBase
         //set cache response
         _cache.Set(cacheKey, response, TimeSpan.FromMinutes(0.5));
 
-
-        // return message + response
-        return Ok(response);
-    }
-
-    [HttpGet("disabled")]
-    public async Task<ActionResult<IEnumerable<CourseListDto>>> GetDisabledCourses(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10,
-        [FromQuery] string? searchName = null,
-        [FromQuery] CourseCategory? categoryFilter = null
-    )
-    {
-        // Set pagination limits
-        if (page < 1) page = 1;
-        if (pageSize < 1) pageSize = 10;
-        if (pageSize > 50) pageSize = 50;
-
-        // await for the courses
-        var result = await _repo.GetDisabledAsync(page, pageSize, searchName, categoryFilter);
-
-        var response = new PagedResult<CourseListDto>
-        {
-            Items = result.Items.Select(c => new CourseListDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                Category = c.CategoryName.ToString()
-            }).ToList(),
-
-            Page = result.Page,
-            PageSize = result.PageSize,
-            TotalItems = result.TotalItems,
-            TotalPages = result.TotalPages
-        };
 
         // return message + response
         return Ok(response);
