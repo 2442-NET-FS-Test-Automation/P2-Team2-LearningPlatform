@@ -7,5 +7,5 @@ public interface IShiftsRepo
     Task<PagedResult<Shift>> GetShiftsAsync(int page = 1, int pageSize = 10);
 
     Task<Shift?> AddAsync(Shift shift);
-    Task UpdateAsync(Shift shift);
+    Task<bool> UpdateAsync(Shift shift);
 }

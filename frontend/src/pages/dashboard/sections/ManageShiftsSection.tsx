@@ -17,10 +17,10 @@ export default function ManageShiftsSection() {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    
+
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [created, setCreated] = useState(false);
-    
+
     useEffect(() => {
         setLoading(true);
 
@@ -33,10 +33,10 @@ export default function ManageShiftsSection() {
             .catch((e) => {
                 setError(e);
             })
-            .finally(() =>{
+            .finally(() => {
                 setLoading(false);
             });
-    }, []);
+    }, [search, itemsPerPage, created]);
 
     useMemo(() => {
         setCurrentPage(1);
@@ -131,12 +131,12 @@ export default function ManageShiftsSection() {
                 {!loading && !error && (
                     <div className="mt-auto">
                         <PaginationControls
-                            totalPages={totalPages} 
-                            currentPage={currentPage} 
-                            goToPage={goToPage} 
-                            handlePrevious={handlePrevious} 
-                            handleNext={handleNext} 
-                            setItemsPerPage={setItemsPerPage} 
+                            totalPages={totalPages}
+                            currentPage={currentPage}
+                            goToPage={goToPage}
+                            handlePrevious={handlePrevious}
+                            handleNext={handleNext}
+                            setItemsPerPage={setItemsPerPage}
                         />
                     </div>
                 )}
@@ -145,7 +145,7 @@ export default function ManageShiftsSection() {
             {showCreateModal && (
                 <CreateShiftModal
                     onClose={() => setShowCreateModal(false)}
-                    onCreated={() => {setCreated((c) => !c)}}
+                    onCreated={() => { setCreated((c) => !c) }}
                 />
             )}
         </>

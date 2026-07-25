@@ -36,13 +36,16 @@ public class ShiftsRepo : IShiftsRepo
     }
     public async Task<Shift?> AddAsync(Shift shift)
     {
+        if (await _context.Shifts.AnyAsync(s => s.Name == shift.Name)) return null;
         _context.Shifts.Add(shift);
         await _context.SaveChangesAsync();
         return shift;
     }
-    public async Task UpdateAsync(Shift shift)
+    public async Task<bool> UpdateAsync(Shift shift)
     {
+        if (await _context.Shifts.AnyAsync(s => s.Name == shift.Name)) return false;
         _context.Shifts.Update(shift);
         await _context.SaveChangesAsync();
+        return true;
     }
 }

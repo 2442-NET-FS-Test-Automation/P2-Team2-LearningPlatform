@@ -19,7 +19,8 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     public async Task<ActionResult<IEnumerable<Shift>>> GetAllShifts(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10
-    ) {
+    )
+    {
         // Set pagination limits
         if (page < 1) page = 1;
         if (pageSize < 1) pageSize = 10;
@@ -41,16 +42,16 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     [HttpPost]
     [Authorize]
     public async Task<ActionResult<Shift>> AddShift(
-        [FromQuery] string name,
-        [FromQuery] string startTime,
-        [FromQuery] string endTime
+        [FromBody] ShiftDto dto
     )
     {
         try
         {
-            var shift = await _repo.AddAsync(new Shift{Name=name, StartTime=TimeOnly.Parse(startTime), EndTime= TimeOnly.Parse(endTime)});
+            var shift = await _repo.AddAsync(new Shift { Name = dto.Name, StartTime = TimeOnly.Parse(dto.StartTime), EndTime = TimeOnly.Parse(dto.EndTime) });
 
-            return Ok( shift );
+            if (shift == null) return Conflict("Shift name is already registered.");
+
+            return Ok(shift);
         }
         catch (Exception ex)
         {
@@ -65,29 +66,26 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     [Authorize]
     public async Task<ActionResult<Shift>> UpdateShift(
         int id,
-        [FromQuery] string name,
-        [FromQuery] string startTime,
-        [FromQuery] string endTime)
+        [FromBody] ShiftDto dto
+    )
     {
-        // try
-        // {
-        //     await _repo.UpdateAsync(new Shift { Name = Name, StartTime = TimeOnly.Parse(StartTime), EndTime = TimeOnly.Parse(EndTime) });
-
-        //     return Ok();
-        // }
-        // catch (Exception ex)
-        // {
-        //     return BadRequest(new
-        //     {
-        //         error = ex.Message
-        //     });
-        // }
-        return Ok();
+        try
+        {
+            await _repo.UpdateAsync(new Shift { Name = dto.Name, StartTime = TimeOnly.Parse(dto.StartTime), EndTime = TimeOnly.Parse(dto.EndTime) });
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                error = ex.Message
+            });
+        }
     }
 }
 
-public class ShiftDto{
-    public int Id { get; set; }
+public class ShiftDto
+{
     public string Name { get; set; } = default!;
     public string StartTime { get; set; } = default!;
     public string EndTime { get; set; } = default!;
