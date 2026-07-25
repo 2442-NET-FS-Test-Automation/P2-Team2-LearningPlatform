@@ -173,3 +173,15 @@ export type UpdateProfileDto = {
     email?: string;
     bio?: string;
 }
+
+export type ShiftDto = {
+    id: number,
+    name: string,
+    startTime: string,
+    endTime: string,
+    assignees: string | null
+}
+
+export type CreateShiftDto = Omit<ShiftDto, "id" | "assignees">;
+
+export type UpdateShiftDto = Partial<CreateShiftDto>
