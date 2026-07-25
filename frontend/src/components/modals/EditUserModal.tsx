@@ -138,8 +138,8 @@ export default function EditUserModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-            <div className="card w-full max-w-3xl">
-                <div className="flex justify-between border-b pb-4 mb-5">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+                <div className="card w-full max-w-3xl max-h-[90vh] flex flex-col">
                     <h2 className="text-2xl font-bold">
                         Edit User
                     </h2>
@@ -150,7 +150,7 @@ export default function EditUserModal({
 
                 <form 
                 onSubmit={handleSubmit}
-                className="space-y-5"
+                className="space-y-5 overflow-y-auto pr-2 flex-1"
                 >
                     <input
                     className="form-input w-full"
@@ -190,12 +190,12 @@ export default function EditUserModal({
                     {user.student && (
                         <div>
                             <label className="form-label">
-                                Courses
+                                Enrolled Courses
                             </label>
 
                             <select
                                 multiple
-                                className="form-input w-full h-40"
+                                className="form-input w-full h-32"
                                 value={form.studentCourseIds.map(String)}
                                 onChange={(e) => {
                                     const values = Array.from(
@@ -269,7 +269,7 @@ export default function EditUserModal({
                                 </label>
                                 <div>
                                     <label className="form-label">
-                                        Courses
+                                        Teaching Courses
                                     </label>
 
                                     <select
