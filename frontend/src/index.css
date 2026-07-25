@@ -224,16 +224,38 @@
     }
 }
 
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.4s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-fade-in-up {
+        animation: none;
+    }
+}
+
+/* Colors for scrollbar */
 :root {
-  /* ... your existing variables ... */
-  --scrollbar-track: #f1f1f1;
-  --scrollbar-thumb: #c1c1c1;
-  --scrollbar-thumb-hover: #a8a8a8;
+    --scrollbar-track: #f1f1f1;
+    --scrollbar-thumb: #c1c1c1;
+    --scrollbar-thumb-hover: #a8a8a8;
 }
 
 /* Dark theme overrides */
 .dark {
-  --scrollbar-track: #1e293b;   /* slate-800-ish */
-  --scrollbar-thumb: #475569;   /* slate-600 */
-  --scrollbar-thumb-hover: #64748b; /* slate-500 */
+    --scrollbar-track: #1e293b;         /* slate-800-ish */
+    --scrollbar-thumb: #475569;         /* slate-600 */
+    --scrollbar-thumb-hover: #64748b;   /* slate-500 */
 }
