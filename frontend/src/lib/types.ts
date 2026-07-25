@@ -181,3 +181,7 @@ export type ShiftDto = {
     endTime: string,
     assignees: string | null
 }
+
+export type CreateShiftDto = Omit<ShiftDto, "id" | "assignees">;
+
+export type UpdateShiftDto = Partial<CreateShiftDto>

@@ -34,4 +34,15 @@ public class ShiftsRepo : IShiftsRepo
             TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
         };
     }
+    public async Task<Shift?> AddAsync(Shift shift)
+    {
+        _context.Shifts.Add(shift);
+        await _context.SaveChangesAsync();
+        return shift;
+    }
+    public async Task UpdateAsync(Shift shift)
+    {
+        _context.Shifts.Update(shift);
+        await _context.SaveChangesAsync();
+    }
 }
