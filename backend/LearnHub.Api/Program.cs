@@ -43,6 +43,7 @@ builder.Services.AddScoped<IStudentRepo, StudentRepo>();
 builder.Services.AddScoped<IProfessorRepo, ProfessorRepo>();
 builder.Services.AddScoped<ICourseRepo, CourseRepo>();
 builder.Services.AddScoped<IReportRepo, ReportRepo>();
+builder.Services.AddScoped<IShiftsRepo, ShiftsRepo>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
