@@ -131,4 +131,22 @@ public class UserController : ControllerBase
             return Conflict(error: e.Message);
         }
     }
+
+
+    [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteUser (int id)
+    {
+        if (DataTypeVerification.IsNumValid(id))
+        {
+            var user = await _repo.GetByIdAsync(id);
+
+            if( user == null) return NotFound();
+
+            await _repo.DeleteAsync(user);
+            
+            return NoContent();
+        }
+        return BadRequest();
+    }
 }

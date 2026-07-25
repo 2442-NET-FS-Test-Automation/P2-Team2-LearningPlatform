@@ -47,3 +47,8 @@ export async function updateUser(
     const response = await api.patch(`/User/${id}`, dto);
     return response.data;
 }
+
+
+export async function deactivateUser(id: number): Promise<void> {
+    await api.delete(`/User/${id}`);
+}

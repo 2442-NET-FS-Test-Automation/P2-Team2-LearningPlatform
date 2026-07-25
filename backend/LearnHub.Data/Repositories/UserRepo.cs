@@ -104,5 +104,12 @@ public class UserRepo : IUserRepo
             .AnyAsync(u => u.Username == username);
     }
 
+    public async Task DeleteAsync(User user)
+    {
+        user.IsActive = false;
+
+        await _context.SaveChangesAsync();
+    }
+
     
 }

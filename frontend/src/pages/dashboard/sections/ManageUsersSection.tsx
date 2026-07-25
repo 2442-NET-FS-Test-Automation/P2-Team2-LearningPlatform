@@ -4,7 +4,7 @@ import { Search, Plus, Pencil, Trash } from "lucide-react";
 import CreateUserModal from "../../../components/modals/CreateUserModal";
 
 import type { UserDto, UserRole } from "../../../lib/types";
-import { getUsers } from "../../../api/usersRequest";
+import { getUsers, deactivateUser } from "../../../api/usersRequest";
 import PaginationControls from "../../../components/layout/PaginationControls";
 
 export default function ManageUsersSection() {
@@ -49,6 +49,23 @@ export default function ManageUsersSection() {
     const handlePrevious = () => {setCurrentPage((prev) => Math.max(prev - 1, 1))};
     const handleNext = () => {setCurrentPage((prev) => Math.min(prev + 1, totalPages))};
     const goToPage = (pagenum: number) => {setCurrentPage(Math.min(Math.max(pagenum, 1), totalPages))};
+    const handleDeactivateUser = async (id: number) => {
+    const confirmed = window.confirm(
+            "Are you sure you want to deactivate this user?"
+        );
+
+        if (!confirmed) return;
+
+        try {
+            await deactivateUser(id);
+
+            // recargar la lista
+            setCreated(c => !c);
+        }
+        catch {
+            alert("Couldn't deactivate user.");
+        }
+    };
 
     return (
         <>
@@ -152,7 +169,10 @@ export default function ManageUsersSection() {
                                                     <Pencil size={18} />
                                                 </button>
 
-                                                <button className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70">
+                                                <button
+                                                    className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70"
+                                                    onClick={() => handleDeactivateUser(user.id)}
+                                                >
                                                     <Trash size={18} />
                                                 </button>
                                             </div>
