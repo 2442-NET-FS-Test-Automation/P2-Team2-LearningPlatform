@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using LearnHub.Data.Repositories;
 using LearnHub.Api.DTOs.Courses;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Primitives;
 
 namespace LearnHub.Api.Controllers;
 
@@ -16,9 +17,35 @@ public class CoursesController : ControllerBase
     // Our Repository context
     private readonly ICourseRepo _repo;
     
-
     //adding cache
     private readonly IMemoryCache _cache;
+
+    private const string CoursesCacheTokenKey = "courses-cache-token";
+
+    private CancellationTokenSource GetCoursesCacheToken()
+    {
+        if(!_cache.TryGetValue(CoursesCacheTokenKey, out CancellationTokenSource? cts)
+        || cts is null
+        || cts.IsCancellationRequested)
+        {
+            cts = new CancellationTokenSource();
+            _cache.Set(CoursesCacheTokenKey, cts);
+        }
+
+        return cts;
+    }
+
+    private void InvalidateCoursesCache()
+    {
+        if(_cache.TryGetValue(CoursesCacheTokenKey, out CancellationTokenSource? cts)
+        && cts is not null)
+        {
+            cts.Cancel();
+            _cache.Remove(CoursesCacheTokenKey);
+        }
+    }
+
+
     // Builder
     public CoursesController(ICourseRepo repo, IMemoryCache cache)
     {
@@ -77,7 +104,14 @@ public class CoursesController : ControllerBase
 
 
         //set cache response
-        _cache.Set(cacheKey, response, TimeSpan.FromMinutes(15));
+        var cts = GetCoursesCacheToken();
+
+        var options = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromMinutes(15))
+            .AddExpirationToken(new CancellationChangeToken(cts.Token));
+
+
+        _cache.Set(cacheKey, response, options);
 
         // return message + response
         return Ok(response);
@@ -98,7 +132,7 @@ public class CoursesController : ControllerBase
 
 
         //cache key
-        var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}";
+        var cacheKey = $"courses:enabled:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}";
 
 
         if(_cache.TryGetValue(cacheKey, out PagedResult<CourseListDto>? cachedResponse) && cachedResponse is not null)
@@ -129,7 +163,14 @@ public class CoursesController : ControllerBase
 
 
         //set cache response
-        _cache.Set(cacheKey, response, TimeSpan.FromMinutes(0.5));
+
+        var cts = GetCoursesCacheToken();
+
+        var options = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromMinutes(0.5))
+            .AddExpirationToken(new CancellationChangeToken(cts.Token));
+
+        _cache.Set(cacheKey, response, options);
 
 
         // return message + response
@@ -226,6 +267,8 @@ public class CoursesController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CourseDetailDto>> CreateCourse(CreateCourseDto dto)
     {
+        
+
         // search for the Professor, if doesnt exist  then return BadRequest
         if(!await _repo.ProfessorExistsAsync(dto.ProfessorId))
             return BadRequest();
@@ -247,6 +290,10 @@ public class CoursesController : ControllerBase
 
         // await for the creation of the course
         var createdCourse = await _repo.CreateAsync(course);
+        InvalidateCoursesCache();
+
+
+        
 
         // Return where you can consult the createdCourse and the required parameters
         return CreatedAtAction(
@@ -299,6 +346,7 @@ public class CoursesController : ControllerBase
 
             // await for  update the info with our data
             await _repo.UpdateAsync(course);
+            InvalidateCoursesCache();
 
             // return noContent
             return NoContent();
@@ -317,6 +365,7 @@ public class CoursesController : ControllerBase
             if(course == null) return NotFound();
 
             await _repo.DeleteAsync(course);
+            InvalidateCoursesCache();
 
             return NoContent();
         }
