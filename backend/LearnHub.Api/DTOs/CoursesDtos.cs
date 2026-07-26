@@ -45,6 +45,10 @@ public class CourseDetailDto
 
     public int? Hours { get; set; }
 
+    public int Capacity { get; set; }
+
+    public bool IsActive { get; set; }
+
     public bool Certification { get; set; }
 
     public List<CourseScheduleDto> Schedule { get; set; } = [];

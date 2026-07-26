@@ -45,6 +45,8 @@ export type CourseDetails = {
     instructor: string,
     price: number,
     hours?: number,
+    capacity: number,
+    isActive: boolean,
     certification: boolean,
     enrolledStudents: number,
     schedule?: CourseSchedule[]
@@ -218,4 +220,16 @@ export interface UserDetailsDto extends UserDto{
 export interface CourseSelectDto {
     id:number;
     name:string;
+}
+
+export type UpdateCourseDto = {
+    name?: string;
+    description?: string;
+    about?: string;
+    category?: CourseCategory;
+    capacity?: number;
+    price?: number;
+    hours?: number;
+    certification?: boolean;
+    isActive?: boolean;
 }
