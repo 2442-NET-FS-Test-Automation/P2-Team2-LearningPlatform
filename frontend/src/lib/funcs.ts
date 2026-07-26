@@ -54,3 +54,40 @@ export function isBirthDateValid(birthDate: string): boolean {
     if (birthDateMs > minDate.getTime()) return false;
     return true;
 }
+
+export function isValidTimeRange(startTime: string, endTime: string): boolean {
+    const startSeconds = parseTimeToSeconds(startTime);
+    const endSeconds = parseTimeToSeconds(endTime);
+
+    // If either parsing failed, the range is invalid
+    if (startSeconds === null || endSeconds === null) {
+        return false;
+    }
+
+    // Start must be before or equal to end (same day)
+    if (startSeconds > endSeconds) {
+        return false;
+    }
+
+    // Gap must be at least one hour (3600 seconds)
+    return (endSeconds - startSeconds) >= 3600;
+}
+
+function parseTimeToSeconds(timeStr: string): number | null {
+    const parts = timeStr.split(':').map(Number);
+    if (parts.length < 2 || parts.length > 3) {
+        return null;
+    }
+
+    const [hours, minutes, seconds = 0] = parts;
+    if (
+        isNaN(hours) || isNaN(minutes) || isNaN(seconds) ||
+        hours < 0 || hours > 23 ||
+        minutes < 0 || minutes > 59 ||
+        seconds < 0 || seconds > 59
+    ) {
+        return null;
+    }
+
+    return hours * 3600 + minutes * 60 + seconds;
+}

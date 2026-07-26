@@ -1,37 +1,35 @@
-import { X } from "lucide-react";
 import { useState } from "react";
-import { createShift } from "../../api/shiftsRequests";
+import type { ShiftDto, UpdateShiftDto } from "../../lib/types";
+import { updateShift } from "../../api/shiftsRequests";
 import { isValidTimeRange } from "../../lib/funcs";
+import { X } from "lucide-react";
 
-interface Props {
+interface EditShiftModalProps {
+    shift: ShiftDto;
     onClose: () => void;
-    onCreated: () => void;
+    onUpdated: () => void;
 }
 
-export default function CreateUserModal({
+export default function EditShiftModal({
+    shift,
     onClose,
-    onCreated
-}: Props) {
-    const [error, setError] = useState<string | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
+    onUpdated
+}: EditShiftModalProps) {
     const [form, setForm] = useState({
-        name: "",
-        startTime: "",
-        endTime: ""
+        name: shift.name,
+        endTime: shift.endTime,
+        startTime: shift.startTime
     });
 
-    const handleChange = (
-        e: React.ChangeEvent<
-            HTMLInputElement | HTMLTextAreaElement
-        >
-    ) => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value,
         });
     };
-
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setError(null);
@@ -43,10 +41,15 @@ export default function CreateUserModal({
             return;
         }
 
-        try {
-            await createShift(form).finally(() => setIsSubmitting(false));
+        const dto:UpdateShiftDto = {};
+        if (form.name !== shift.name) dto.name = form.name;
+        if (form.startTime !== shift.startTime) dto.startTime = form.startTime;
+        if (form.endTime !== shift.endTime) dto.endTime = form.endTime;
 
-            await onCreated();
+        try {
+            await updateShift(shift.id, dto).finally(() => setIsSubmitting(false));
+
+            await onUpdated();
             onClose();
         } catch (err: any) {
             console.error(err.response?.data);

@@ -12,9 +12,11 @@ public class ShiftsRepo : IShiftsRepo
         _context = context;
     }
 
-    public async Task<PagedResult<Shift>> GetShiftsAsync(int page = 1, int pageSize = 10)
+    public async Task<PagedResult<Shift>> GetShiftsAsync(int page = 1, int pageSize = 10, string? search = null)
     {
         var query = _context.Shifts.AsQueryable();
+
+        if (search != null) query = query.Where(s => s.Name.ToLower().Contains(search.ToLower()));
 
         var totalItems = await query.CountAsync();
 
@@ -45,6 +47,21 @@ public class ShiftsRepo : IShiftsRepo
     {
         if (await _context.Shifts.AnyAsync(s => s.Name == shift.Name)) return false;
         _context.Shifts.Update(shift);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<Shift?> GetById(int id)
+    {
+        return await _context.Shifts.FirstOrDefaultAsync(s => s.Id == id);
+    }
+
+    public async Task<bool> RemoveById(int id)
+    {
+        var shift = await GetById(id);
+        if (shift == null) return false;
+
+        _context.Shifts.Remove(shift);
         await _context.SaveChangesAsync();
         return true;
     }

@@ -18,7 +18,8 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     [Authorize]
     public async Task<ActionResult<IEnumerable<Shift>>> GetAllShifts(
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? search = null
     )
     {
         // Set pagination limits
@@ -26,7 +27,7 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
         if (pageSize < 1) pageSize = 10;
         if (pageSize > 50) pageSize = 50;
 
-        var result = await _repo.GetShiftsAsync(page, pageSize);
+        var result = await _repo.GetShiftsAsync(page, pageSize, search);
 
         var response = new PagedResult<Shift>
         {
@@ -47,7 +48,7 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     {
         try
         {
-            var shift = await _repo.AddAsync(new Shift { Name = dto.Name, StartTime = TimeOnly.Parse(dto.StartTime), EndTime = TimeOnly.Parse(dto.EndTime) });
+            var shift = await _repo.AddAsync(new Shift { Name = dto.Name!, StartTime = TimeOnly.Parse(dto.StartTime!), EndTime = TimeOnly.Parse(dto.EndTime!) });
 
             if (shift == null) return Conflict("Shift name is already registered.");
 
@@ -71,7 +72,15 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     {
         try
         {
-            await _repo.UpdateAsync(new Shift { Name = dto.Name, StartTime = TimeOnly.Parse(dto.StartTime), EndTime = TimeOnly.Parse(dto.EndTime) });
+            var shift = await _repo.GetById(id);
+
+            if (shift == null) return BadRequest(new { error = "Shift does not exists" });
+
+            if (dto.Name != null) shift.Name = dto.Name;
+            if (dto.StartTime != null) shift.StartTime = TimeOnly.Parse(dto.StartTime);
+            if (dto.EndTime != null) shift.EndTime = TimeOnly.Parse(dto.EndTime);
+
+            await _repo.UpdateAsync(shift);
             return Ok();
         }
         catch (Exception ex)
@@ -82,11 +91,22 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
             });
         }
     }
+
+    [HttpDelete("{id:int}")]
+    [Authorize]
+    public async Task<ActionResult> RemoveShift(int id)
+    {
+        if(await _repo.RemoveById(id))
+        {
+            return Ok();
+        }
+        return BadRequest(new { error = "Failed to remove" });
+    }
 }
 
 public class ShiftDto
 {
-    public string Name { get; set; } = default!;
-    public string StartTime { get; set; } = default!;
-    public string EndTime { get; set; } = default!;
+    public string? Name { get; set; }
+    public string? StartTime { get; set; }
+    public string? EndTime { get; set; }
 };
