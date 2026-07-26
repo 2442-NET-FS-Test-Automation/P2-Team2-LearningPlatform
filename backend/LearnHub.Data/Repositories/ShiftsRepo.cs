@@ -50,4 +50,9 @@ public class ShiftsRepo : IShiftsRepo
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<Shift?> GetById(int id)
+    {
+        return await _context.Shifts.FirstOrDefaultAsync(s => s.Id == id);
+    }
 }

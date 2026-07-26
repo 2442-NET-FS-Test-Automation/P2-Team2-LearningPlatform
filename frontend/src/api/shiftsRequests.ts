@@ -19,6 +19,6 @@ export async function createShift(dto: CreateShiftDto) {
 }
 
 export async function updateShift(id: number, dto: UpdateShiftDto) {
-    const res = await api.patch("/Shifts/" + id, null, { params: { Name: dto.name, StartTime: dto.startTime, EndTime: dto.endTime } });
+    const res = await api.patch("/Shifts/" + id, dto);
     return res.data;
 }

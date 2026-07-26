@@ -6,6 +6,7 @@ import CreateShiftModal from "../../../components/modals/CreateShiftModal";
 
 import { getShifts } from "../../../api/shiftsRequests";
 import type { ShiftDto } from "../../../lib/types";
+import EditShiftModal from "../../../components/modals/EditShiftModal";
 
 export default function ManageShiftsSection() {
     const [shifts, setShifts] = useState<ShiftDto[]>([]); // TODO: Specify type
@@ -21,6 +22,9 @@ export default function ManageShiftsSection() {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [created, setCreated] = useState(false);
 
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [selectedShift, setSelectedShift] = useState<ShiftDto | null>(null);
+
     useEffect(() => {
         setLoading(true);
 
@@ -35,7 +39,7 @@ export default function ManageShiftsSection() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [itemsPerPage, created]);
+    }, [itemsPerPage, currentPage]);
 
     useEffect(() => {
         getShifts(currentPage, itemsPerPage, search)
@@ -46,16 +50,21 @@ export default function ManageShiftsSection() {
             .catch((e) => {
                 setError(e);
             });
-    }, [search]);
+    }, [search, created]);
 
     useMemo(() => {
         setCurrentPage(1);
-    }, [search, itemsPerPage, created]);
+    }, [search, itemsPerPage]);
 
     // Pagination handlers
     const handlePrevious = () => { setCurrentPage((prev) => Math.max(prev - 1, 1)) };
     const handleNext = () => { setCurrentPage((prev) => Math.min(prev + 1, totalPages)) };
     const goToPage = (pagenum: number) => { setCurrentPage(Math.min(Math.max(pagenum, 1), totalPages)) };
+
+    const handleEditClick = (shift: ShiftDto) => {
+        setSelectedShift(shift);
+        setShowEditModal(true);
+    };
 
     return (
         <>
@@ -123,7 +132,7 @@ export default function ManageShiftsSection() {
 
                                         <td className="text-right">
                                             <div className="flex justify-end gap-2">
-                                                <button className="btn-outline p-2" >
+                                                <button onClick={() => handleEditClick(shift)} className="btn-outline p-2" >
                                                     <Pencil size={18} />
                                                 </button>
 
@@ -156,6 +165,20 @@ export default function ManageShiftsSection() {
                 <CreateShiftModal
                     onClose={() => setShowCreateModal(false)}
                     onCreated={() => { setCreated((c) => !c) }}
+                />
+            )}
+            {showEditModal && selectedShift && (
+                <EditShiftModal 
+                    shift={selectedShift} 
+                    onClose={() => {
+                        setShowEditModal(false);
+                        setSelectedShift(null); 
+                    }} 
+                    onUpdated={() => {
+                        setCreated((c) => !c);
+                        setShowEditModal(false);
+                        setSelectedShift(null);
+                    }}                    
                 />
             )}
         </>
