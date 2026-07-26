@@ -6,7 +6,6 @@ import { formatSchedule, getGradeColor } from "../../../lib/funcs";
 export default function CoursesSection({ courses }: StudentCoursesInfo) {
     const pendingCourses = courses.filter(c => c.completed === false);
     const completedCourses = courses.filter(c => c.completed === true);
-    console.log("coursesec", courses)
     return (
         <div>
             <div className="card space-y-4">

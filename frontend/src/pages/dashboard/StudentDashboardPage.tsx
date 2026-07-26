@@ -21,7 +21,6 @@ export default function StudentDashboardPage() {
         if (!user) return;
         getStudentCourses(user.id)
             .then((res) => {
-                console.log(res);
                 setCourses(res.items);
             })
     }, [])

@@ -16,8 +16,6 @@ const EVENT_COLORS = [
 export default function WeeklyScheduleSection({ Courses }: CoursesInfo) {
     const pendingCourses = Courses.filter(c => c.schedule && c.schedule.length > 0);
 
-    console.log("weeksc", Courses)
-
     const events: ScheduleEvent[] = pendingCourses.flatMap((course, courseIndex) =>
         (course.schedule ?? []).map(s => ({
             ...s,
