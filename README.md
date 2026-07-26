@@ -34,10 +34,10 @@ Main entities:
 - Professors
 - Courses
 - StudentCourses (Enrollments)
+- Activities
 
 ### ERD
-<img width="841" height="661" alt="P2_ERD" src="https://github.com/user-attachments/assets/8f33d5a7-7960-4eb4-ba1d-98709edf2349" />
-
+<img width="1222" height="752" alt="LearnHub_ERD_V3" src="https://github.com/user-attachments/assets/4ced0af9-c669-440c-80de-6cc253f3b8d0" />
 
 ## Team
 

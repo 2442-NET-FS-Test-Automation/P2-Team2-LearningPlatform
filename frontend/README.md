@@ -93,7 +93,7 @@ This dashboard contains
 
 ### Only Managers
 ```
-/admin/dashboard
+/manager/dashboard
 ```
 This dashboard contains
 - Profile
