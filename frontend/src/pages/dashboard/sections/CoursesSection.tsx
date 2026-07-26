@@ -1,12 +1,33 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import type { StudentCoursesInfo } from "../../../lib/types";
+import type { StudentCourseInfo } from "../../../lib/types";
 import { formatSchedule, getGradeColor } from "../../../lib/funcs";
+import { studentUnenroll } from "../../../api/studentsRequests";
+import ConfirmModal from "../../../components/modals/ConfirmModal";
 
-export default function CoursesSection({ courses }: StudentCoursesInfo) {
+interface CoursesSectionProps {
+    userId: number
+    courses: StudentCourseInfo[],
+    onChange: () => void
+}
+
+export default function CoursesSection({ userId, courses, onChange }: CoursesSectionProps) {
     const pendingCourses = courses.filter(c => c.completed === false);
     const completedCourses = courses.filter(c => c.completed === true);
+
+    const [showConfirmModal, setShowConfirmModal] = useState(true);
+    const [selectedCourse, setSelectedCourse] = useState<StudentCourseInfo | null>(null);
+
+    function handleUnenroll(courseId: number) {
+        studentUnenroll(userId, courseId)
+            .then((res) => {
+                if (res == 200) onChange();
+            })
+    }
+
     return (
+        <>
         <div>
             <div className="card space-y-4">
                 <h2 className="text-xl font-semibold">Enrolled Courses</h2>
@@ -25,7 +46,12 @@ export default function CoursesSection({ courses }: StudentCoursesInfo) {
                                     )}
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <button className="btn-outline px-4 py-2 text-yellow-600 border-yellow-600 dark:text-yellow-600/80 dark:border-yellow-600/80">
+                                    <button className="btn-outline px-4 py-2 text-red-600 border-red-600 dark:text-red-700/80 dark:border-red-700/80"
+                                        onClick={() => {
+                                            setSelectedCourse(course);
+                                            setShowConfirmModal(true);
+                                        }}
+                                    >
                                         Unenroll
                                     </button>
                                 </div>
@@ -58,6 +84,19 @@ export default function CoursesSection({ courses }: StudentCoursesInfo) {
                 )}
             </div>
         </div>
-        
+        {showConfirmModal && selectedCourse && (
+            <ConfirmModal title={"About to Unenroll"} message={"Are you sure you want to unenroll from "+selectedCourse.name}
+                variant="danger" 
+                onConfirm={() => {
+                    handleUnenroll(selectedCourse.id);
+                    setSelectedCourse(null);
+                    setShowConfirmModal(false);
+                }} 
+                onCancel={() => {
+                    setSelectedCourse(null);
+                    setShowConfirmModal(false);
+                }} />
+        )}
+    </>
     );
 }

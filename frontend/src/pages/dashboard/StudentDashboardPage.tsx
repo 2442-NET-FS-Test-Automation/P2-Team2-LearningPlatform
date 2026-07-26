@@ -18,6 +18,7 @@ export default function StudentDashboardPage() {
     const navigate = useNavigate();
 
     const [courses, setCourses] = useState<StudentCourseInfo[]>([]);
+    const [onChange, setOnChange] = useState(false);
     useEffect(() => {
         if (!user) return;
         getStudentCourses(user.id)
@@ -25,7 +26,7 @@ export default function StudentDashboardPage() {
                 setCourses(res.items);
                 setStats(calculateStats(res.items))
             })
-    }, [])
+    }, [onChange])
 
     const [stats, setStats] = useState<StudentStats>({TotalCourses: 0, Completed: 0, AvgGrade: 0})
     
@@ -58,7 +59,7 @@ export default function StudentDashboardPage() {
                     {/* Main Content */}
                     <div className="flex-1">
                         {activeTab === "profile" && <ProfileSection />}
-                        {activeTab === "courses" && <CoursesSection courses={courses}  />}
+                        {activeTab === "courses" && <CoursesSection userId={user!.id} courses={courses} onChange={() => setOnChange((c) => !c)} />}
                         {activeTab === "progress" && <ProgressSection TotalCourses={stats.TotalCourses} Completed={stats.Completed} AvgGrade={stats.AvgGrade} />}
                         {activeTab === "schedule" && <WeeklyScheduleSection Courses={courses.filter(c => c.completed === false)} />}
                     </div>
