@@ -20,4 +20,5 @@ public class Course
     public decimal EnrollmentPrice { get; set; }
     public bool IsActive { get; set; } = true;
     public ICollection<StudentCourse> StudentCourses { get; set; } = [];
+    public ICollection<Activity> Activities {get; set;} = [];
 }

@@ -79,6 +79,36 @@ public class MappingProfile : Profile
                 )
             );
 
+        CreateMap<Activity, ActivitySummaryDto>()
+            .ForMember(
+                dest => dest.CourseName,
+                opt => opt.MapFrom(src => src.Course.Name)
+            )
+            .ForMember(
+                dest => dest.CreatedBy,
+                opt => opt.MapFrom(src => src.CreatedBy.FirstName + " " + src.CreatedBy.LastName)
+            )
+            .ForMember(
+                dest => dest.SubmissionsCount,
+                opt => opt.MapFrom(src => src.Submissions.Count)
+            );
+
+        CreateMap<Activity, ActivityDetailDto>()
+            .ForMember(
+                dest => dest.CourseName,
+                opt => opt.MapFrom(src => src.Course.Name)
+            )
+            .ForMember(
+                dest => dest.CreatedBy,
+                opt => opt.MapFrom(src => src.CreatedBy.FirstName + " " + src.CreatedBy.LastName)
+            );
+
+        CreateMap<ActivitySubmission, ActivitySubmissionDto>()
+            .ForMember(
+                dest => dest.StudentName,
+                opt => opt.MapFrom(src => src.Student.User.FirstName + " " + src.Student.User.LastName)
+            );
+
         CreateMap<CourseSchedule, CourseScheduleDto>();
     }
 }
