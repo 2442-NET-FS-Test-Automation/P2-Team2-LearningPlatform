@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Pencil, Plus, Search, Trash } from "lucide-react";
 
 import { COURSE_CATEGORIES, type CourseCategory, type CourseDetails } from "../../../lib/types";
-import { getAllCourses } from "../../../api/coursesRequests";
+import { getAllCourses, deleteCourse } from "../../../api/coursesRequests";
 import PaginationControls from "../../../components/layout/PaginationControls";
+import ConfirmModal from "../../../components/modals/ConfirmModal";
+import EditCourseModal from "../../../components/modals/EditCourseModal";
 
 export default function ManageUsersSection() {
     const [courses, setCourses] = useState<CourseDetails[]>([]); // TODO: Specify type
@@ -20,6 +22,21 @@ export default function ManageUsersSection() {
 
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [created, setCreated] = useState(false);
+
+    const [editCourseId, setEditCourseId] = useState<number | null>(null);
+    const [deleteCourseId, setDeleteCourseId] = useState<number | null>(null);
+
+    const handleDelete = async () => {
+        if (!deleteCourseId) return;
+        try {
+            await deleteCourse(deleteCourseId);
+            setCreated(!created);
+        } catch (e: any) {
+            setError(e.message || "Failed to delete course.");
+        } finally {
+            setDeleteCourseId(null);
+        }
+    };
 
     useEffect(() => {
         getAllCourses(currentPage, itemsPerPage, search, categoryFilter == "All" ? null : categoryFilter, isActiveFilter)
@@ -111,6 +128,7 @@ export default function ManageUsersSection() {
                                             </select>
                                         </div>
                                     </th>
+                                    <th>Status</th>
                                     <th>Price</th>
                                     <th className="text-right">
                                         Actions
@@ -135,14 +153,21 @@ export default function ManageUsersSection() {
                                                     {c.category}
                                                 </span>
                                             </td>
+                                            <td className="py-3">
+                                                {c.isActive ? (
+                                                    <span className="text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-full text-xs font-medium">Active</span>
+                                                ) : (
+                                                    <span className="text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full text-xs font-medium">Inactive</span>
+                                                )}
+                                            </td>
                                             <td className="py-3">{c.price}</td>
                                             <td className="text-right">
                                                 <div className="flex justify-end gap-2">
-                                                    <button className="btn-outline p-2" >
+                                                    <button onClick={() => setEditCourseId(c.id)} className="btn-outline p-2" >
                                                         <Pencil size={18} />
                                                     </button>
 
-                                                    <button className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70">
+                                                    <button onClick={() => setDeleteCourseId(c.id)} className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70">
                                                         <Trash size={18} />
                                                     </button>
                                                 </div>
@@ -174,6 +199,26 @@ export default function ManageUsersSection() {
                 //     onClose={() => setShowCreateModal(false)}
                 //     onCreated={loadUsers}
                 // />
+            )}
+
+            {editCourseId && (
+                <EditCourseModal
+                    courseId={editCourseId}
+                    onClose={() => setEditCourseId(null)}
+                    onUpdated={() => {
+                        setEditCourseId(null);
+                        setCreated(!created);
+                    }}
+                />
+            )}
+
+            {deleteCourseId && (
+                <ConfirmModal
+                    title="Delete Course"
+                    message="Are you sure you want to delete this course? This action cannot be undone."
+                    onConfirm={handleDelete}
+                    onCancel={() => setDeleteCourseId(null)}
+                />
             )}
         </>
     );

@@ -94,7 +94,8 @@ public class CoursesController : ControllerBase
                     Id = c.Id,
                     Name = c.Name,
                     Description = c.Description,
-                    Category = c.CategoryName.ToString()
+                    Category = c.CategoryName.ToString(),
+                    IsActive = c.IsActive
                 }).ToList(),
 
                 Page = result.Page,
@@ -154,7 +155,8 @@ public class CoursesController : ControllerBase
                 Id = c.Id,
                 Name = c.Name,
                 Description = c.Description,
-                Category = c.CategoryName.ToString()
+                Category = c.CategoryName.ToString(),
+                IsActive = c.IsActive
             }).ToList(),
 
             Page = result.Page,
@@ -205,6 +207,8 @@ public class CoursesController : ControllerBase
                 Category = course.CategoryName.ToString(),
                 Price = course.EnrollmentPrice,
                 Hours = course.Hours,
+                Capacity = course.Capacity,
+                IsActive = course.IsActive,
                 Certification = course.Certification,
 
                 Instructor =
