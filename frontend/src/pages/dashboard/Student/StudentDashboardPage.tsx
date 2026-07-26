@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, BookOpen, BarChart3, CalendarDays } from "lucide-react";
 
-import DashboardSideNav from "../../components/DashboardSideNav";
-import ProfileSection from "./sections/ProfileSection";
-import CoursesSection from "./sections/CoursesSection";
-import ProgressSection from "./sections/ProgressSection";
-import WeeklyScheduleSection from "./sections/WeeklyScheduleSection";
+import DashboardSideNav from "../../../components/DashboardSideNav";
+import ProfileSection from "../ProfileSection";
+import CoursesSection from "./StudentCoursesSection";
+import ProgressSection from "./StudentProgressSection";
+import WeeklyScheduleSection from "../WeeklyScheduleSection";
 
-import type { StudentCourseInfo, StudentStats, TabItem } from "../../lib/types";
-import { calculateAverage, handleLogout } from "../../lib/funcs";
-import { getStudentCourses } from "../../api/studentsRequests";
-import { useAuth } from "../../ctx/AuthCtx";
+import type { StudentCourseInfo, StudentStats, TabItem } from "../../../lib/types";
+import { calculateAverage, handleLogout } from "../../../lib/funcs";
+import { getStudentCourses } from "../../../api/studentsRequests";
+import { useAuth } from "../../../ctx/AuthCtx";
 
 export default function StudentDashboardPage() {
     const { user } = useAuth();

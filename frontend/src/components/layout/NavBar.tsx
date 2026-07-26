@@ -20,6 +20,14 @@ export default function Navbar() {
                 <Link to="/" onClick={closeMenu} className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                     LearnHub
                 </Link>
+                {user && (
+                    <div className="flex items-center gap-2 ">
+                        <p className="mr-auto">{"Hi, "+user.firstName}</p>
+                        <span className="blue-accent-chip rounded-full px-2.5 py-0.5 text-xs font-semibold">
+                            {user.role}
+                        </span>
+                    </div>
+                )}
 
                 {/* Desktop controls */}
                 <div className="hidden items-center gap-8 md:flex">

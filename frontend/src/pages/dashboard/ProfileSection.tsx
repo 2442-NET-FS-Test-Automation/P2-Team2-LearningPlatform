@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { UserRound, UserRoundPen, UserRoundCog } from "lucide-react";
 
-import EditProfileModal from "../../../components/modals/EditProfileModal";
+import EditProfileModal from "../../components/modals/EditProfileModal";
 
-import { useAuth } from "../../../ctx/AuthCtx";
-import type { AuthUser } from "../../../lib/typesAuth";
+import { useAuth } from "../../ctx/AuthCtx";
+import type { AuthUser } from "../../lib/typesAuth";
 
 
 export default function ProfileSection() {

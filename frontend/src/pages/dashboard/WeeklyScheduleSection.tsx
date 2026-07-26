@@ -1,5 +1,5 @@
-import EventBox from "../../../components/EventBox";
-import { DAY_NAMES_SHORT, type ScheduleEvent, type CoursesInfo } from "../../../lib/types";
+import EventBox from "../../components/EventBox";
+import { DAY_NAMES_SHORT, type ScheduleEvent, type CoursesInfo } from "../../lib/types";
 
 const HOUR_START = 7;
 const HOUR_END = 21;
