@@ -13,6 +13,7 @@ public class UserDto
     public string LastName{get; set;} = default!;
     public string Email{get; set;} = default!;
     public string? Bio {get; set;}
+    public bool IsActive { get; set; }
 }
 
 public class PromoteProfessorDto

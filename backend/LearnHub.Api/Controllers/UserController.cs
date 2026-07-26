@@ -64,7 +64,8 @@ public class UsersController : ControllerBase
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email,
-                Bio = u.Bio
+                Bio = u.Bio,
+                IsActive = u.IsActive
             }).ToList(),
 
             Page = result.Page,
@@ -144,6 +145,24 @@ public class UsersController : ControllerBase
             if( user == null) return NotFound();
 
             await _repo.DeleteAsync(user);
+            
+            return NoContent();
+        }
+        return BadRequest();
+    }
+
+    [HttpPost("{id:int}/reactivate")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> ReactivateUser(int id)
+    {
+        if (DataTypeVerification.IsNumValid(id))
+        {
+            var user = await _repo.GetByIdAsync(id);
+
+            if (user == null) return NotFound();
+
+            user.IsActive = true;
+            await _repo.UpdateAsync(user);
             
             return NoContent();
         }

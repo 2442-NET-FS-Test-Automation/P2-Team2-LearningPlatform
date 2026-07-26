@@ -54,6 +54,10 @@ export async function deactivateUser(id: number): Promise<void> {
     await api.delete(`/Users/${id}`);
 }
 
+export async function reactivateUser(id: number): Promise<void> {
+    await api.post(`/Users/${id}/reactivate`);
+}
+
 export async function promoteToProfessor(
     id: number,
     dto: {

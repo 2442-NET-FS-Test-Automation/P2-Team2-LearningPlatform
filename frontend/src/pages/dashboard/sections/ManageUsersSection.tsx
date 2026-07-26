@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Plus, Pencil, Trash, GraduationCap } from "lucide-react";
+import { Search, Plus, Pencil, Trash, GraduationCap, RotateCcw } from "lucide-react";
 
 import CreateUserModal from "../../../components/modals/CreateUserModal";
 import PromoteProfessorModal from "../../../components/modals/PromoteProfessorModal";
 import EditUserModal from "../../../components/modals/EditUserModal";
 
 import type { UserDto, UserRole, UserDetailsDto } from "../../../lib/types";
-import { getUsers, getUser ,deactivateUser } from "../../../api/usersRequest";
+import { getUsers, getUser, deactivateUser, reactivateUser } from "../../../api/usersRequest";
 import PaginationControls from "../../../components/layout/PaginationControls";
+import ConfirmModal from "../../../components/modals/ConfirmModal";
 
 export default function ManageUsersSection() {
     const [users, setUsers] = useState<UserDto[]>([]);
@@ -29,6 +30,9 @@ export default function ManageUsersSection() {
     const [showPromoteModal, setShowPromoteModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<UserDetailsDto | null>(null);
     const [showEditModal, setShowEditModal] = useState(false);
+    
+    const [deactivateUserId, setDeactivateUserId] = useState<number | null>(null);
+    const [reactivateUserId, setReactivateUserId] = useState<number | null>(null);
     
 
     // Get Courses from the API    
@@ -56,21 +60,28 @@ export default function ManageUsersSection() {
     const handlePrevious = () => {setCurrentPage((prev) => Math.max(prev - 1, 1))};
     const handleNext = () => {setCurrentPage((prev) => Math.min(prev + 1, totalPages))};
     const goToPage = (pagenum: number) => {setCurrentPage(Math.min(Math.max(pagenum, 1), totalPages))};
-    const handleDeactivateUser = async (id: number) => {
-    const confirmed = window.confirm(
-            "Are you sure you want to deactivate this user?"
-        );
-
-        if (!confirmed) return;
-
+    const handleDeactivateUser = async () => {
+        if (!deactivateUserId) return;
         try {
-            await deactivateUser(id);
-
-            // recargar la lista
+            await deactivateUser(deactivateUserId);
             setCreated(c => !c);
         }
         catch {
             alert("Couldn't deactivate user.");
+        } finally {
+            setDeactivateUserId(null);
+        }
+    };
+    const handleReactivateUser = async () => {
+        if (!reactivateUserId) return;
+        try {
+            await reactivateUser(reactivateUserId);
+            setCreated(c => !c);
+        }
+        catch {
+            alert("Couldn't reactivate user.");
+        } finally {
+            setReactivateUserId(null);
         }
     };
     const handlePromoteClick = (user: UserDto) => {
@@ -149,6 +160,7 @@ export default function ManageUsersSection() {
                                             </select>
                                         </div>
                                     </th>
+                                    <th>Status</th>
                                     <th className="text-right pr-3">
                                         Actions{" "}
                                     </th>
@@ -174,6 +186,13 @@ export default function ManageUsersSection() {
                                                     {user.role}
                                                 </span>
                                             </td>
+                                            <td className="py-3">
+                                                {user.isActive ? (
+                                                    <span className="text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-full text-xs font-medium">Active</span>
+                                                ) : (
+                                                    <span className="text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full text-xs font-medium">Inactive</span>
+                                                )}
+                                            </td>
 
                                             <td className="text-right">
                                                 <div className="flex justify-end gap-2">
@@ -198,10 +217,17 @@ export default function ManageUsersSection() {
                                                         </button>
                                                     )}
 
-                                                    <button className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70"
-                                                        onClick={() => handleDeactivateUser(user.id)} >
-                                                        <Trash size={18} />
-                                                    </button>
+                                                    {user.isActive ? (
+                                                        <button className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70"
+                                                            onClick={() => setDeactivateUserId(user.id)} title="Deactivate">
+                                                            <Trash size={18} />
+                                                        </button>
+                                                    ) : (
+                                                        <button className="btn-outline p-2 mr-3 text-emerald-600 border-emerald-600"
+                                                            onClick={() => setReactivateUserId(user.id)} title="Reactivate">
+                                                            <RotateCcw size={18} />
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>
@@ -231,6 +257,29 @@ export default function ManageUsersSection() {
                     onCreated={() => {setCreated((c) => !c)}}
                 />
             )}
+            
+            {deactivateUserId && (
+                <ConfirmModal
+                    title="Deactivate User"
+                    message="Are you sure you want to deactivate this user? They will no longer be able to log in."
+                    onConfirm={handleDeactivateUser}
+                    onCancel={() => setDeactivateUserId(null)}
+                    confirmLabel="Deactivate"
+                    variant="danger"
+                />
+            )}
+
+            {reactivateUserId && (
+                <ConfirmModal
+                    title="Reactivate User"
+                    message="Are you sure you want to reactivate this user? They will regain access to their account."
+                    onConfirm={handleReactivateUser}
+                    onCancel={() => setReactivateUserId(null)}
+                    confirmLabel="Reactivate"
+                    variant="default"
+                />
+            )}
+
             {showPromoteModal && selectedUser && (
                 <PromoteProfessorModal
                     user={selectedUser}
