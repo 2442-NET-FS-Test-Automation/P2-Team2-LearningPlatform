@@ -134,6 +134,7 @@ export interface UserDto {
     email: string;
     bio?: string;
     role: UserRole;
+    isActive: boolean;
 }
 
 export interface CreateUserDto {
