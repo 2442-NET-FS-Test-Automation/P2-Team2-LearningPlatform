@@ -177,4 +177,14 @@ public class ActivitiesController : ControllerBase
         await _repo.CreateSubmissionAsync(submission);
         return Created();
     }
+    
+    [HttpPatch("submissions/{submissionId:int}/grade")]
+    [Authorize(Roles = "Admin,Professor")]
+    public async Task<IActionResult> Grade(int submissionId, [FromBody] GradeSubmissionDto dto)
+    {
+        if (!DataTypeVerification.IsNumValid(submissionId)) return BadRequest();
+
+        var success = await _repo.GradeSubmissionAsync(submissionId, dto.Feedback, dto.Score);
+        return success ? NoContent() : NotFound();
+    }
 }
