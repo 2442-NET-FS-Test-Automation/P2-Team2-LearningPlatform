@@ -37,12 +37,32 @@ public class StudentRepo(LearnHubDbContext context): IStudentRepo
     public async Task<bool> EnrollAsync(int studentId, int courseId)
     {
         try {
+            var exists = await _context.StudentCourses.AnyAsync(sc => sc.CourseId == courseId && sc.StudentId == studentId);
+            if (exists) return false;
+
             var enrollment = new StudentCourse{ StudentId = studentId, CourseId = courseId };
 
             await _context.StudentCourses.AddAsync(enrollment);
             await _context.SaveChangesAsync();
             return true;
         } 
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> UnenrollAsync(int studentId, int courseId)
+    {
+        try
+        {
+            var enrollment = await _context.StudentCourses.FirstOrDefaultAsync(sc => sc.CourseId == courseId && sc.StudentId == studentId);
+            if (enrollment == null) return false;
+
+            _context.StudentCourses.Remove(enrollment);
+            await _context.SaveChangesAsync();
+            return true;
+        }
         catch
         {
             return false;

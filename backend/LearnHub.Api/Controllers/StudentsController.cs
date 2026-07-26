@@ -63,6 +63,20 @@ public class StudentsController(ICourseRepo courseRepo, IStudentRepo studentRepo
         return Conflict();      
     }
 
+    [HttpDelete("{userId:int}/Courses/{courseId:int}")]
+    [Authorize]
+    public async Task<ActionResult> UnenrollStudent(int userId, int courseId)
+    {
+        var student = await _studentRepo.GetByUserIdAsync(userId);
+        if (student == null) return BadRequest(new { error = "User is not a student" });
+
+        if (await _studentRepo.UnenrollAsync(student.Id, courseId))
+        {
+            return Ok();
+        }
+        return Conflict();
+    }
+
     [HttpGet("{userId:int}/Courses/{courseId:int}")]
     [Authorize]
     public async Task<ActionResult<StudentCourseDto>> GetStudentCourse(int userId, int courseId)

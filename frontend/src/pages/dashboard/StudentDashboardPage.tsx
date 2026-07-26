@@ -15,27 +15,20 @@ import { useAuth } from "../../ctx/AuthCtx";
 
 export default function StudentDashboardPage() {
     const { user } = useAuth();
+    const navigate = useNavigate();
 
     const [courses, setCourses] = useState<StudentCourseInfo[]>([]);
+    const [onChange, setOnChange] = useState(false);
     useEffect(() => {
         if (!user) return;
         getStudentCourses(user.id)
             .then((res) => {
                 setCourses(res.items);
+                setStats(calculateStats(res.items))
             })
-    }, [])
+    }, [onChange])
 
-    const [stats, setStats] = useState<StudentStats>({
-        TotalCourses: courses.length,
-        Completed: courses.filter(c => c.completed === true).length,
-        AvgGrade: calculateAverage(courses.filter(c => c.completed === true).map(c => Number(c.grade))),
-    })
-
-    useEffect(() => {
-        // TODO: Endpoint not done yet so no info can be obtained
-        // Get stats of current student
-
-    }, [])
+    const [stats, setStats] = useState<StudentStats>({TotalCourses: 0, Completed: 0, AvgGrade: 0})
     
     const [activeTab, setActiveTab] = useState<string>("courses");
     const tabs: TabItem[] = [
@@ -44,6 +37,16 @@ export default function StudentDashboardPage() {
         { Id: "schedule", Label: "Schedule", Icon: <CalendarDays size={18} /> },
         { Id: "progress", Label: "Progress", Icon: <BarChart3 size={18} /> }
     ];
+
+    function calculateStats(courses: StudentCourseInfo[]): StudentStats {
+        return {
+            TotalCourses: courses.length,
+            Completed: courses.filter(c => c.completed === true).length,
+            AvgGrade: calculateAverage(courses.filter(c => c.completed === true).map(c => Number(c.grade)))
+        }
+    }
+
+    if (!user) navigate("/login");
     
     return (
         <div className="section-white min-h-screen py-10">
@@ -56,7 +59,7 @@ export default function StudentDashboardPage() {
                     {/* Main Content */}
                     <div className="flex-1">
                         {activeTab === "profile" && <ProfileSection />}
-                        {activeTab === "courses" && <CoursesSection courses={courses}  />}
+                        {activeTab === "courses" && <CoursesSection userId={user!.id} courses={courses} onChange={() => setOnChange((c) => !c)} />}
                         {activeTab === "progress" && <ProgressSection TotalCourses={stats.TotalCourses} Completed={stats.Completed} AvgGrade={stats.AvgGrade} />}
                         {activeTab === "schedule" && <WeeklyScheduleSection Courses={courses.filter(c => c.completed === false)} />}
                     </div>

@@ -4,6 +4,7 @@ import PaginationControls from "../../components/layout/PaginationControls";
 import { COURSE_CATEGORIES, type CourseCategory, type CourseCompact } from "../../lib/types";
 import { getEnabledCourses } from "../../api/coursesRequests";
 import { Search } from "lucide-react";
+import Loading from "../../components/layout/Loading";
 
 export default function CoursesPage() {
     const [courses, setCourses] = useState<CourseCompact[]>([]);
@@ -111,8 +112,7 @@ export default function CoursesPage() {
                 {/* Course Grid */}
                 {isLoading ? (
                     <div className="mt-16 flex flex-col items-center gap-3 text-slate-500 dark:text-slate-400">
-                        <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-600 border-t-transparent dark:border-blue-400 dark:border-t-transparent" />
-                        <p>Loading courses...</p>
+                        <Loading message="Loading Courses. . ." fullh={false} />
                     </div>
                 ) : (
                     error ? (

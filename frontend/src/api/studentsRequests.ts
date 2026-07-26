@@ -10,9 +10,10 @@ export async function studentEnroll(userId: number, courseId: number){
     return { status: result.status, data: result.data};
 }
 
-// export async function studentUnenroll(studentId: number, courseId: number) {
-
-// }
+export async function studentUnenroll(userId: number, courseId: number) {
+    const result = await api.delete(`/Students/${userId}/Courses/${courseId}`);
+    return result.status;
+}
 
 export async function getStudentCourses(userId: number){
     const result = await api.get("/Students/"+userId+"/Courses");
