@@ -9,6 +9,7 @@ import { useAuth } from "../../ctx/AuthCtx";
 import { useEffect, useState } from "react";
 import { getCourseDetails } from "../../api/coursesRequests";
 import { isStudentEnrolled, studentEnroll } from "../../api/studentsRequests";
+import Loading from "../../components/layout/Loading";
 
 export default function CourseDetailsPage() {    
     const { user } = useAuth();
@@ -63,16 +64,7 @@ export default function CourseDetailsPage() {
             })
     };
 
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-                    <p className="mt-4 text-slate-500 dark:text-slate-400">Loading course details…</p>
-                </div>
-            </div>
-        );
-    }
+    if (loading) {return (<Loading />)}
 
     if (!course) return (<NotFoundPage />);
     

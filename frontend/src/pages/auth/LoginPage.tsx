@@ -6,7 +6,7 @@ import { useAuth } from "../../ctx/AuthCtx";
 import { getDashboardRoute } from "../../lib/funcs";
 
 export default function LoginPage() {
-    const { login } = useAuth();
+    const { user, login } = useAuth();
     const navigate = useNavigate();
 
     const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -38,6 +38,8 @@ export default function LoginPage() {
             setIsSubmitting(false);
         }
     };
+    
+    if (user) navigate(getDashboardRoute(user.role));
 
     return (
         <div className="auth-shell">

@@ -16,7 +16,7 @@ const emptyForm: RegisterData = {
 };
 
 export default function RegisterPage() {
-    const { register } = useAuth();
+    const { user, register } = useAuth();
     const navigate = useNavigate();
 
     const [form, setForm] = useState<RegisterData>(emptyForm);
@@ -63,6 +63,8 @@ export default function RegisterPage() {
             setIsSubmitting(false);
         }
     };
+
+    if (user) navigate(getDashboardRoute(user.role));
 
     return (
         <div className="auth-shell">

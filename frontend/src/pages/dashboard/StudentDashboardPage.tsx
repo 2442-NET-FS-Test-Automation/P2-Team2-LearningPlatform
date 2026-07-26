@@ -15,6 +15,7 @@ import { useAuth } from "../../ctx/AuthCtx";
 
 export default function StudentDashboardPage() {
     const { user } = useAuth();
+    const navigate = useNavigate();
 
     const [courses, setCourses] = useState<StudentCourseInfo[]>([]);
     useEffect(() => {
@@ -22,20 +23,11 @@ export default function StudentDashboardPage() {
         getStudentCourses(user.id)
             .then((res) => {
                 setCourses(res.items);
+                setStats(calculateStats(res.items))
             })
     }, [])
 
-    const [stats, setStats] = useState<StudentStats>({
-        TotalCourses: courses.length,
-        Completed: courses.filter(c => c.completed === true).length,
-        AvgGrade: calculateAverage(courses.filter(c => c.completed === true).map(c => Number(c.grade))),
-    })
-
-    useEffect(() => {
-        // TODO: Endpoint not done yet so no info can be obtained
-        // Get stats of current student
-
-    }, [])
+    const [stats, setStats] = useState<StudentStats>({TotalCourses: 0, Completed: 0, AvgGrade: 0})
     
     const [activeTab, setActiveTab] = useState<string>("courses");
     const tabs: TabItem[] = [
@@ -44,6 +36,16 @@ export default function StudentDashboardPage() {
         { Id: "schedule", Label: "Schedule", Icon: <CalendarDays size={18} /> },
         { Id: "progress", Label: "Progress", Icon: <BarChart3 size={18} /> }
     ];
+
+    function calculateStats(courses: StudentCourseInfo[]): StudentStats {
+        return {
+            TotalCourses: courses.length,
+            Completed: courses.filter(c => c.completed === true).length,
+            AvgGrade: calculateAverage(courses.filter(c => c.completed === true).map(c => Number(c.grade)))
+        }
+    }
+
+    if (!user) navigate("/login");
     
     return (
         <div className="section-white min-h-screen py-10">
