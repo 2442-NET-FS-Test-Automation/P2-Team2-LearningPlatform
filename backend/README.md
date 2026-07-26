@@ -44,9 +44,11 @@ The LearnHub API is an ASP.NET Core Web API responsible for authentication, busi
 ├── LearnHub.Api/              # Services and Controllers live here
 │   ├── Controllers/           # Each Controller mapping endpoints
 │   ├── DTOs/                  # Model the Controllers I/O formats
+|   ├── Filters/               # Custom filters
 │   ├── Mapping/               # AutoMapper Profiles
 │   ├── Middleware/            # Custom middleware
 │   ├── Services/              # Services like token generation
+|   ├── SeedData/              # Directory destined to seeding logic
 │   └── logs/                  # Directory for Serilog logging (not uploaded)
 ├── LearnHub.Data/             # Repository and Entities are here
 │   ├── Entities/              # Data first Entity models
@@ -72,43 +74,76 @@ Available roles:
 
 ## API Endpoints Per Controller (TBC)
 
-### Authentication
+### Auth
 
 ```
 POST /api/auth/register
 POST /api/auth/login
-GET /api/auth/me
+GET  /api/auth/me
+GET  /api/test-error
 ```
 
 ### Courses
 
 ```
-GET    /api/Courses
+GET    /api/Courses           # Admin
 GET    /api/Courses/enabled
-GET    /api/Courses/disabled
 GET    /api/Courses/{id}
 POST   /api/Courses           # Admin
 PATCH  /api/Courses/{id}      # Admin and Professor
 DELETE /api/Courses/{id}      # Admin
 ```
 
+### Activities
+```
+GET    /api/Activities
+GET    /api/Activities/{id}
+GET    /api/Activities/course/{courseId}
+POST   /api/Activities
+DELETE /api/Activities/{id}
+POST   /api/Activities/{id}/submissions
+PATCH  /api/Activities/{id}/grade
+```
+
 ### Users
 ```
+GET    /api/Users
+GET    /api/Users/{id}
+POST   /api/Users
+PATCH  /api/Users/{id}
+DELETE /api/Users/{id}
+POST   /api/Users/{id}/reactivate
+POST   /api/Users/{id}/promote
 ```
 
 ### Students
 
 ```
-GET /api/students/me
-POST /api/students/enroll
+GET    /api/Students/{id}
+POST   /api/Students/Enroll
+DELETE /api/Students/{userId}/Courses/{courseId}
+GET    /api/Students/{userId}/Courses/{courseId}
+GET    /api/Students/{userId}/Courses
 ```
 
 ### Professors
 ```
+```
 
+### Shifts
+```
+GET    /api/Shifts
+POST   /api/Shifts
+PATCH  /api/Shifts/{id}
+DELETE /api/Shifts/{id}
 ```
 
 ### Reports
 ```
+GET /api/Reports/general
+```
 
+### Seeder
+```
+POST /api/Seeder/seed
 ```
