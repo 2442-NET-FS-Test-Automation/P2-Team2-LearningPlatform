@@ -48,6 +48,35 @@ public class CourseRepo : ICourseRepo
         };
     }
 
+    public async Task<PagedResult<Course>> GetCoursesOfStudentAsync(int page, int pageSize, int studentId)
+    {
+        // Create a query from the context of Courses
+        var query = _context.Courses.Include(c => c.StudentCourses).Include(c => c.Schedule).AsQueryable();
+
+        // filter first
+        query = query.Where(c => c.StudentCourses.Any(sc => sc.StudentId == studentId));
+
+        // await for know the count of the items
+        var totalItems = await query.CountAsync();
+
+        // Create the var courses in base of the query, implemented pagination and selecting the specific
+        // data for our Dto
+        var courses = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        // return a PagedResult<T>
+        return new PagedResult<Course>
+        {
+            Items = courses,
+            Page = page,
+            PageSize = pageSize,
+            TotalItems = totalItems,
+            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+        };
+    }
+
     // This function dont have an endpoint, only for logical purposes
     // because didnt want to expose the table Course for the users
     public async Task<Course?> GetByIdAsync(int id)

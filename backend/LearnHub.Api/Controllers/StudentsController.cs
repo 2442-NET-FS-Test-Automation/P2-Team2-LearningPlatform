@@ -1,16 +1,18 @@
-using LearnHub.Api.DTOs.Students;
-using LearnHub.Data.Entities;
-using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using LearnHub.Api.DTOs.Courses;
+using LearnHub.Api.DTOs.Students;
+using LearnHub.Data.Repositories;
+using LearnHub.Data;
 
 namespace LearnHub.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class StudentsController(IUserRepo userRepo, IStudentRepo studentRepo): ControllerBase
+public class StudentsController(ICourseRepo courseRepo, IStudentRepo studentRepo): ControllerBase
 {
-    private readonly IUserRepo _userRepo = userRepo;
+    private readonly ICourseRepo _courseRepo = courseRepo;
     private readonly IStudentRepo _studentRepo = studentRepo;
     
     [HttpGet("{id}")]
@@ -83,7 +85,46 @@ public class StudentsController(IUserRepo userRepo, IStudentRepo studentRepo): C
         return Ok();
     }
 
-    // [HttpGet("{id:int}/Courses")]
-    // [Authorize]
-    // public async Task<ActionResult<>> GetStudentCourses(int studentId)
+    [HttpGet("{userId:int}/Courses")]
+    public async Task<ActionResult<ICollection<CourseDetailDto>>> GetStudentCourses(
+        int userId,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10
+    )
+    {
+        // Set pagination limits
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 10;
+        if (pageSize > 50) pageSize = 50;
+
+        var student = await _studentRepo.GetByUserIdAsync(userId);
+        if (student == null) return BadRequest(new { error = "User is not a student" });
+
+        var result = await _courseRepo.GetCoursesOfStudentAsync(page, pageSize, student.Id);
+
+        var response = new PagedResult<CourseDetailDto>
+        {
+            Items = result.Items.Select(c => new CourseDetailDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Schedule = c.Schedule
+                    .Select(s => new CourseScheduleDto
+                    {
+                        Day = s.Day,
+                        StartTime = s.StartTime,
+                        EndTime = s.EndTime
+                    })
+                    .ToList(),
+                Grade = c.StudentCourses.First(sc => sc.CourseId == c.Id).Grade,
+                Completed = c.StudentCourses.First(sc => sc.CourseId == c.Id).EndDate != null
+            }).ToList(),
+
+            Page = result.Page,
+            PageSize = result.PageSize,
+            TotalItems = result.TotalItems,
+            TotalPages = result.TotalPages
+        };
+        return Ok(response);
+    }
 }

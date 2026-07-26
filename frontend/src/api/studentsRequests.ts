@@ -15,8 +15,8 @@ export async function studentEnroll(userId: number, courseId: number){
 
 // }
 
-export async function studentCourses(studentId: number){
-    const result = await api.get("/Students/"+studentId+"/Courses");
+export async function getStudentCourses(userId: number){
+    const result = await api.get("/Students/"+userId+"/Courses");
     console.log(result);
     return result.data;
 }
