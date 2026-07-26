@@ -10,18 +10,25 @@ import WeeklyScheduleSection from "./sections/WeeklyScheduleSection";
 
 import type { StudentCourseInfo, StudentStats, TabItem } from "../../lib/types";
 import { calculateAverage, handleLogout } from "../../lib/funcs";
+import { getStudentCourses } from "../../api/studentsRequests";
+import { useAuth } from "../../ctx/AuthCtx";
 
 export default function StudentDashboardPage() {
+    const { user } = useAuth();
+
     const [courses, setCourses] = useState<StudentCourseInfo[]>([]);
     useEffect(() => {
-        // TODO: Endpoint not done yet so no info can be obtained
-        // Get courses of current student
+        if (!user) return;
+        getStudentCourses(user.id)
+            .then((res) => {
+                setCourses(res.items);
+            })
     }, [])
 
     const [stats, setStats] = useState<StudentStats>({
         TotalCourses: courses.length,
-        Completed: courses.filter(c => c.Completed === true).length,
-        AvgGrade: calculateAverage(courses.filter(c => c.Completed === true).map(c => Number(c.Grade))),
+        Completed: courses.filter(c => c.completed === true).length,
+        AvgGrade: calculateAverage(courses.filter(c => c.completed === true).map(c => Number(c.grade))),
     })
 
     useEffect(() => {
@@ -51,7 +58,7 @@ export default function StudentDashboardPage() {
                         {activeTab === "profile" && <ProfileSection />}
                         {activeTab === "courses" && <CoursesSection courses={courses}  />}
                         {activeTab === "progress" && <ProgressSection TotalCourses={stats.TotalCourses} Completed={stats.Completed} AvgGrade={stats.AvgGrade} />}
-                        {activeTab === "schedule" && <WeeklyScheduleSection Courses={courses.filter(c => c.Completed === false)} />}
+                        {activeTab === "schedule" && <WeeklyScheduleSection Courses={courses.filter(c => c.completed === false)} />}
                     </div>
                 </div>
             </div>

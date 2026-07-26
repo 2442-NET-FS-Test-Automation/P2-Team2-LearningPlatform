@@ -8,6 +8,7 @@ import type { CourseDetails } from "../../lib/types";
 import { useAuth } from "../../ctx/AuthCtx";
 import { useEffect, useState } from "react";
 import { getCourseDetails } from "../../api/coursesRequests";
+import { isStudentEnrolled, studentEnroll } from "../../api/studentsRequests";
 
 export default function CourseDetailsPage() {    
     const { user } = useAuth();
@@ -32,6 +33,15 @@ export default function CourseDetailsPage() {
             .finally(() => setLoading(false));
     }, [id])
 
+    useEffect(() => {
+        if(!user) return;
+        isStudentEnrolled(user.id, Number(id))
+            .then((res) => {
+                if (res.status == 404) return;
+                if (res.status == 200) setIsEnrolled(true);
+            })
+    }, [])
+
     const handleEnroll = () => {
         if (!user) {
             navigate("/login");
@@ -40,14 +50,18 @@ export default function CourseDetailsPage() {
         if (isEnrolled || isEnrolling) return;
 
         setIsEnrolling(true);
-        // TODO: replace with real enrollment API call
-        setTimeout(() => {
-            setIsEnrolled(true);
-            setEnrolledCount((prev) => prev + 1);
-            setIsEnrolling(false);
-        }, 700);
+        studentEnroll(user.id, Number(id))
+            .then(() => {
+                setIsEnrolled(true);
+                setEnrolledCount((prev) => prev + 1);
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+            .finally(() => {
+                setIsEnrolling(false);
+            })
     };
-
 
     if (loading) {
         return (

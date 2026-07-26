@@ -1,4 +1,4 @@
-import type { CourseCategory, CourseDetails, CourseListDto, UpdateCourseDto } from "../lib/types";
+import type { CourseCategory, CourseDetails, CourseSelectDto, UpdateCourseDto } from "../lib/types";
 import { api } from "./api";
 
 export async function getAllCourses(page: number = 1, pageSize: number = 6, search: string | null = null, category: CourseCategory | null = null, isActiveFilter: boolean | null = null) {
@@ -43,7 +43,7 @@ export async function getCourseDetails(id: number) {
     }
 }
 
-export async function getCoursesForSelect(): Promise<CourseListDto[]> {
+export async function getCoursesForSelect(): Promise<CourseSelectDto[]> {
     const response = await api.get("/Courses", {
         params: {
             page: 1,

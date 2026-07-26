@@ -4,9 +4,8 @@ import type { StudentCoursesInfo } from "../../../lib/types";
 import { formatSchedule, getGradeColor } from "../../../lib/funcs";
 
 export default function CoursesSection({ courses }: StudentCoursesInfo) {
-    const pendingCourses = courses.filter(c => c.Completed === false);
-    const completedCourses = courses.filter(c => c.Completed === true);
-
+    const pendingCourses = courses.filter(c => c.completed === false);
+    const completedCourses = courses.filter(c => c.completed === true);
     return (
         <div>
             <div className="card space-y-4">
@@ -16,13 +15,13 @@ export default function CoursesSection({ courses }: StudentCoursesInfo) {
                 ) : (
                     <ul className="space-y-3">
                         {pendingCourses.map((course) => (
-                            <li key={course.Id} className="flex items-center justify-between">
+                            <li key={course.id} className="flex items-center justify-between">
                                 <div>
-                                    <Link to={`/courses/${course.Id}`} className="font-medium hover:text-blue-600 dark:hover:text-blue-400">
-                                        {course.Name}
+                                    <Link to={`/courses/${course.id}`} className="font-medium hover:text-blue-600 dark:hover:text-blue-400">
+                                        {course.name}
                                     </Link>
-                                    {course.Schedule && course.Schedule.length > 0 && (
-                                        <p className="text-xs text-muted mt-0.5">{formatSchedule(course.Schedule)}</p>
+                                    {course.schedule && course.schedule.length > 0 && (
+                                        <p className="text-xs text-muted mt-0.5">{formatSchedule(course.schedule)}</p>
                                     )}
                                 </div>
                                 <div className="flex items-center gap-3">
@@ -42,14 +41,14 @@ export default function CoursesSection({ courses }: StudentCoursesInfo) {
                 ) : (
                     <ul className="space-y-3">
                         {completedCourses.map((course) => (
-                            <li key={course.Id} className="flex items-center justify-between">
-                                <Link to={`/courses/${course.Id}`} className="font-medium hover:text-blue-600 dark:hover:text-blue-400">
-                                    {course.Name}
+                            <li key={course.id} className="flex items-center justify-between">
+                                <Link to={`/courses/${course.id}`} className="font-medium hover:text-blue-600 dark:hover:text-blue-400">
+                                    {course.name}
                                 </Link>
                                 <div className="flex items-center gap-3">
-                                    {course.Grade != null && 
-                                        <div className={`text-xl font-bold ${getGradeColor(course.Grade)}`}>
-                                            {course.Grade}
+                                    {course.grade != null && 
+                                        <div className={`text-xl font-bold ${getGradeColor(course.grade)}`}>
+                                            {course.grade}
                                         </div>
                                     }
                                 </div>
