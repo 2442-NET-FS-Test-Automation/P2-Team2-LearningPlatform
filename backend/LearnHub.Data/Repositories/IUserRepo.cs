@@ -7,6 +7,7 @@ public interface IUserRepo
 {
     Task<PagedResult<User>> GetAllAsync(int page,int pageSize,UserRoles? role = null,string? fullName = null, bool? isActive = null);    
     Task<User?> GetByIdAsync(int id);
+    Task<User?> GetByEmailOrUsernameAsync(string emailOrUsername);
     Task<User> CreateAsync(User user);
     Task UpdateAsync(User user);
     Task<bool> ExistsAsync(int id);

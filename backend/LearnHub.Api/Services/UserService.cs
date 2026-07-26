@@ -240,11 +240,9 @@ public class UserService : IUserService
     public async Task<User?> LoginUserAsync(string emailOrUsername, string password)
     {
         //validate if user exists
-        User? foundUser = await _db.Users.FirstOrDefaultAsync(u => u.Email == emailOrUsername || u.Username == emailOrUsername);
+        User? foundUser = await _userRepo.GetByEmailOrUsernameAsync(emailOrUsername);
 
-        if(foundUser is null)
-            return null;
-
+        if(foundUser is null) return null;
 
         //verify password
         var result = _hasher.VerifyHashedPassword(foundUser, foundUser.PasswordHash, password);

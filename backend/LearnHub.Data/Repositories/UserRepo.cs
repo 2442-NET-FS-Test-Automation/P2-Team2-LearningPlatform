@@ -66,6 +66,11 @@ public class UserRepo : IUserRepo
             .FirstOrDefaultAsync(u => u.Id == id);
     }
 
+    public async Task<User?> GetByEmailOrUsernameAsync(string emailOrUsername)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email == emailOrUsername || u.Username == emailOrUsername);
+    }
+
     public async Task<User> CreateAsync(User user)
     {
         _context.Users.Add(user);

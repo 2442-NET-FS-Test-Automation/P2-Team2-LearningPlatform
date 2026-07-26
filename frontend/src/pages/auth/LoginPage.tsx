@@ -31,6 +31,7 @@ export default function LoginPage() {
             try {
                 switch (e.response.status) {
                     case 401: { setError("Invalid username/email or password."); break; }
+                    case 403: { setError("User was deactivated."); break; }
                     default: setError("Something went wrong. Try again later.");
                 }
             } catch { setError("API is down. Try again later."); }
