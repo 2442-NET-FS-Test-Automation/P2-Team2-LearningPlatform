@@ -72,8 +72,8 @@ export default function EditCourseModal({ courseId, onClose, onUpdated }: Props)
 
     if (loadingDetails) {
         return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                <div className="card w-full max-w-2xl bg-white dark:bg-slate-900 flex justify-center py-10">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                <div className="card w-full max-w-2xl shadow-xl animate-in fade-in zoom-in duration-200 flex justify-center py-10">
                     Loading course details...
                 </div>
             </div>
@@ -81,8 +81,8 @@ export default function EditCourseModal({ courseId, onClose, onUpdated }: Props)
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
-            <div className="card w-full max-w-2xl bg-white dark:bg-slate-900 flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <div className="card w-full max-w-2xl shadow-xl animate-in fade-in zoom-in duration-200 flex flex-col max-h-[90vh]">
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-bold">Edit Course</h2>
                     <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
