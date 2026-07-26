@@ -4,6 +4,7 @@ import { BookOpen, CalendarDays, User } from "lucide-react";
 import DashboardSideNav from "../../components/DashboardSideNav";
 import ProfileSection from "./sections/ProfileSection";
 import WeeklyScheduleSection from "./sections/WeeklyScheduleSection";
+import AssignedCoursesSection from "./sections/AssignedCoursesSection";
 
 import type { TabItem } from "../../lib/types";
 import { handleLogout } from "../../lib/funcs";
@@ -27,6 +28,7 @@ export default function ProfessorDashboardPage() {
                     {/* Main Content */}
                     <div className="flex-1">
                         {activeTab === "profile" && <ProfileSection />}
+                        {activeTab === "courses" && <AssignedCoursesSection />}
                         {activeTab === "schedule" && <WeeklyScheduleSection Courses={[]} />}
                     </div>
                 </div>
