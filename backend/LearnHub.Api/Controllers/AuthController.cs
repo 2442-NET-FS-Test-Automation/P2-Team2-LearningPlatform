@@ -69,6 +69,8 @@ public class AuthController : ControllerBase {
             });
         }
 
+        if (!user.IsActive) return Forbid();
+
         var token = _tokens.Issue(user.Username, user.Role);
         var publicUser = ToPublicUser(user!);
         return Ok(new {
