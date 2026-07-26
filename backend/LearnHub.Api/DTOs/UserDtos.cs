@@ -74,7 +74,7 @@ public class UpdateUserDto
     public string? LastName {get;set;}
     public string? Email {get;set;}
     public string? Bio {get;set;}
-
+    public UserRoles? Role {get;set;}
 
     // Student
     public DateOnly? BirthDate {get;set;}

@@ -166,12 +166,24 @@ export type AdminReport = {
     topCourses: TopCourse[];
 }
 
-export type UpdateProfileDto = {
+export interface UpdateProfileDto {
     username?: string;
     firstName?: string;
     lastName?: string;
     email?: string;
     bio?: string;
+
+    role?: UserRole;
+
+    // Student
+    birthDate?: string;
+    studentCourseIds?: number[];
+
+    // Professor
+    shiftId?: number;
+    contractDate?: string;
+    isActive?: boolean;
+    professorCourseIds?: number[];
 }
 
 export type ShiftDto = {
@@ -185,3 +197,25 @@ export type ShiftDto = {
 export type CreateShiftDto = Omit<ShiftDto, "id" | "assignees">;
 
 export type UpdateShiftDto = Partial<CreateShiftDto>
+
+export interface StudentInfoDto {
+    birthDate?: string;
+    courses: CourseSelectDto[];
+}
+
+export interface ProfessorInfoDto {
+    contractDate?: string;
+    shiftId?: number;
+    isActive:boolean;
+    courses:CourseSelectDto[];
+}
+
+export interface UserDetailsDto extends UserDto{
+    student?:StudentInfoDto;
+    professor?:ProfessorInfoDto;
+}
+
+export interface CourseSelectDto {
+    id:number;
+    name:string;
+}

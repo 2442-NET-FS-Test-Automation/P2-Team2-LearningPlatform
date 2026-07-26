@@ -9,5 +9,5 @@ public class Professor
     public Shift Shift { get; set; } = default!;
     public DateOnly ContractDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
     public bool IsActive { get; set; } = true;
-    public IEnumerable<Course> Courses {get; set;} = default!;
+    public ICollection<Course> Courses {get; set;} = default!;
 }

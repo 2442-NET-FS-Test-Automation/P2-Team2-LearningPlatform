@@ -43,11 +43,12 @@ export async function createUser(
 export async function updateUser(
     id: number,
     dto: UpdateProfileDto
-): Promise<{ user: UserDto, token: string }>  {
+): Promise<{ user: UserDto, token: string }> {
+
     const response = await api.patch(`/Users/${id}`, dto);
+
     return response.data;
 }
-
 
 export async function deactivateUser(id: number): Promise<void> {
     await api.delete(`/Users/${id}`);
@@ -61,4 +62,9 @@ export async function promoteToProfessor(
     }
 ) {
     await api.post(`/Users/${id}/promote`, dto);
+}
+
+export async function getUser(id: number) {
+    const response = await api.get(`/Users/${id}`);
+    return response.data;
 }

@@ -3,9 +3,10 @@ import { Search, Plus, Pencil, Trash, GraduationCap } from "lucide-react";
 
 import CreateUserModal from "../../../components/modals/CreateUserModal";
 import PromoteProfessorModal from "../../../components/modals/PromoteProfessorModal";
+import EditUserModal from "../../../components/modals/EditUserModal";
 
-import type { UserDto, UserRole } from "../../../lib/types";
-import { getUsers, deactivateUser } from "../../../api/usersRequest";
+import type { UserDto, UserRole, UserDetailsDto } from "../../../lib/types";
+import { getUsers, getUser ,deactivateUser } from "../../../api/usersRequest";
 import PaginationControls from "../../../components/layout/PaginationControls";
 
 export default function ManageUsersSection() {
@@ -26,7 +27,9 @@ export default function ManageUsersSection() {
     const [created, setCreated] = useState(false);
 
     const [showPromoteModal, setShowPromoteModal] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<UserDto | null>(null);
+    const [selectedUser, setSelectedUser] = useState<UserDetailsDto | null>(null);
+    const [showEditModal, setShowEditModal] = useState(false);
+    
 
     // Get Courses from the API    
     useEffect(() => {
@@ -174,8 +177,15 @@ export default function ManageUsersSection() {
 
                                             <td className="text-right">
                                                 <div className="flex justify-end gap-2">
-                                                    <button className="btn-outline p-2" >
-                                                        <Pencil size={18} />
+                                                    <button
+                                                        className="btn-outline p-2"
+                                                        onClick={async () => {
+                                                            const details = await getUser(user.id);
+                                                            setSelectedUser(details);
+                                                            setShowEditModal(true);
+                                                        }}
+                                                    >
+                                                        <Pencil size={18}/>
                                                     </button>
 
                                                     {user.role === "Student" && (
@@ -231,6 +241,20 @@ export default function ManageUsersSection() {
                     onPromoted={() => {
                         setCreated(c => !c);
                         setShowPromoteModal(false);
+                        setSelectedUser(null);
+                    }}
+                />
+            )}
+            {showEditModal && selectedUser && (
+                <EditUserModal
+                    user={selectedUser}
+                    onClose={() => {
+                        setShowEditModal(false);
+                        setSelectedUser(null);
+                    }}
+                    onUpdated={() => {
+                        setCreated(c => !c);
+                        setShowEditModal(false);
                         setSelectedUser(null);
                     }}
                 />
