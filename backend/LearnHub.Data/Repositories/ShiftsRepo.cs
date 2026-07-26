@@ -55,4 +55,14 @@ public class ShiftsRepo : IShiftsRepo
     {
         return await _context.Shifts.FirstOrDefaultAsync(s => s.Id == id);
     }
+
+    public async Task<bool> RemoveById(int id)
+    {
+        var shift = await GetById(id);
+        if (shift == null) return false;
+
+        _context.Shifts.Remove(shift);
+        await _context.SaveChangesAsync();
+        return true;
+    }
 }

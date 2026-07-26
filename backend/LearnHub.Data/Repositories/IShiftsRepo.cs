@@ -8,4 +8,5 @@ public interface IShiftsRepo
     Task<Shift?> GetById(int id);
     Task<Shift?> AddAsync(Shift shift);
     Task<bool> UpdateAsync(Shift shift);
+    Task<bool> RemoveById(int id);
 }

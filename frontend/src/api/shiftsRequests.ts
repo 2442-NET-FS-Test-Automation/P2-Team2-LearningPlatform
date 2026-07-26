@@ -13,12 +13,16 @@ export async function getShifts(page: number | null, pageSize: number | null, se
 }
 
 export async function createShift(dto: CreateShiftDto) {
-    console.log("dto", dto)
     const res = await api.post("/Shifts", dto);
     return res.data;
 }
 
 export async function updateShift(id: number, dto: UpdateShiftDto) {
     const res = await api.patch("/Shifts/" + id, dto);
+    return res.data;
+}
+
+export async function deleteShift(id: number) {
+    const res = await api.delete("/Shifts/" + id);
     return res.data;
 }

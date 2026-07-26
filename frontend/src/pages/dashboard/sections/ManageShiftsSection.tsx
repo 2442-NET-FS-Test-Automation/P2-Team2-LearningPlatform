@@ -4,9 +4,10 @@ import { Pencil, Plus, Search, Trash } from "lucide-react";
 import PaginationControls from "../../../components/layout/PaginationControls";
 import CreateShiftModal from "../../../components/modals/CreateShiftModal";
 
-import { getShifts } from "../../../api/shiftsRequests";
+import { deleteShift, getShifts } from "../../../api/shiftsRequests";
 import type { ShiftDto } from "../../../lib/types";
 import EditShiftModal from "../../../components/modals/EditShiftModal";
+import ConfirmModal from "../../../components/modals/ConfirmModal";
 
 export default function ManageShiftsSection() {
     const [shifts, setShifts] = useState<ShiftDto[]>([]); // TODO: Specify type
@@ -23,6 +24,7 @@ export default function ManageShiftsSection() {
     const [created, setCreated] = useState(false);
 
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [selectedShift, setSelectedShift] = useState<ShiftDto | null>(null);
 
     useEffect(() => {
@@ -61,10 +63,9 @@ export default function ManageShiftsSection() {
     const handleNext = () => { setCurrentPage((prev) => Math.min(prev + 1, totalPages)) };
     const goToPage = (pagenum: number) => { setCurrentPage(Math.min(Math.max(pagenum, 1), totalPages)) };
 
-    const handleEditClick = (shift: ShiftDto) => {
-        setSelectedShift(shift);
-        setShowEditModal(true);
-    };
+    function handleDelete(shiftId: number) {
+        deleteShift(shiftId).finally(() => setCreated((c) => !c))
+    }
 
     return (
         <>
@@ -132,11 +133,21 @@ export default function ManageShiftsSection() {
 
                                         <td className="text-right">
                                             <div className="flex justify-end gap-2">
-                                                <button onClick={() => handleEditClick(shift)} className="btn-outline p-2" >
+                                                <button className="btn-outline p-2" 
+                                                    onClick={() => {
+                                                        setSelectedShift(shift);
+                                                        setShowEditModal(true);
+                                                    }} 
+                                                >
                                                     <Pencil size={18} />
                                                 </button>
 
-                                                <button className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70">
+                                                <button className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70"
+                                                    onClick={() => {
+                                                        setSelectedShift(shift);
+                                                        setShowConfirmModal(true);
+                                                    }}
+                                                >
                                                     <Trash size={18} />
                                                 </button>
                                             </div>
@@ -179,6 +190,20 @@ export default function ManageShiftsSection() {
                         setShowEditModal(false);
                         setSelectedShift(null);
                     }}                    
+                />
+            )}
+            {showConfirmModal && selectedShift && (
+                <ConfirmModal title={"About to delete a Shift"} message={"Are you sure you want to delete "+selectedShift.name+" shift"} 
+                    variant="danger"
+                    onConfirm={() => {
+                        handleDelete(selectedShift.id);
+                        setShowConfirmModal(false);
+                        setSelectedShift(null);
+                    }}
+                    onCancel={() => {
+                        setShowConfirmModal(false);
+                        setSelectedShift(null);
+                    }} 
                 />
             )}
         </>

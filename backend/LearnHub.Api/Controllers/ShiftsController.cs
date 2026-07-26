@@ -91,6 +91,17 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
             });
         }
     }
+
+    [HttpDelete("{id:int}")]
+    [Authorize]
+    public async Task<ActionResult> RemoveShift(int id)
+    {
+        if(await _repo.RemoveById(id))
+        {
+            return Ok();
+        }
+        return BadRequest(new { error = "Failed to remove" });
+    }
 }
 
 public class ShiftDto
