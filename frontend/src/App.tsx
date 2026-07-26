@@ -9,9 +9,9 @@ import RegisterPage from "./pages/auth/RegisterPage";
 import CoursesPage from "./pages/courses/CoursesPage";
 import CourseDetailsPage from "./pages/courses/CourseDetailsPage";
 
-import StudentDashboardPage from "./pages/dashboard/StudentDashboardPage";
-import ProfessorDashboardPage from "./pages/dashboard/ProfessorDashboardPage";
-import ManagerDashboardPage from "./pages/dashboard/ManagerDashboardPage";
+import StudentDashboardPage from "./pages/dashboard/Student/StudentDashboardPage";
+import ProfessorDashboardPage from "./pages/dashboard/Professor/ProfessorDashboardPage";
+import ManagerDashboardPage from "./pages/dashboard/Manager/ManagerDashboardPage";
 
 import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/layout/ProtectedRoute";

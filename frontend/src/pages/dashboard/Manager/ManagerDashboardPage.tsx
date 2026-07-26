@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { BookCopy, CalendarClock, NotebookText, User, UsersRound } from "lucide-react";
 
-import DashboardSideNav from "../../components/DashboardSideNav";
-import ProfileSection from "./sections/ProfileSection";
+import DashboardSideNav from "../../../components/DashboardSideNav";
+import ProfileSection from "../ProfileSection";
 
-import ManageUsersSection from "./sections/ManageUsersSection";
-import ManageCoursesSection from "./sections/ManageCoursesSection";
-import ManageShiftsSection from "./sections/ManageShiftsSection";
-import ManagerReportsSection from "./sections/ManagerReportsSection";
+import ManageUsersSection from "./ManagerUsersSection";
+import ManageCoursesSection from "./ManagerCoursesSection";
+import ManageShiftsSection from "./ManagerShiftsSection";
+import ManagerReportsSection from "./ManagerReportsSection";
 
 
-import type { TabItem } from "../../lib/types";
-import { handleLogout } from "../../lib/funcs";
+import type { TabItem } from "../../../lib/types";
+import { handleLogout } from "../../../lib/funcs";
 
 export default function ManagerDashboardPage() {
     const [activeTab, setActiveTab] = useState<string>("reports");

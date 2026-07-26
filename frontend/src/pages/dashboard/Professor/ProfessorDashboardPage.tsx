@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { BookOpen, CalendarDays, User } from "lucide-react";
 
-import DashboardSideNav from "../../components/DashboardSideNav";
-import ProfileSection from "./sections/ProfileSection";
-import WeeklyScheduleSection from "./sections/WeeklyScheduleSection";
-import AssignedCoursesSection from "./sections/AssignedCoursesSection";
+import DashboardSideNav from "../../../components/DashboardSideNav";
+import ProfileSection from "../ProfileSection";
+import WeeklyScheduleSection from "../WeeklyScheduleSection";
+import AssignedCoursesSection from "./AssignedCoursesSection";
 
-import type { TabItem } from "../../lib/types";
-import { handleLogout } from "../../lib/funcs";
+import type { TabItem } from "../../../lib/types";
+import { handleLogout } from "../../../lib/funcs";
 
 export default function ProfessorDashboardPage() {
     const [activeTab, setActiveTab] = useState<string>("courses");
