@@ -234,3 +234,40 @@ export type UpdateCourseDto = {
     certification?: boolean;
     isActive?: boolean;
 }
+
+export type Activity = {
+    id: number;
+    courseId: number;
+    createdBy: number;
+    title: string;
+    description: string;
+    dueDate: string;   // ISO date string
+    createdAt: string; // ISO date string
+}
+
+export type Submission = {
+    id: number;
+    activityId: number;
+    studentId: number;
+    file: string; // plain text submission for now, no file upload yet
+    feedback?: string;
+    submittedAt: string; // ISO date string
+    gradedAt?: string;   // ISO date string
+    grade?: number;
+}
+
+// Student-facing view: one activity, at most one submission (their own)
+export type ActivityWithSubmission = Activity & {
+    submission?: Submission;
+}
+
+// Professor/Admin-facing view: one activity, all student submissions
+export type ActivityWithSubmissions = Activity & {
+    submissions: Submission[];
+}
+
+export type CreateActivityDto = {
+    title: string;
+    description: string;
+    dueDate: string;
+}

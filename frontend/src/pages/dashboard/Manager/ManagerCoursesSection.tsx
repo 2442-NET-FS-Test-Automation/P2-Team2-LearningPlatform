@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { Pencil, Plus, Search, Trash } from "lucide-react";
 
-import { COURSE_CATEGORIES, type CourseCategory, type CourseDetails } from "../../../lib/types";
-import { getAllCourses, deleteCourse } from "../../../api/coursesRequests";
 import PaginationControls from "../../../components/layout/PaginationControls";
-import ConfirmModal from "../../../components/modals/ConfirmModal";
 import EditCourseModal from "../../../components/modals/EditCourseModal";
+import ConfirmModal from "../../../components/modals/ConfirmModal";
+
+import { getAllCourses, deleteCourse } from "../../../api/coursesRequests";
+import { COURSE_CATEGORIES, type CourseCategory, type CourseDetails } from "../../../lib/types";
 
 export default function ManageUsersSection() {
     const [courses, setCourses] = useState<CourseDetails[]>([]); // TODO: Specify type
@@ -128,8 +130,8 @@ export default function ManageUsersSection() {
                                             </select>
                                         </div>
                                     </th>
-                                    <th>Status</th>
                                     <th>Price</th>
+                                    <th>Status</th>
                                     <th className="text-right">
                                         Actions
                                     </th>
@@ -147,12 +149,17 @@ export default function ManageUsersSection() {
                                             key = { c.id }
                                             className = "border-b transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
                                         >
-                                            <td className="py-3">{c.name}</td>
+                                            <td className="py-3">
+                                                <Link to={`/courses/${c.id}`} className="font-medium hover:text-blue-600 dark:hover:text-blue-400">
+                                                    {c.name}
+                                                </Link>
+                                            </td>
                                             <td className="py-3">
                                                 <span className="blue-accent-chip rounded-full px-2.5 py-0.5 text-xs font-semibold">
                                                     {c.category}
                                                 </span>
                                             </td>
+                                            <td className="py-3">{c.price}</td>
                                             <td className="py-3">
                                                 {c.isActive ? (
                                                     <span className="text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-full text-xs font-medium">Active</span>
@@ -160,7 +167,6 @@ export default function ManageUsersSection() {
                                                     <span className="text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full text-xs font-medium">Inactive</span>
                                                 )}
                                             </td>
-                                            <td className="py-3">{c.price}</td>
                                             <td className="text-right">
                                                 <div className="flex justify-end gap-2">
                                                     <button onClick={() => setEditCourseId(c.id)} className="btn-outline p-2" >

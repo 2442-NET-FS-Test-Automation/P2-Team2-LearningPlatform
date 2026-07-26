@@ -1,17 +1,25 @@
+import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { CheckCircle2, Clock, Loader2, Trophy, Users } from "lucide-react";
+import { Clock, GraduationCap, ListChecks, Plus, Trash2, Trophy, Users } from "lucide-react";
 
+import ConfirmModal from "../../components/modals/ConfirmModal";
+import ActivitySubmissionForm from "../../components/forms/ActivitySubmissionForm";
+import CompletedActivityItem from "../../components/CompletedActivityItem";
+import ProfessorActivityAccordion from "../../components/ProfessorActivityAccordion";
+import CreateActivityModal from "../../components/modals/CreateActivityModal";
 import CourseScheduleList from "../../components/CourseScheduleList";
+import EditCourseModal from "../../components/modals/EditCourseModal";
+import Loading from "../../components/layout/Loading";
 import NotFoundPage from "../NotFoundPage";
 
-import type { CourseDetails } from "../../lib/types";
 import { useAuth } from "../../ctx/AuthCtx";
-import { useEffect, useState } from "react";
-import { getCourseDetails } from "../../api/coursesRequests";
-import { isStudentEnrolled, studentEnroll } from "../../api/studentsRequests";
-import Loading from "../../components/layout/Loading";
 
-export default function CourseDetailsPage() {    
+import { isStudentEnrolled, studentEnroll } from "../../api/studentsRequests";
+import { getCourseDetails } from "../../api/coursesRequests";
+import type { ActivityWithSubmission, ActivityWithSubmissions, CourseDetails, CreateActivityDto } from "../../lib/types";
+import EnrollmentCard from "../../components/EnrollmentCard";
+
+export default function CourseDetailsPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -24,6 +32,16 @@ export default function CourseDetailsPage() {
     const [isEnrolling, setIsEnrolling] = useState(false);
     const [enrolledCount, setEnrolledCount] = useState(0);
 
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [updated, setUpdated] = useState(false);
+
+    const [studentActivities, setStudentActivities] = useState<ActivityWithSubmission[]>([]);
+    const [courseActivities, setCourseActivities] = useState<ActivityWithSubmissions[]>([]);
+    const [submittingActivityId, setSubmittingActivityId] = useState<number | null>(null);
+    const [showCreateActivity, setShowCreateActivity] = useState(false);
+    const [deleteActivityId, setDeleteActivityId] = useState<number | null>(null);
+
+
     useEffect(() => {
         getCourseDetails(Number(id))
             .then(res => {
@@ -32,7 +50,7 @@ export default function CourseDetailsPage() {
             })
             .catch(e => console.log(e))
             .finally(() => setLoading(false));
-    }, [id])
+    }, [id, updated])
 
     useEffect(() => {
         if(!user) return;
@@ -42,6 +60,19 @@ export default function CourseDetailsPage() {
                 if (res.status == 200) setIsEnrolled(true);
             })
     }, [])
+
+    useEffect(() => {
+        if (!user) return;
+
+        if (user.role === "Student") {
+            // TODO: replace with the real endpoint, getStudentActivities(user.id, Number(id))
+            setStudentActivities([]);
+        } else if (user.role === "Professor" || user.role === "Admin") {
+            // TODO: replace with the real endpoint, getCourseActivities(Number(id))
+            setCourseActivities([]);
+        }
+    }, [user, id, updated])
+
 
     const handleEnroll = () => {
         if (!user) {
@@ -64,6 +95,60 @@ export default function CourseDetailsPage() {
             })
     };
 
+    const pendingActivities = studentActivities.filter(a => !a.submission);
+    const completedActivities = studentActivities.filter(a => a.submission);
+
+    const handleSubmitActivity = (activityId: number, text: string) => {
+        if (!user) return;
+        setSubmittingActivityId(activityId);
+        // TODO: replace with a real submitActivity(activityId, user.id, text) API call
+        setStudentActivities(prev => prev.map(a => a.id === activityId ? {
+            ...a,
+            submission: {
+                id: -1,
+                activityId,
+                studentId: user.id,
+                file: text,
+                submittedAt: new Date().toISOString()
+            }
+        } : a));
+        setSubmittingActivityId(null);
+    };
+
+    const handleGradeSubmission = (activityId: number, submissionId: number, grade: number, feedback: string) => {
+        // TODO: replace with a real gradeSubmission(submissionId, grade, feedback) API call
+        setCourseActivities(prev => prev.map(a => a.id === activityId ? {
+            ...a,
+            submissions: a.submissions.map(s => s.id === submissionId
+                ? { ...s, grade, feedback, gradedAt: new Date().toISOString() }
+                : s)
+        } : a));
+    };
+
+    const handleCreateActivity = (dto: CreateActivityDto) => {
+        if (!user) return;
+        // TODO: replace with a real createActivity(Number(id), dto) API call
+        const newActivity: ActivityWithSubmissions = {
+            id: Date.now(), // placeholder id until the backend assigns a real one
+            courseId: Number(id),
+            createdBy: user.id,
+            title: dto.title,
+            description: dto.description,
+            dueDate: dto.dueDate,
+            createdAt: new Date().toISOString(),
+            submissions: []
+        };
+        setCourseActivities(prev => [...prev, newActivity]);
+        setShowCreateActivity(false);
+    };
+
+    const handleDeleteActivity = () => {
+        if (deleteActivityId == null) return;
+        // TODO: replace with a real deleteActivity(deleteActivityId) API call
+        setCourseActivities(prev => prev.filter(a => a.id !== deleteActivityId));
+        setDeleteActivityId(null);
+    };
+
     if (loading) {return (<Loading />)}
 
     if (!course) return (<NotFoundPage />);
@@ -75,6 +160,7 @@ export default function CourseDetailsPage() {
     const displayAbout = course.about || about;
     
     return (
+    <>
         <div className="min-h-screen bg-white dark:bg-slate-900">
             {/* Header Image */}
             <div className="relative h-64 w-full overflow-hidden bg-slate-200 dark:bg-slate-700">
@@ -126,68 +212,230 @@ export default function CourseDetailsPage() {
                                 <h2 className="text-xl font-semibold">About this course</h2>
                                 <p className="mt-2 text-muted">{displayAbout}</p>
                             </div>
+                            {user && (
+                                user.role === "Student" ?
+                                <>
+                                    <div className="divider-block">
+                                        <h2 className="text-xl font-semibold">Pending Activities</h2>
+                                        <p className="mt-2 text-muted">You have {pendingActivities.length} pending activities</p>
+                                    </div>
+                                    <div className="space-y-4">
+                                        {pendingActivities.length === 0 ? (
+                                            <p className="text-sm text-muted">Nothing due right now.</p>
+                                        ) : (
+                                            pendingActivities.map(a => (
+                                                <ActivitySubmissionForm
+                                                    key={a.id}
+                                                    activity={a}
+                                                    isSubmitting={submittingActivityId === a.id}
+                                                    onSubmit={(text) => handleSubmitActivity(a.id, text)}
+                                                />
+                                            ))
+                                        )}
+                                    </div>
+
+                                    <div className="divider-block">
+                                        <h2 className="text-xl font-semibold">Completed Activities</h2>
+                                        <p className="mt-2 text-muted">You have competed {completedActivities.length} activities</p>
+                                    </div>
+                                    <div className="space-y-4">
+                                        {completedActivities.length === 0 ? (
+                                            <p className="text-sm text-muted">No completed activities yet.</p>
+                                        ) : (
+                                            completedActivities.map(a => (
+                                                <CompletedActivityItem key={a.id} activity={a} submission={a.submission!} />
+                                            ))
+                                        )}
+                                    </div>
+                                </> : 
+                                user.role === "Professor" ?
+                                <>
+                                    <div className="divider-block flex items-center justify-between">
+                                        <div>
+                                            <h2 className="text-xl font-semibold">Student Activities</h2>
+                                            <p className="mt-2 text-muted">Your students have submitted</p>
+                                        </div>
+                                        <button onClick={() => setShowCreateActivity(true)} className="btn-outline gap-2 text-sm hover:opacity-80">
+                                            <div className="flex items-center gap-1 py-1">
+                                                <Plus size={16} />
+                                                New Activity
+                                            </div>
+                                        </button>
+                                    </div>
+                                    <div className="space-y-4">
+                                        {courseActivities.length === 0 ? (
+                                            <p className="text-sm text-muted">No activities created for this course yet.</p>
+                                        ) : (
+                                            courseActivities.map(a => (
+                                                <ProfessorActivityAccordion
+                                                    key={a.id}
+                                                    activity={a}
+                                                    onGrade={(submissionId, grade, feedback) => handleGradeSubmission(a.id, submissionId, grade, feedback)}
+                                                />
+                                            ))
+                                        )}
+                                    </div>
+                                </> : 
+                                user.role === "Admin" &&
+                                <>
+                                    <div className="divider-block flex items-center justify-between">
+                                        <h2 className="text-xl font-semibold">Activities</h2>
+                                        <button onClick={() => setShowCreateActivity(true)} className="btn-outline gap-2 text-sm">
+                                            <div className="flex items-center gap-1 py-1">
+                                                <Plus size={16} />
+                                                New Activity
+                                            </div>
+                                        </button>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {courseActivities.length === 0 ? (
+                                            <p className="text-sm text-muted">No activities yet.</p>
+                                        ) : (
+                                            courseActivities.map(a => (
+                                                <div key={a.id} className="card flex items-center justify-between">
+                                                    <div>
+                                                        <h3 className="font-semibold">{a.title}</h3>
+                                                        <p className="text-sm text-muted">Due {new Date(a.dueDate).toLocaleDateString()}</p>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => setDeleteActivityId(a.id)}
+                                                        className="rounded-full p-2 text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </>
+                            )}
                         </div>
 
                         {/* Enrollment card */}
                         <div className="lg:col-span-1">
                             <div className="card sticky top-24 space-y-6 transition-shadow hover:shadow-lg">
-                                <div className="flex items-baseline justify-between">
-                                    <span className="big-stat">
-                                        {course.price === 0 ? ("Free") : (`${course.price}$`)}
-                                    </span>
-                                    <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
-                                        <Users size={16} />
-                                        {enrolledCount} enrolled
-                                    </span>
-                                </div>
-                                {isEnrolled ? (
-                                    <button
-                                        disabled
-                                        className="btn-primary w-full justify-center gap-2 text-center bg-emerald-600 opacity-100 hover:bg-emerald-600 dark:bg-emerald-500 dark:hover:bg-emerald-500"
-                                    >
-                                        <div className="flex items-center">
-                                            <CheckCircle2 size={18} />
-                                            <p className="mx-auto">Enrolled</p>
-                                        </div>
-                                    </button>
+                                {user ? (
+                                    <>
+                                        {user.role === "Student" && (
+                                            isEnrolled ? 
+                                                    <div className="space-y-3">
+                                                        <div className="flex items-baseline justify-between">
+                                                            <span className="big-stat">
+                                                                {studentActivities.length > 0
+                                                                    ? Math.round((completedActivities.length / studentActivities.length) * 100)
+                                                                    : 0}%
+                                                            </span>
+                                                            <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+                                                                <ListChecks size={16} />
+                                                                {completedActivities.length}/{studentActivities.length} activities
+                                                            </span>
+                                                        </div>
+                                                        <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700">
+                                                            <div
+                                                                className="h-2 rounded-full bg-blue-600 transition-all dark:bg-blue-400"
+                                                                style={{
+                                                                    width: `${studentActivities.length > 0
+                                                                        ? (completedActivities.length / studentActivities.length) * 100
+                                                                        : 0}%`
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                             : (
+                                                <EnrollmentCard 
+                                                    userLogged={true}
+                                                    course={course} 
+                                                    enrolledCount={enrolledCount} 
+                                                    isEnrolling={isEnrolling}
+                                                    handleClick={() => handleEnroll()} />
+                                            )
+                                        )}
+                                        {user.role === "Professor" && (
+                                            <div className="space-y-3">
+                                                <div className="flex items-baseline justify-between">
+                                                    <span className="big-stat">{courseActivities.length}</span>
+                                                    <span className="text-sm text-slate-500 dark:text-slate-400">activities</span>
+                                                </div>
+                                                <p className="flex items-center gap-1.5 text-sm text-muted">
+                                                    <GraduationCap size={16} />
+                                                    {courseActivities.reduce((sum, a) => sum + a.submissions.filter(s => s.gradedAt == null).length, 0)} submissions awaiting grade
+                                                </p>
+                                            </div>
+                                        )}
+                                        {user.role === "Admin" && (
+                                        <>
+                                            <div className="flex items-baseline justify-between">
+                                                    <span className="big-stat">
+                                                        {course.price === 0 ? ("Free") : (`${course.price}$`)}
+                                                    </span>
+                                                    <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+                                                        <Users size={16} />
+                                                        {enrolledCount} enrolled
+                                                    </span>
+                                                </div>
+                                            <button className="btn-primary w-full justify-center gap-2 text-center"
+                                                onClick={() => setShowEditModal(true)}
+                                            >
+                                                Edit Course
+                                            </button>
+                                            <div className="text-sm text-slate-500 dark:text-slate-400">
+                                                {course.hours != null && (
+                                                    <div className="flex">
+                                                        <Clock size={20} />
+                                                        <p className="mx-2">{course.hours} hours of content</p>
+                                                    </div>
+                                                )}
+                                                {course.certification === true && (
+                                                    <div className="flex my-3">
+                                                        <Trophy size={20} />
+                                                        <p className="mx-2">Certificate of completion</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </>
+                                        )}
+                                    </>
                                 ) : (
-                                    <button
-                                        onClick={handleEnroll}
-                                        disabled={isEnrolling}
-                                        className="btn-primary w-full justify-center gap-2 text-center disabled:opacity-70"
-                                    >
-                                        <div className="flex items-center">
-                                            {isEnrolling && <Loader2 size={18} className="animate-spin" />}
-                                            <p className="mx-auto">
-                                                {!user
-                                                    ? "Login to enroll"
-                                                    : isEnrolling
-                                                        ? "Enrolling..."
-                                                        : "Enroll Now"}
-                                            </p>
-                                        </div>
-                                    </button>
+                                    <EnrollmentCard
+                                        userLogged={false}
+                                        course={course}
+                                        enrolledCount={enrolledCount}
+                                        isEnrolling={isEnrolling}
+                                        handleClick={() => handleEnroll()}
+                                    />
                                 )}
-
-                                <div className="text-sm text-slate-500 dark:text-slate-400">
-                                    {course.hours != null && (
-                                        <div className="flex">
-                                            <Clock size={20} />
-                                            <p className="mx-2">{course.hours} hours of content</p>
-                                        </div>
-                                    )}
-                                    {course.certification === true && (
-                                        <div className="flex my-3">
-                                            <Trophy size={20} />
-                                            <p className="mx-2">Certificate of completion</p> 
-                                        </div>
-                                    )}
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
+        {showEditModal && (
+            <EditCourseModal
+                courseId={Number(id)}
+                onClose={() => setShowEditModal(false)}
+                onUpdated={() => {
+                    setUpdated(!updated)
+                    setShowEditModal(false);
+                }}
+            />
+        )}
+        {showCreateActivity && (
+            <CreateActivityModal
+                onClose={() => setShowCreateActivity(false)}
+                onCreate={handleCreateActivity}
+            />
+        )}
+        {deleteActivityId !== null && 
+            <ConfirmModal
+                title="Delete this activity?"
+                message="Students will lose access to this activity and any submissions tied to it. This can't be undone."
+                confirmLabel="Delete"
+                variant="danger"
+                onConfirm={handleDeleteActivity}
+                onCancel={() => setDeleteActivityId(null)}
+            />
+        }
+    </>
     );
 }
