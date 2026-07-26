@@ -48,6 +48,8 @@ public class CourseDetailDto
     public bool Certification { get; set; }
 
     public List<CourseScheduleDto> Schedule { get; set; } = [];
+    public int? Grade { get; set; } = null;
+    public bool? Completed { get; set; } = null;
 }
 
 public class CreateCourseDto

@@ -64,9 +64,9 @@ export type CourseSchedule = {
 }
 
 export type CourseInfo = {
-    Id: number,
-    Name: string,
-    Schedule?: CourseSchedule[]
+    id: number,
+    name: string,
+    schedule?: CourseSchedule[]
 }
 
 export type CoursesInfo = {
@@ -95,8 +95,8 @@ export type UserInfo = {
 }
 
 export interface StudentCourseInfo extends CourseInfo {
-    Grade?: number,
-    Completed: boolean
+    grade?: number,
+    completed: boolean
 }
 
 export type StudentCoursesInfo = {

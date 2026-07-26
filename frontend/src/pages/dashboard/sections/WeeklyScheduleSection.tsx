@@ -14,12 +14,12 @@ const EVENT_COLORS = [
 ];
 
 export default function WeeklyScheduleSection({ Courses }: CoursesInfo) {
-    const pendingCourses = Courses.filter(c => c.Schedule && c.Schedule.length > 0);
+    const pendingCourses = Courses.filter(c => c.schedule && c.schedule.length > 0);
 
     const events: ScheduleEvent[] = pendingCourses.flatMap((course, courseIndex) =>
-        (course.Schedule ?? []).map(s => ({
+        (course.schedule ?? []).map(s => ({
             ...s,
-            CourseName: course.Name,
+            CourseName: course.name,
             ColorClass: EVENT_COLORS[courseIndex % EVENT_COLORS.length],
         }))
     );

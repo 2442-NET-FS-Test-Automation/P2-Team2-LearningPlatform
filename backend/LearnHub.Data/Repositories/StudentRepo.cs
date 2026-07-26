@@ -1,7 +1,6 @@
-using LearnHub.Data;
-using LearnHub.Data.Entities;
-using LearnHub.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+
+using LearnHub.Data.Entities;
 
 namespace LearnHub.Data.Repositories;
 
