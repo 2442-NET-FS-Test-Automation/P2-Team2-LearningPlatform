@@ -76,12 +76,10 @@ export default function CourseDetailsPage() {
         if (!user) return;
 
         if (user.role === "Student") {
-            // TODO: replace with the real endpoint, getStudentActivities(user.id, Number(id))
             getStudentActivities(Number(id))
                 .then(setStudentActivities)
                 .catch(e => console.log(e));
         } else if (user.role === "Professor" || user.role === "Admin") {
-            // TODO: replace with the real endpoint, getCourseActivities(Number(id))
             getCourseActivities(Number(id))
                 .then(setCourseActivities)
                 .catch(e => console.log(e));
@@ -111,7 +109,6 @@ export default function CourseDetailsPage() {
     const handleSubmitActivity = async (activityId: number, text: string) => {
         if (!user) return;
         setSubmittingActivityId(activityId);
-        // TODO: replace with a real submitActivity(activityId, user.id, text) API call
         try {
             await submitActivity(activityId, text);
             setUpdated(prev => !prev);
@@ -123,7 +120,6 @@ export default function CourseDetailsPage() {
     };
 
     const handleGradeSubmission = async (_activityId: number, submissionId: number, grade: number, feedback: string) => {
-        // TODO: replace with a real gradeSubmission(submissionId, grade, feedback) API call
         try {
             await gradeSubmission(submissionId, grade, feedback);
             setUpdated(prev => !prev);
@@ -133,7 +129,6 @@ export default function CourseDetailsPage() {
     };
 
     const handleCreateActivity = async (dto: CreateActivityDto) => {
-        // TODO: replace with a real createActivity(Number(id), dto) API call
         if (!user) return;
         try {
             await createActivity(Number(id), dto);
@@ -145,7 +140,6 @@ export default function CourseDetailsPage() {
     };
 
     const handleDeleteActivity = async () => {
-        // TODO: replace with a real deleteActivity(deleteActivityId) API call
         if (deleteActivityId == null) return;
         try {
             await deleteActivity(deleteActivityId);
@@ -168,6 +162,7 @@ export default function CourseDetailsPage() {
     return (
     <>
         <div className="min-h-screen bg-white dark:bg-slate-900">
+            {/* Header Image */}
             <div className="relative h-64 w-full overflow-hidden bg-slate-200 dark:bg-slate-700">
                 <img
                     src={`/course_img/${course.category}.jpg`}
@@ -177,7 +172,8 @@ export default function CourseDetailsPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             </div>
-
+            
+            {/* Course Details */}
             <section className="section-white py-12 overflow-hidden">
                 <div className="container-page relative">
                     <nav className="mb-6 text-sm text-slate-500 dark:text-slate-400">
@@ -190,6 +186,7 @@ export default function CourseDetailsPage() {
                         </span>
                     </nav>
 
+                    {/* Main content */}
                     <div className="grid gap-10 lg:grid-cols-3">
                         <div className="lg:col-span-2 space-y-6">
                             <div>
@@ -316,6 +313,7 @@ export default function CourseDetailsPage() {
                             )}
                         </div>
 
+                        {/* Side card */}
                         <div className="lg:col-span-1">
                             <div className="card sticky top-24 space-y-6 transition-shadow hover:shadow-lg">
                                 {user ? (
