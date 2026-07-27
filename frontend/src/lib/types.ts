@@ -275,11 +275,11 @@ export type Submission = {
     id: number;
     activityId: number;
     studentId: number;
-    file: string; // plain text submission for now, no file upload yet
+    file: string;
     feedback?: string;
-    submittedAt: string; // ISO date string
-    gradedAt?: string;   // ISO date string
-    grade?: number;
+    submittedAt: string;
+    gradedAt?: string;
+    score?: number;      // ← cambiado de grade a score
 }
 
 // Student-facing view: one activity, at most one submission (their own)

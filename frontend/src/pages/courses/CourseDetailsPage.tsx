@@ -16,7 +16,21 @@ import { useAuth } from "../../ctx/AuthCtx";
 
 import { isStudentEnrolled, studentEnroll } from "../../api/studentsRequests";
 import { getCourseDetails } from "../../api/coursesRequests";
-import type { ActivityWithSubmission, ActivityWithSubmissions, CourseDetails, CreateActivityDto } from "../../lib/types";
+import {
+    getStudentActivities,
+    getCourseActivities,
+    createActivity,
+    deleteActivity,
+    submitActivity,
+    gradeSubmission
+} from "../../api/activitiesRequests";
+
+import type {
+    ActivityWithSubmission,
+    ActivityWithSubmissions,
+    CourseDetails,
+    CreateActivityDto
+} from "../../lib/types";
 import EnrollmentCard from "../../components/EnrollmentCard";
 
 export default function CourseDetailsPage() {
@@ -25,7 +39,6 @@ export default function CourseDetailsPage() {
 
     const { id } = useParams();
     const [course, setCourse] = useState<CourseDetails>()
-
     const [loading, setLoading] = useState(true);
 
     const [isEnrolled, setIsEnrolled] = useState(false);
@@ -41,38 +54,37 @@ export default function CourseDetailsPage() {
     const [showCreateActivity, setShowCreateActivity] = useState(false);
     const [deleteActivityId, setDeleteActivityId] = useState<number | null>(null);
 
-
     useEffect(() => {
         getCourseDetails(Number(id))
             .then(res => {
                 setCourse(res);
-                setEnrolledCount(res.enrolledStudents)                
+                setEnrolledCount(res.enrolledStudents);
             })
             .catch(e => console.log(e))
             .finally(() => setLoading(false));
-    }, [id, updated])
+    }, [id, updated]);
 
     useEffect(() => {
-        if(!user) return;
+        if (!user) return;
         isStudentEnrolled(user.id, Number(id))
             .then((res) => {
-                if (res.status == 404) return;
-                if (res.status == 200) setIsEnrolled(true);
-            })
-    }, [])
+                if (res.status === 200) setIsEnrolled(true);
+            });
+    }, []);
 
     useEffect(() => {
         if (!user) return;
 
         if (user.role === "Student") {
-            // TODO: replace with the real endpoint, getStudentActivities(user.id, Number(id))
-            setStudentActivities([]);
+            getStudentActivities(Number(id))
+                .then(setStudentActivities)
+                .catch(e => console.log(e));
         } else if (user.role === "Professor" || user.role === "Admin") {
-            // TODO: replace with the real endpoint, getCourseActivities(Number(id))
-            setCourseActivities([]);
+            getCourseActivities(Number(id))
+                .then(setCourseActivities)
+                .catch(e => console.log(e));
         }
-    }, [user, id, updated])
-
+    }, [user, id, updated]);
 
     const handleEnroll = () => {
         if (!user) {
@@ -87,78 +99,66 @@ export default function CourseDetailsPage() {
                 setIsEnrolled(true);
                 setEnrolledCount((prev) => prev + 1);
             })
-            .catch((e) => {
-                console.log(e);
-            })
-            .finally(() => {
-                setIsEnrolling(false);
-            })
+            .catch((e) => console.log(e))
+            .finally(() => setIsEnrolling(false));
     };
 
     const pendingActivities = studentActivities.filter(a => !a.submission);
     const completedActivities = studentActivities.filter(a => a.submission);
 
-    const handleSubmitActivity = (activityId: number, text: string) => {
+    const handleSubmitActivity = async (activityId: number, text: string) => {
         if (!user) return;
         setSubmittingActivityId(activityId);
-        // TODO: replace with a real submitActivity(activityId, user.id, text) API call
-        setStudentActivities(prev => prev.map(a => a.id === activityId ? {
-            ...a,
-            submission: {
-                id: -1,
-                activityId,
-                studentId: user.id,
-                file: text,
-                submittedAt: new Date().toISOString()
-            }
-        } : a));
-        setSubmittingActivityId(null);
+        try {
+            await submitActivity(activityId, text);
+            setUpdated(prev => !prev);
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setSubmittingActivityId(null);
+        }
     };
 
-    const handleGradeSubmission = (activityId: number, submissionId: number, grade: number, feedback: string) => {
-        // TODO: replace with a real gradeSubmission(submissionId, grade, feedback) API call
-        setCourseActivities(prev => prev.map(a => a.id === activityId ? {
-            ...a,
-            submissions: a.submissions.map(s => s.id === submissionId
-                ? { ...s, grade, feedback, gradedAt: new Date().toISOString() }
-                : s)
-        } : a));
+    const handleGradeSubmission = async (_activityId: number, submissionId: number, grade: number, feedback: string) => {
+        try {
+            await gradeSubmission(submissionId, grade, feedback);
+            setUpdated(prev => !prev);
+        } catch (e) {
+            console.log(e);
+        }
     };
 
-    const handleCreateActivity = (dto: CreateActivityDto) => {
+    const handleCreateActivity = async (dto: CreateActivityDto) => {
         if (!user) return;
-        // TODO: replace with a real createActivity(Number(id), dto) API call
-        const newActivity: ActivityWithSubmissions = {
-            id: Date.now(), // placeholder id until the backend assigns a real one
-            courseId: Number(id),
-            createdBy: user.id,
-            title: dto.title,
-            description: dto.description,
-            dueDate: dto.dueDate,
-            createdAt: new Date().toISOString(),
-            submissions: []
-        };
-        setCourseActivities(prev => [...prev, newActivity]);
-        setShowCreateActivity(false);
+        try {
+            await createActivity(Number(id), dto);
+            setUpdated(prev => !prev);
+            setShowCreateActivity(false);
+        } catch (e) {
+            console.log(e);
+        }
     };
 
-    const handleDeleteActivity = () => {
+    const handleDeleteActivity = async () => {
         if (deleteActivityId == null) return;
-        // TODO: replace with a real deleteActivity(deleteActivityId) API call
-        setCourseActivities(prev => prev.filter(a => a.id !== deleteActivityId));
-        setDeleteActivityId(null);
+        try {
+            await deleteActivity(deleteActivityId);
+            setUpdated(prev => !prev);
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setDeleteActivityId(null);
+        }
     };
 
-    if (loading) {return (<Loading />)}
+    if (loading) return <Loading />;
+    if (!course) return <NotFoundPage />;
 
-    if (!course) return (<NotFoundPage />);
-    
     const displayName = course.name || "Untitled Course";
     const displayDescription = course.description || "No description available.";
-
     const about = "This course covers all the essential topics you need to master " + displayName + ". You'll work on hands-on projects and gain practical skills that you can apply immediately."
     const displayAbout = course.about || about;
-    
+
     return (
     <>
         <div className="min-h-screen bg-white dark:bg-slate-900">
@@ -172,9 +172,9 @@ export default function CourseDetailsPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             </div>
-
+            
             {/* Course Details */}
-            <section className="section-white py-12 overflow-hidden py-12">
+            <section className="section-white py-12 overflow-hidden">
                 <div className="container-page relative">
                     <nav className="mb-6 text-sm text-slate-500 dark:text-slate-400">
                         <Link to="/courses" className="hover:text-blue-600 dark:hover:text-blue-400">
@@ -186,8 +186,8 @@ export default function CourseDetailsPage() {
                         </span>
                     </nav>
 
+                    {/* Main content */}
                     <div className="grid gap-10 lg:grid-cols-3">
-                        {/* Main content */}
                         <div className="lg:col-span-2 space-y-6">
                             <div>
                                 <span className="blue-accent-chip rounded-full px-3 py-1 text-xs font-semibold">
@@ -207,13 +207,14 @@ export default function CourseDetailsPage() {
                             </div>
 
                             <CourseScheduleList Schedule={course.schedule} />
-                            
+
                             <div className="divider-block">
                                 <h2 className="text-xl font-semibold">About this course</h2>
                                 <p className="mt-2 text-muted">{displayAbout}</p>
                             </div>
+
                             {user && (
-                                user.role === "Student" ?
+                                user.role === "Student" ? (
                                 <>
                                     <div className="divider-block">
                                         <h2 className="text-xl font-semibold">Pending Activities</h2>
@@ -236,7 +237,7 @@ export default function CourseDetailsPage() {
 
                                     <div className="divider-block">
                                         <h2 className="text-xl font-semibold">Completed Activities</h2>
-                                        <p className="mt-2 text-muted">You have competed {completedActivities.length} activities</p>
+                                        <p className="mt-2 text-muted">You have completed {completedActivities.length} activities</p>
                                     </div>
                                     <div className="space-y-4">
                                         {completedActivities.length === 0 ? (
@@ -247,8 +248,8 @@ export default function CourseDetailsPage() {
                                             ))
                                         )}
                                     </div>
-                                </> : 
-                                user.role === "Professor" ?
+                                </>
+                                ) : user.role === "Professor" ? (
                                 <>
                                     <div className="divider-block flex items-center justify-between">
                                         <div>
@@ -275,8 +276,8 @@ export default function CourseDetailsPage() {
                                             ))
                                         )}
                                     </div>
-                                </> : 
-                                user.role === "Admin" &&
+                                </>
+                                ) : user.role === "Admin" && (
                                 <>
                                     <div className="divider-block flex items-center justify-between">
                                         <h2 className="text-xl font-semibold">Activities</h2>
@@ -308,46 +309,48 @@ export default function CourseDetailsPage() {
                                         )}
                                     </div>
                                 </>
+                                )
                             )}
                         </div>
 
-                        {/* Enrollment card */}
+                        {/* Side card */}
                         <div className="lg:col-span-1">
                             <div className="card sticky top-24 space-y-6 transition-shadow hover:shadow-lg">
                                 {user ? (
                                     <>
                                         {user.role === "Student" && (
-                                            isEnrolled ? 
-                                                    <div className="space-y-3">
-                                                        <div className="flex items-baseline justify-between">
-                                                            <span className="big-stat">
-                                                                {studentActivities.length > 0
-                                                                    ? Math.round((completedActivities.length / studentActivities.length) * 100)
-                                                                    : 0}%
-                                                            </span>
-                                                            <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
-                                                                <ListChecks size={16} />
-                                                                {completedActivities.length}/{studentActivities.length} activities
-                                                            </span>
-                                                        </div>
-                                                        <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700">
-                                                            <div
-                                                                className="h-2 rounded-full bg-blue-600 transition-all dark:bg-blue-400"
-                                                                style={{
-                                                                    width: `${studentActivities.length > 0
-                                                                        ? (completedActivities.length / studentActivities.length) * 100
-                                                                        : 0}%`
-                                                                }}
-                                                            />
-                                                        </div>
+                                            isEnrolled ? (
+                                                <div className="space-y-3">
+                                                    <div className="flex items-baseline justify-between">
+                                                        <span className="big-stat">
+                                                            {studentActivities.length > 0
+                                                                ? Math.round((completedActivities.length / studentActivities.length) * 100)
+                                                                : 0}%
+                                                        </span>
+                                                        <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+                                                            <ListChecks size={16} />
+                                                            {completedActivities.length}/{studentActivities.length} activities
+                                                        </span>
                                                     </div>
-                                             : (
-                                                <EnrollmentCard 
+                                                    <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700">
+                                                        <div
+                                                            className="h-2 rounded-full bg-blue-600 transition-all dark:bg-blue-400"
+                                                            style={{
+                                                                width: `${studentActivities.length > 0
+                                                                    ? (completedActivities.length / studentActivities.length) * 100
+                                                                    : 0}%`
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <EnrollmentCard
                                                     userLogged={true}
-                                                    course={course} 
-                                                    enrolledCount={enrolledCount} 
+                                                    course={course}
+                                                    enrolledCount={enrolledCount}
                                                     isEnrolling={isEnrolling}
-                                                    handleClick={() => handleEnroll()} />
+                                                    handleClick={() => handleEnroll()}
+                                                />
                                             )
                                         )}
                                         {user.role === "Professor" && (
@@ -365,15 +368,16 @@ export default function CourseDetailsPage() {
                                         {user.role === "Admin" && (
                                         <>
                                             <div className="flex items-baseline justify-between">
-                                                    <span className="big-stat">
-                                                        {course.price === 0 ? ("Free") : (`${course.price}$`)}
-                                                    </span>
-                                                    <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
-                                                        <Users size={16} />
-                                                        {enrolledCount} enrolled
-                                                    </span>
-                                                </div>
-                                            <button className="btn-primary w-full justify-center gap-2 text-center"
+                                                <span className="big-stat">
+                                                    {course.price === 0 ? "Free" : `${course.price}$`}
+                                                </span>
+                                                <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+                                                    <Users size={16} />
+                                                    {enrolledCount} enrolled
+                                                </span>
+                                            </div>
+                                            <button
+                                                className="btn-primary w-full justify-center gap-2 text-center"
                                                 onClick={() => setShowEditModal(true)}
                                             >
                                                 Edit Course
@@ -410,12 +414,13 @@ export default function CourseDetailsPage() {
                 </div>
             </section>
         </div>
+
         {showEditModal && (
             <EditCourseModal
                 courseId={Number(id)}
                 onClose={() => setShowEditModal(false)}
                 onUpdated={() => {
-                    setUpdated(!updated)
+                    setUpdated(prev => !prev);
                     setShowEditModal(false);
                 }}
             />
@@ -426,7 +431,7 @@ export default function CourseDetailsPage() {
                 onCreate={handleCreateActivity}
             />
         )}
-        {deleteActivityId !== null && 
+        {deleteActivityId !== null &&
             <ConfirmModal
                 title="Delete this activity?"
                 message="Students will lose access to this activity and any submissions tied to it. This can't be undone."
