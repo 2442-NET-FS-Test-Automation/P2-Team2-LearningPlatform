@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Cpu, Database, Server, ArrowRight } from "lucide-react";
 
+
 export default function FeaturedCourses() {
     // TODO: Actually have data
     const courses = [

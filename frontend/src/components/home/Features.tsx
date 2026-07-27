@@ -1,24 +1,59 @@
+import { useState, useEffect } from "react";
 import { BookOpen, GraduationCap, Users } from "lucide-react";
 
+import { getAllCourses } from "../../api/coursesRequests";
+import { getUsers } from "../../api/usersRequest";
+
+
+
 export default function Features() {
+    
+    const [courseStat, setCourseStat] = useState(0);
+    const [professorStat, setProfessorStat] = useState(0);
+    const [studentStat, setStudentStat] = useState(0);
+
+    console.log(courseStat);
+    
+    async function coursesCount() {
+        let result = await getAllCourses(1, 200);
+        setCourseStat(result.items.length);
+    }
+
+    async function professorsCount() {
+        let result = await getUsers(1, 200, null, "Professor");
+        setProfessorStat(result.items.length);
+    }
+
+    async function studentsCount() {
+        let result = await getUsers(1, 200, null, "Student");
+        setStudentStat(result.items.length);
+    }
+
+    useEffect(() => {
+        coursesCount();
+        professorsCount();
+        studentsCount();
+    }, []);
+
+
     const features = [
         {
             icon: <BookOpen size={22} />,
-            stat: "25+",
+            stat: courseStat,
             title: "Quality Courses",
             text: "Browse carefully designed university-level courses.",
             tone: "blue" as const
         },
         {
             icon: <GraduationCap size={22} />,
-            stat: "20+",
+            stat: professorStat,
             title: "Expert Professors",
             text: "Learn from experienced faculty members.",
             tone: "amber" as const
         },
         {
             icon: <Users size={22} />,
-            stat: "300+",
+            stat: studentStat,
             title: "Student Community",
             text: "Grow alongside classmates and professors.",
             tone: "indigo" as const
