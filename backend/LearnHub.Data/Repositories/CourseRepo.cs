@@ -247,4 +247,11 @@ public class CourseRepo : ICourseRepo
 
         await _context.SaveChangesAsync();
     }
+    public async Task<bool> IsCourseCompleted(int studentId, int courseId)
+    {
+        var studentCourse = await _context.StudentCourses.FirstOrDefaultAsync(sc => sc.CourseId == courseId && sc.StudentId == studentId);
+        if (studentCourse == null) return false;
+        return studentCourse.EndDate != null;
+    }
+
 }

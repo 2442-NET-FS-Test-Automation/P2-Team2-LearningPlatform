@@ -67,17 +67,18 @@ export default function CourseDetailsPage() {
     }, [id, updated]);
 
     useEffect(() => {
+        getStudentActivities(Number(id))
+            .then(setStudentActivities)
+            .catch(e => console.log(e));
+    }, [updated])
+
+    useEffect(() => {
         if (!user) return;
 
         if (user.role === "Student") {
             isStudentEnrolled(user.id, Number(id))
                 .then((res) => {
-                    if (res.status === 200) {
-                        setIsEnrolled(true);
-                        getStudentActivities(Number(id))
-                            .then(setStudentActivities)
-                            .catch(e => console.log(e));
-                    }
+                    if (res.status === 200) {setIsEnrolled(true);}
                 })
                 .catch(() => {
                     setIsEnrolled(false);
@@ -89,7 +90,7 @@ export default function CourseDetailsPage() {
                     if (e.status == 403) setForbid(true);
                 });
         }
-    }, [user, id, updated, studentActivities]);
+    }, [user, id, updated]);
 
     const handleEnroll = () => {
         if (!user) {
@@ -118,8 +119,10 @@ export default function CourseDetailsPage() {
                 setUpdated(!updated);
             })
             .catch((e) => {
-                console.log(e);
-                setError(e.error ?? "There was an error");  
+                switch (e.status) {
+                    case 409: setError("Check your activities before submitting to complete"); break;
+                    default: setError(e.status+"There was an error"); 
+                } 
             })
     }
     const handleSubmitActivity = async (activityId: number, text: string) => {
@@ -355,12 +358,19 @@ export default function CourseDetailsPage() {
                                                         />
                                                     </div>
                                                     {pendingActivities.length === 0 &&
-                                                        <button
-                                                            className="btn-primary w-full justify-center gap-2 text-center mt-2"
-                                                            onClick={() => {handleComplete()}}
-                                                        >
-                                                            Mark as completed
-                                                        </button>
+                                                        course.completed ?
+                                                            <button
+                                                                className="btn-primary w-full justify-center gap-2 text-center mt-2 emerald-600"
+                                                            >
+                                                                Completed
+                                                            </button>
+                                                        :
+                                                            <button
+                                                                className="btn-primary w-full justify-center gap-2 text-center mt-2"
+                                                                onClick={() => {handleComplete()}}
+                                                            >
+                                                                Mark as completed
+                                                            </button>
                                                     }
                                                     {error && 
                                                         <p className="text-red-600 dark:text-red-400 text-sm mt-2">
