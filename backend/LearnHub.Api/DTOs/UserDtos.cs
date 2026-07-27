@@ -85,7 +85,6 @@ public class UpdateUserDto
     // Professor
     public int? ShiftId {get;set;}
     public DateOnly? ContractDate {get;set;}
-    public bool? IsActive {get;set;}
     public List<int>? ProfessorCourseIds {get;set;}
 }
 

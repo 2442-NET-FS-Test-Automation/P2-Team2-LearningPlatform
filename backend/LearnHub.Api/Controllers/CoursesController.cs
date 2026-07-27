@@ -339,9 +339,6 @@ public class CoursesController : ControllerBase
             if (dto.Certification.HasValue)
                 course.Certification = dto.Certification.Value;
 
-            if (dto.IsActive.HasValue)
-                course.IsActive = dto.IsActive.Value;
-
             // await for  update the info with our data
             await _repo.UpdateAsync(course);
             
@@ -377,6 +374,24 @@ public class CoursesController : ControllerBase
             await _repo.DeleteAsync(course);
             InvalidateCoursesCache();
 
+            return NoContent();
+        }
+        return BadRequest();
+    }
+
+    [HttpPost("{id:int}/reactivate")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> ReactivateCourse(int id)
+    {
+        if (DataTypeVerification.IsNumValid(id))
+        {
+            var course = await _repo.GetByIdAsync(id);
+
+            if (course == null) return NotFound();
+
+            course.IsActive = true;
+            await _repo.UpdateAsync(course);
+            InvalidateCoursesCache();
             return NoContent();
         }
         return BadRequest();

@@ -111,6 +111,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPatch("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateUser(
         int id,
         UpdateUserDto dto)
@@ -127,9 +128,19 @@ public class UsersController : ControllerBase
 
             return Ok(new { user = AuthController.ToPublicUser(user), token });
         }
-        catch (Exception e)
+        catch(InvalidOperationException ex)
         {
-            return Conflict(error: e.Message);
+            return BadRequest(new
+            {
+                error = ex.Message
+            });
+        }
+        catch(ArgumentException ex)
+        {
+            return BadRequest(new
+            {
+                error = ex.Message
+            });
         }
     }
 

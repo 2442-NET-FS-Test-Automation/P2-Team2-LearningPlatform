@@ -29,7 +29,7 @@ export async function getEnabledCourses(page: number = 1, pageSize: number = 6, 
                 categoryFilter: category
             }
         });
-        return result.data;
+        return result.data.items;
     } catch {
         throw Error("Timeout: API did not respond in time.")
     }
@@ -80,4 +80,8 @@ export async function updateCourse(id: number, data: UpdateCourseDto): Promise<v
 
 export async function deleteCourse(id: number): Promise<void> {
     await api.delete(`/Courses/${id}`);
+}
+
+export async function reactivateCourse(id: number): Promise<void> {
+    await api.post(`/Courses/${id}/reactivate`);
 }

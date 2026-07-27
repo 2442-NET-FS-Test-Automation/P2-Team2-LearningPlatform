@@ -219,11 +219,6 @@ public class UserService : IUserService
                 user.Professor.ContractDate = dto.ContractDate.Value;
             }
 
-            if(dto.IsActive.HasValue)
-            {
-                user.Professor.IsActive = dto.IsActive.Value;
-            }
-
             if(dto.ProfessorCourseIds != null)
             {
                 await UpdateProfessorCoursesAsync(
@@ -280,6 +275,13 @@ public class UserService : IUserService
 
         foreach(var courseId in coursesToAdd)
         {
+            if(!await _courseRepo.IsCourseActiveAsync(courseId))
+            {
+                throw new InvalidOperationException(
+                    "Cannot assign inactive course"
+                );
+            }
+
             await _courseRepo.AddStudentAsync(
                 studentId,
                 courseId);
@@ -324,10 +326,15 @@ public class UserService : IUserService
             .Except(courseIds)
             .ToList();
 
-
-
         foreach(var courseId in coursesToAdd)
         {
+            if(!await _courseRepo.IsCourseActiveAsync(courseId))
+            {
+                throw new InvalidOperationException(
+                    "Cannot assign inactive course"
+                );
+            }
+
             await _courseRepo.AssignProfessorAsync(
                 courseId,
                 professorId);

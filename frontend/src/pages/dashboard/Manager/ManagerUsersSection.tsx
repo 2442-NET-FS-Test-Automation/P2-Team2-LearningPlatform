@@ -36,7 +36,7 @@ export default function ManageUsersSection() {
     const [reactivateUserId, setReactivateUserId] = useState<number | null>(null);
     
 
-    // Get Courses from the API    
+    // Get Users from the API    
     useEffect(() => {
         //setLoading(true);
 
@@ -69,7 +69,7 @@ export default function ManageUsersSection() {
             setCreated(c => !c);
         }
         catch {
-            alert("Couldn't deactivate user.");
+            setError("Couldn't deactivate user.");
         } finally {
             setDeactivateUserId(null);
         }
@@ -81,7 +81,7 @@ export default function ManageUsersSection() {
             setCreated(c => !c);
         }
         catch {
-            alert("Couldn't reactivate user.");
+            setError("Couldn't reactivate user.");
         } finally {
             setReactivateUserId(null);
         }

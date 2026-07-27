@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 
 import type { UserDetailsDto ,UpdateProfileDto, CourseSelectDto } from "../../lib/types";
 import { updateUser } from "../../api/usersRequest";
-import { getCoursesForSelect } from "../../api/coursesRequests";
+import { getEnabledCourses } from "../../api/coursesRequests";
 
 interface Props {
     user: UserDetailsDto;
@@ -31,7 +31,6 @@ export default function EditUserModal({
         // Professor
         shiftId: user.professor?.shiftId ?? 0,
         contractDate: user.professor?.contractDate ?? "",
-        isActive: user.professor?.isActive ?? true,
         professorCourseIds: user.professor?.courses.map(c => c.id) ?? []
     });
 
@@ -42,7 +41,10 @@ export default function EditUserModal({
     useEffect(() => {
         async function loadCourses() {
             try {
-                const result = await getCoursesForSelect();
+                const result = await getEnabledCourses();
+
+                console.log("COURSES RESPONSE:", result);
+
                 setCourses(result);
             } catch {
                 setError("Couldn't load courses.");
@@ -108,9 +110,6 @@ export default function EditUserModal({
 
             if(form.contractDate !== user.professor.contractDate)
                 dto.contractDate = form.contractDate;
-
-            if(form.isActive !== user.professor.isActive)
-                dto.isActive = form.isActive;
 
             dto.professorCourseIds = form.professorCourseIds;
         }
@@ -181,21 +180,98 @@ export default function EditUserModal({
                             <div className="space-y-2 pt-4 border-t border-slate-200 dark:border-slate-700">
                                 <label className="text-sm font-medium text-blue-600 dark:text-blue-400">Student Details</label>
                                 <div className="space-y-2 mt-2">
-                                    <label className="text-xs font-medium uppercase text-slate-500">Enrolled Courses</label>
-                                    <select
-                                        multiple
-                                        className="form-input w-full h-32"
-                                        value={form.studentCourseIds.map(String)}
-                                        onChange={(e) => {
-                                            const values = Array.from(e.target.selectedOptions, o => Number(o.value));
-                                            setForm(prev => ({ ...prev, studentCourseIds: values }));
-                                        }}
-                                    >
-                                        {courses.map(course => (
-                                            <option key={course.id} value={course.id}>{course.name}</option>
-                                        ))}
-                                    </select>
-                                    <p className="text-xs text-slate-500">Hold Ctrl (Windows) or Cmd (Mac) to select multiple courses.</p>
+                                    <label className="text-xs font-medium uppercase text-slate-500">
+                                        Enrolled Courses
+                                    </label>
+
+                                    <div className="form-input min-h-12 flex flex-wrap gap-2 p-2">
+
+                                        {form.studentCourseIds.map(id => {
+                                            const course = courses.find(c => c.id === id);
+
+                                            return (
+                                                <span
+                                                    key={id}
+                                                    className="
+                                                        flex items-center gap-1
+                                                        rounded-full
+                                                        bg-blue-100
+                                                        px-3 py-1
+                                                        text-sm
+                                                        text-blue-700
+                                                        dark:bg-blue-900/30
+                                                        dark:text-blue-300
+                                                    "
+                                                >
+                                                    {course?.name}
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            setForm(prev => ({
+                                                                ...prev,
+                                                                studentCourseIds:
+                                                                    prev.studentCourseIds.filter(
+                                                                        courseId => courseId !== id
+                                                                    )
+                                                            }))
+                                                        }
+                                                        className="hover:text-red-500"
+                                                    >
+                                                        <X size={14}/>
+                                                    </button>
+                                                </span>
+                                            );
+                                        })}
+
+
+                                        <select
+                                            className="
+                                                flex-1
+                                                min-w-32
+                                                bg-transparent
+                                                outline-none
+                                            "
+                                            value=""
+                                            onChange={(e) => {
+                                                const id = Number(e.target.value);
+
+                                                if (!form.studentCourseIds.includes(id)) {
+                                                    setForm(prev => ({
+                                                        ...prev,
+                                                        studentCourseIds: [
+                                                            ...prev.studentCourseIds,
+                                                            id
+                                                        ]
+                                                    }));
+                                                }
+                                            }}
+                                        >
+                                            <option value="">
+                                                Add course...
+                                            </option>
+
+                                            {courses
+                                                .filter(course =>
+                                                    !form.studentCourseIds.includes(course.id)
+                                                )
+                                                .map(course => (
+                                                    <option
+                                                        key={course.id}
+                                                        value={course.id}
+                                                    >
+                                                        {course.name}
+                                                    </option>
+                                                ))
+                                            }
+
+                                        </select>
+
+                                    </div>
+
+                                    <p className="text-xs text-slate-500">
+                                        Select courses where this student is enrolled.
+                                    </p>
                                 </div>
                             </div>
                         )}
@@ -215,27 +291,79 @@ export default function EditUserModal({
                                     </div>
                                 </div>
 
-                                <label className="flex items-center gap-2 cursor-pointer mt-2">
-                                    <input type="checkbox" id="isActive" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600" />
-                                    <span className="text-sm font-medium">Active Professor</span>
-                                </label>
 
-                                <div className="space-y-2 mt-4">
-                                    <label className="text-xs font-medium uppercase text-slate-500">Teaching Courses</label>
-                                    <select
-                                        multiple
-                                        className="form-input w-full h-32"
-                                        value={form.professorCourseIds.map(String)}
-                                        onChange={(e) => {
-                                            const values = Array.from(e.target.selectedOptions, o => Number(o.value));
-                                            setForm(prev => ({ ...prev, professorCourseIds: values }));
-                                        }}
-                                    >
-                                        {courses.map(course => (
-                                            <option key={course.id} value={course.id}>{course.name}</option>
-                                        ))}
-                                    </select>
-                                    <p className="text-xs text-slate-500">Hold Ctrl (Windows) or Cmd (Mac) to select multiple courses.</p>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-medium uppercase text-slate-500">
+                                        Teaching Courses
+                                    </label>
+
+                                    <div className="form-input min-h-12 flex flex-wrap gap-2 p-2">
+
+                                        {form.professorCourseIds.map(id => {
+                                            const course = courses.find(c => c.id === id);
+
+                                            return (
+                                                <span
+                                                    key={id}
+                                                    className="flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-700"
+                                                >
+                                                    {course?.name}
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            setForm(prev => ({
+                                                                ...prev,
+                                                                professorCourseIds:
+                                                                    prev.professorCourseIds.filter(
+                                                                        x => x !== id
+                                                                    )
+                                                            }))
+                                                        }
+                                                    >
+                                                        <X size={14}/>
+                                                    </button>
+                                                </span>
+                                            );
+                                        })}
+
+                                        <select
+                                            className="flex-1 bg-transparent outline-none"
+                                            value=""
+                                            onChange={(e) => {
+                                                const id = Number(e.target.value);
+
+                                                if(!form.professorCourseIds.includes(id)){
+                                                    setForm(prev => ({
+                                                        ...prev,
+                                                        professorCourseIds: [
+                                                            ...prev.professorCourseIds,
+                                                            id
+                                                        ]
+                                                    }));
+                                                }
+                                            }}
+                                        >
+                                            <option value="">
+                                                Add course...
+                                            </option>
+
+                                            {courses
+                                                .filter(c =>
+                                                    !form.professorCourseIds.includes(c.id)
+                                                )
+                                                .map(course => (
+                                                    <option 
+                                                        key={course.id}
+                                                        value={course.id}
+                                                    >
+                                                        {course.name}
+                                                    </option>
+                                                ))
+                                            }
+
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         )}
