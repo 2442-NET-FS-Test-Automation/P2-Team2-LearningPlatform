@@ -4,23 +4,54 @@ import type { CreateActivityDto } from "../../lib/types";
 
 type Props = {
     onClose: () => void;
-    onCreate: (dto: CreateActivityDto) => void;
+    onCreate: (dto: CreateActivityDto) => Promise<void>;
 }
 
 export default function CreateActivityModal({ onClose, onCreate }: Props) {
     const [form, setForm] = useState<CreateActivityDto>({ title: "", description: "", dueDate: "" });
     const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSubmitting(true);
-        // TODO: replace with the real create-activity API call; onCreate currently just updates local state
-        onCreate(form);
-        setSubmitting(false);
+        setError(null);
+
+        const selectedDate = new Date(form.dueDate);
+        if(selectedDate <= new Date()) {
+            setError("Due date must be in the future");
+            setSubmitting(false);
+            return;
+        }
+
+        try {
+            const dto: CreateActivityDto = {
+                ...form,
+                dueDate: new Date(form.dueDate).toISOString()
+            };
+            await onCreate(dto);
+            
+        }catch(err: unknown){
+            if(err && typeof err === "object" && "response" in err){
+                const axiosErr = err as {response?: {data?:{errors?: Record<string, string[]>, title?: string}}};
+                const errors = axiosErr.response?.data?.errors;
+                if(errors){
+                    const firstError = Object.values(errors)[0]?.[0];
+                    setError(firstError ?? "Validation error");
+                } else{
+                    setError(axiosErr.response?.data?.title ?? "Something went wrong")
+                }
+            }
+            else{
+                setError("Something went wrong");
+            }
+        }finally{
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -48,6 +79,9 @@ export default function CreateActivityModal({ onClose, onCreate }: Props) {
                         <label className="text-sm font-medium">Due Date</label>
                         <input type="date" name="dueDate" value={form.dueDate} onChange={handleChange} className="form-input w-full" required />
                     </div>
+                    {error &&(
+                        <p className="text-sm text-red-500 dark:text-red-400">{error}</p>
+                    )}
 
                     <div className="flex justify-end gap-3 pt-2">
                         <button type="button" onClick={onClose} className="btn-outline">Cancel</button>

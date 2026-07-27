@@ -132,15 +132,11 @@ export default function CourseDetailsPage() {
         }
     };
 
-    const handleCreateActivity = async (dto: CreateActivityDto) => {
+    const handleCreateActivity = async (dto: CreateActivityDto): Promise<void> => {
         if (!user) return;
-        try {
-            await createActivity(Number(id), dto);
-            setUpdated(prev => !prev);
-            setShowCreateActivity(false);
-        } catch (e) {
-            console.log(e);
-        }
+        await createActivity(Number(id), dto);
+        setUpdated(prev => !prev);
+        setShowCreateActivity(false);
     };
 
     const handleDeleteActivity = async () => {
