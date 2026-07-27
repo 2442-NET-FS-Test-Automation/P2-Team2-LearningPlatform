@@ -95,8 +95,8 @@ function SubmissionRow({ submission, onGrade }: { submission: Submission, onGrad
                     </div>
                 </button>
                 {error &&(
-                        <p className="text-sm text-red-500 dark:text-red-400">{error}</p>
-                    )}
+                    <p className="mt-2 text-sm text-red-500 dark:text-red-400 whitespace-nowrap">{error}</p>               
+                )}
             </div>
         </div>
     );
