@@ -77,6 +77,8 @@ public class CreateCourseDto
     public int Hours { get; set; }
 
     public decimal Price { get; set; }
+
+    public List<CourseScheduleDto>? Schedule { get; set; }
 }
 
 public class UpdateCourseDto
@@ -98,4 +100,6 @@ public class UpdateCourseDto
     public decimal? Price { get; set; }
 
     public bool? IsActive { get; set; }
+
+    public List<CourseScheduleDto>? Schedule { get; set; }
 }

@@ -31,4 +31,5 @@ public interface ICourseRepo
 
     Task RemoveProfessorAsync(int courseId);
     Task<List<Course>> GetByProfessorAsync(int professorId);
+    Task UpdateScheduleAsync(int courseId, List<CourseSchedule> schedules);
 }

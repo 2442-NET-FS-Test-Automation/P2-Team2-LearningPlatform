@@ -167,7 +167,7 @@ export interface CreateCourseDto {
     capacity: number;
     certification: boolean;
     isActive: boolean;
-
+    schedule?: CourseSchedule[];
 }
 
 export type CourseDto = {
@@ -259,6 +259,7 @@ export type UpdateCourseDto = {
     hours?: number;
     certification?: boolean;
     isActive?: boolean;
+    schedule?: CourseSchedule[];
 }
 
 export type Activity = {
