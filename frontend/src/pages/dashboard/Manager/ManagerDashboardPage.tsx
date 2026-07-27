@@ -25,7 +25,6 @@ export default function ManagerDashboardPage() {
 
     return (
         <div className="section-light relative min-h-screen overflow-hidden py-10">
-            {/* Ambient background accents, matching the rest of the app */}
             <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl dark:bg-blue-500/10" aria-hidden="true" />
             
             <div className="container-page relative">

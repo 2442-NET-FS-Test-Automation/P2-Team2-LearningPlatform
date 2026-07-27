@@ -1,42 +1,32 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { BookOpen } from "lucide-react";
 
-import type { CourseSelectDto, UserDetailsDto } from "../../../lib/types";
-import { useAuth } from "../../../ctx/AuthCtx";
-import { getUser } from "../../../api/usersRequest";
+import Loading from "../../../components/layout/Loading";
 
-export default function AssignedCoursesSection() {
-    const { user } = useAuth();
-    const [courses, setCourses] = useState<CourseSelectDto[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+import type { CourseSelectDto } from "../../../lib/types";
 
-    useEffect(() => {
-        if (!user) return;
+interface Props {
+    courses: CourseSelectDto[];
+    loading: boolean;
+    error: string | null;
+}
 
-        setLoading(true);
-        setError(null);
-
-        getUser(user.id)
-            .then((data: UserDetailsDto) => {
-                setCourses(data.professor?.courses ?? []);
-            })
-            .catch(() => {
-                setError("Failed to load assigned courses.");
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, [user]);
-
+export default function AssignedCoursesSection({ courses, loading, error }: Props) {
     return (
-        <div className="card space-y-6">
-            <h2 className="text-2xl font-bold">My Courses</h2>
+        <div className="card space-y-6 transition-shadow hover:shadow-lg">
+            <h2 className="flex items-center gap-2 text-2xl font-bold">
+                <BookOpen size={22} className="text-blue-600 dark:text-blue-400" />
+                My Courses
+            </h2>
+
+            {error && (
+                <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+                    {error}
+                </div>
+            )}
 
             {loading ? (
-                <p className="text-muted">Loading courses...</p>
-            ) : error ? (
-                <p className="text-red-500">{error}</p>
+                <Loading fullh={false} message="Loading courses..." />
             ) : courses.length === 0 ? (
                 <p className="text-muted">You have no assigned courses.</p>
             ) : (
