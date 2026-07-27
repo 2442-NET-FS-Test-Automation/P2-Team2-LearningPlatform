@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Clock, GraduationCap, ListChecks, Plus, Trash2, Trophy, Users } from "lucide-react";
+import { Clock, GraduationCap, ListChecks, Plus, Trash2, Trophy, Users, RotateCcw } from "lucide-react";
 
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import ActivitySubmissionForm from "../../components/forms/ActivitySubmissionForm";
@@ -21,6 +21,7 @@ import {
     getCourseActivities,
     createActivity,
     deleteActivity,
+    reactivateActivity,
     submitActivity,
     gradeSubmission
 } from "../../api/activitiesRequests";
@@ -54,6 +55,8 @@ export default function CourseDetailsPage() {
     const [submittingActivityId, setSubmittingActivityId] = useState<number | null>(null);
     const [showCreateActivity, setShowCreateActivity] = useState(false);
     const [deleteActivityId, setDeleteActivityId] = useState<number | null>(null);
+    const [reactivateActivityId, setReactivateActivityId] = useState<number | null>(null);
+    const [activityTab, setActivityTab] = useState<"active" | "archived">("active");
 
     useEffect(() => {
         getCourseDetails(Number(id))
@@ -82,13 +85,13 @@ export default function CourseDetailsPage() {
                 .then(setStudentActivities)
                 .catch(e => console.log(e));
         } else if (user.role === "Professor" || user.role === "Admin") {
-            getCourseActivities(Number(id))
+            getCourseActivities(Number(id), activityTab === "active")
                 .then(setCourseActivities)
                 .catch(e => {
                     if (e.status == 403) setForbid(true);
                 });
         }
-    }, [user, id, updated]);
+    }, [user, id, updated, activityTab]);
 
     const handleEnroll = () => {
         if (!user) {
@@ -145,6 +148,21 @@ export default function CourseDetailsPage() {
             console.log(e);
         } finally {
             setDeleteActivityId(null);
+        }
+    };
+
+    const handleReactivateActivity = async () => {
+        if (reactivateActivityId == null) return;
+
+        try {
+            await reactivateActivity(reactivateActivityId);
+            setUpdated(prev => !prev);
+        }
+        catch(e) {
+            console.log(e);
+        }
+        finally {
+            setReactivateActivityId(null);
         }
     };
 
@@ -248,17 +266,53 @@ export default function CourseDetailsPage() {
                                 </>
                                 ) : user.role === "Professor" && !forbid ? (
                                 <>
-                                    <div className="divider-block flex items-center justify-between">
-                                        <div>
-                                            <h2 className="text-xl font-semibold">Student Activities</h2>
-                                            <p className="mt-2 text-muted">Your students have submitted</p>
-                                        </div>
-                                        <button onClick={() => setShowCreateActivity(true)} className="btn-outline gap-2 text-sm hover:opacity-80">
-                                            <div className="flex items-center gap-1 py-1">
-                                                <Plus size={16} />
-                                                New Activity
+                                    <div className="divider-block flex flex-col gap-4">
+                                        {/* Título y botón */}
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <h2 className="text-xl font-semibold">Student Activities</h2>
+                                                <p className="mt-2 text-muted">
+                                                    Your students have submitted
+                                                </p>
                                             </div>
-                                        </button>
+
+                                            <button
+                                                onClick={() => setShowCreateActivity(true)}
+                                                className="btn-outline gap-2 text-sm hover:opacity-80"
+                                            >
+                                                <div className="flex items-center gap-1 py-1">
+                                                    <Plus size={16} />
+                                                    New Activity
+                                                </div>
+                                            </button>
+                                        </div>
+
+                                        {/* Selector centrado */}
+                                        <div className="flex justify-center">
+                                            <div className="flex gap-2 border-b">
+                                                <button
+                                                    onClick={() => setActivityTab("active")}
+                                                    className={`px-4 py-2 ${
+                                                        activityTab === "active"
+                                                            ? "border-b-2 border-blue-500 text-blue-600"
+                                                            : "text-slate-500"
+                                                    }`}
+                                                >
+                                                    Active
+                                                </button>
+
+                                                <button
+                                                    onClick={() => setActivityTab("archived")}
+                                                    className={`px-4 py-2 ${
+                                                        activityTab === "archived"
+                                                            ? "border-b-2 border-blue-500 text-blue-600"
+                                                            : "text-slate-500"
+                                                    }`}
+                                                >
+                                                    Archived
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="space-y-4">
                                         {courseActivities.length === 0 ? (
@@ -268,44 +322,116 @@ export default function CourseDetailsPage() {
                                                 <ProfessorActivityAccordion
                                                     key={a.id}
                                                     activity={a}
-                                                    onGrade={(submissionId, grade, feedback) => handleGradeSubmission(a.id, submissionId, grade, feedback)}
+                                                    activityTab={activityTab}
+                                                    onGrade={(submissionId, grade, feedback) =>
+                                                        handleGradeSubmission(a.id, submissionId, grade, feedback)
+                                                    }
+                                                    onDelete={(activityId) => setDeleteActivityId(activityId)}
+                                                    onReactivate={(activityId) => setReactivateActivityId(activityId)}
                                                 />
                                             ))
                                         )}
                                     </div>
                                 </>
                                 ) : user.role === "Admin" && (
-                                <>
-                                    <div className="divider-block flex items-center justify-between">
-                                        <h2 className="text-xl font-semibold">Activities</h2>
-                                        <button onClick={() => setShowCreateActivity(true)} className="btn-outline gap-2 text-sm">
-                                            <div className="flex items-center gap-1 py-1">
-                                                <Plus size={16} />
-                                                New Activity
-                                            </div>
-                                        </button>
-                                    </div>
-                                    <div className="space-y-3">
-                                        {courseActivities.length === 0 ? (
-                                            <p className="text-sm text-muted">No activities yet.</p>
-                                        ) : (
-                                            courseActivities.map(a => (
-                                                <div key={a.id} className="card flex items-center justify-between">
-                                                    <div>
-                                                        <h3 className="font-semibold">{a.title}</h3>
-                                                        <p className="text-sm text-muted">Due {new Date(a.dueDate).toLocaleDateString()}</p>
+                                    <>
+                                        <div className="divider-block flex flex-col gap-4">
+
+                                            {/* Título + botón */}
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <h2 className="text-xl font-semibold">
+                                                        Activities
+                                                    </h2>
+                                                    <p className="mt-2 text-muted">
+                                                        Manage course activities
+                                                    </p>
+                                                </div>
+
+                                                <button
+                                                    onClick={() => setShowCreateActivity(true)}
+                                                    className="btn-outline gap-2 text-sm"
+                                                >
+                                                    <div className="flex items-center gap-1 py-1">
+                                                        <Plus size={16} />
+                                                        New Activity
                                                     </div>
+                                                </button>
+                                            </div>
+
+
+                                            {/* Tabs centrados */}
+                                            <div className="flex justify-center">
+                                                <div className="flex gap-2 border-b">
                                                     <button
-                                                        onClick={() => setDeleteActivityId(a.id)}
-                                                        className="rounded-full p-2 text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
+                                                        onClick={() => setActivityTab("active")}
+                                                        className={`px-4 py-2 ${
+                                                            activityTab === "active"
+                                                                ? "border-b-2 border-blue-500 text-blue-600"
+                                                                : "text-slate-500"
+                                                        }`}
                                                     >
-                                                        <Trash2 size={18} />
+                                                        Active
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => setActivityTab("archived")}
+                                                        className={`px-4 py-2 ${
+                                                            activityTab === "archived"
+                                                                ? "border-b-2 border-blue-500 text-blue-600"
+                                                                : "text-slate-500"
+                                                        }`}
+                                                    >
+                                                        Archived
                                                     </button>
                                                 </div>
-                                            ))
-                                        )}
-                                    </div>
-                                </>
+                                            </div>
+                                        </div>
+
+
+                                        <div className="space-y-3">
+                                            {courseActivities.length === 0 ? (
+                                                <p className="text-sm text-muted">
+                                                    No activities found.
+                                                </p>
+                                            ) : (
+                                                courseActivities.map(a => (
+                                                    <div
+                                                        key={a.id}
+                                                        className="card flex items-center justify-between"
+                                                    >
+                                                        <div>
+                                                            <h3 className="font-semibold">
+                                                                {a.title}
+                                                            </h3>
+
+                                                            <p className="text-sm text-muted">
+                                                                Due {new Date(a.dueDate).toLocaleDateString()}
+                                                            </p>
+                                                        </div>
+
+                                                        {activityTab === "active" ? (
+                                                            <button
+                                                                onClick={() => setDeleteActivityId(a.id)}
+                                                                className="rounded-full p-2 text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
+                                                                title="Archive activity"
+                                                            >
+                                                                <Trash2 size={18}/>
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                onClick={() => setReactivateActivityId(a.id)}
+                                                                className="rounded-full p-2 text-emerald-600 transition-colors hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/30"
+                                                                title="Reactivate activity"
+                                                            >
+                                                                <RotateCcw size={18}/>
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
+                                    </>
                                 )
                             )}
                         </div>
@@ -436,6 +562,15 @@ export default function CourseDetailsPage() {
                 variant="danger"
                 onConfirm={handleDeleteActivity}
                 onCancel={() => setDeleteActivityId(null)}
+            />
+        }
+        {reactivateActivityId !== null &&
+            <ConfirmModal
+                title="Reactivate this activity?"
+                message="Students will be able to see and submit this activity again."
+                confirmLabel="Reactivate"
+                onConfirm={handleReactivateActivity}
+                onCancel={() => setReactivateActivityId(null)}
             />
         }
     </>

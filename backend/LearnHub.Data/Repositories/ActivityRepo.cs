@@ -35,14 +35,18 @@ public class ActivityRepo : IActivityRepo
         };
     }
 
-    public async Task<PagedResult<Activity>> GetByCourseAsync(int courseId, int page, int pageSize)
+    public async Task<PagedResult<Activity>> GetByCourseAsync(int courseId, bool? isActive,int page, int pageSize)
     {
         var query = _context.Activities
-            .Where(a => a.CourseId == courseId && a.IsActive)
+            .Where(a => a.CourseId == courseId)
             .Include(a => a.Course)
             .Include(a => a.CreatedBy)
             .Include(a => a.Submissions)
             .AsQueryable();
+
+        if(isActive.HasValue)
+            query = query.Where(a => a.IsActive == isActive);
+
 
         var total = await query.CountAsync();
         var items = await query
@@ -98,6 +102,16 @@ public class ActivityRepo : IActivityRepo
         if (activity is null) return false;
 
         activity.IsActive = false;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> ReactivateAsync(int activityId)
+    {
+        var activity = await _context.Activities.FindAsync(activityId);
+        if (activity is null) return false;
+
+        activity.IsActive = true;
         await _context.SaveChangesAsync();
         return true;
     }
