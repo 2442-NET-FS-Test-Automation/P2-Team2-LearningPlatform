@@ -124,12 +124,9 @@ export default function CourseDetailsPage() {
     };
 
     const handleGradeSubmission = async (_activityId: number, submissionId: number, grade: number, feedback: string) => {
-        try {
-            await gradeSubmission(submissionId, grade, feedback);
-            setUpdated(prev => !prev);
-        } catch (e) {
-            console.log(e);
-        }
+        if (!user) return;
+        await gradeSubmission(submissionId, grade, feedback);
+        setUpdated(prev => !prev);
     };
 
     const handleCreateActivity = async (dto: CreateActivityDto): Promise<void> => {

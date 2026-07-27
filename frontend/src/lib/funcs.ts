@@ -91,3 +91,19 @@ function parseTimeToSeconds(timeStr: string): number | null {
 
     return hours * 3600 + minutes * 60 + seconds;
 }
+
+export function getApiError(err: unknown): string{
+    if(err && typeof err === "object" && "response" in err){
+        const axiosErr = err as {response?: {data?:{errors?: Record<string, string[]>, title?: string}}};
+        const errors = axiosErr.response?.data?.errors;
+        if(errors){
+            return Object.values(errors)[0]?.[0] ?? "Validation error";
+
+        } else{
+            return axiosErr.response?.data?.title ?? "Something went wrong";
+        }
+    }
+    else{
+        return "Something went wrong";
+    }
+}

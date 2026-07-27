@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { ChevronDown, GraduationCap } from "lucide-react";
 import type { ActivityWithSubmissions, Submission } from "../lib/types";
+import { getApiError } from "../lib/funcs";
 
 type Props = {
     activity: ActivityWithSubmissions;
-    onGrade: (submissionId: number, grade: number, feedback: string) => void;
+    onGrade: (submissionId: number, grade: number, feedback: string) => Promise<void>;
 }
 
 export default function ProfessorActivityAccordion({ activity, onGrade }: Props) {
@@ -42,7 +43,22 @@ export default function ProfessorActivityAccordion({ activity, onGrade }: Props)
 function SubmissionRow({ submission, onGrade }: { submission: Submission, onGrade: Props["onGrade"] }) {
     const [grade, setGrade] = useState(submission.score?.toString() ?? "");
     const [feedback, setFeedback] = useState(submission.feedback ?? "");
+    const [error, setError] = useState<string | null>(null);
+    const [saving, setSaving] = useState(false);
     const isGraded = submission.gradedAt != null;
+
+    const handleGrade = async () => {
+        setSaving(true);
+        setError(null);
+        try{
+            await onGrade(submission.id, Number(grade), feedback);
+        }catch (err: unknown){
+            setError(getApiError(err));
+        }
+        finally {
+            setSaving(false);
+        }
+    }
 
     return (
         <div className="rounded-lg border border-slate-200 p-3 dark:border-slate-800">
@@ -69,15 +85,18 @@ function SubmissionRow({ submission, onGrade }: { submission: Submission, onGrad
                     rows={1}
                 />
                 <button
-                    onClick={() => onGrade(submission.id, Number(grade), feedback)}
-                    disabled={grade === ""}
+                    onClick={handleGrade}
+                    disabled={grade === "" || saving}
                     className="btn-primary gap-2 disabled:opacity-60"
                 >
                     <div className="flex items-center gap-2">
                         <GraduationCap size={16} />
-                        {isGraded ? "Update" : "Save"}
+                        {saving? "Saving..." : isGraded ? "Update" : "Save"}
                     </div>
                 </button>
+                {error &&(
+                    <p className="mt-2 text-sm text-red-500 dark:text-red-400 whitespace-nowrap">{error}</p>               
+                )}
             </div>
         </div>
     );

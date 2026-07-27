@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import type { CreateActivityDto } from "../../lib/types";
+import { getApiError } from "../../lib/funcs";
 
 type Props = {
     onClose: () => void;
@@ -36,19 +37,7 @@ export default function CreateActivityModal({ onClose, onCreate }: Props) {
             await onCreate(dto);
             
         }catch(err: unknown){
-            if(err && typeof err === "object" && "response" in err){
-                const axiosErr = err as {response?: {data?:{errors?: Record<string, string[]>, title?: string}}};
-                const errors = axiosErr.response?.data?.errors;
-                if(errors){
-                    const firstError = Object.values(errors)[0]?.[0];
-                    setError(firstError ?? "Validation error");
-                } else{
-                    setError(axiosErr.response?.data?.title ?? "Something went wrong")
-                }
-            }
-            else{
-                setError("Something went wrong");
-            }
+            setError(getApiError(err));
         }finally{
             setSubmitting(false);
         }
