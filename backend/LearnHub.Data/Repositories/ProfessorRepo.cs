@@ -31,6 +31,12 @@ public class ProfessorRepo: IProfessorRepo
             .FirstOrDefaultAsync(s => s.Id == id);
     }
 
+    public async Task<Professor?> GetByUserIdAsync(int id) => 
+        await _context.Professors
+            .Include(p => p.Courses)
+                .ThenInclude(c => c.Schedule)
+            .FirstOrDefaultAsync(p => p.UserId == id);
+
     public async Task<User> AddAsync(Professor professor)
     {
         _context.Professors.Add(professor);

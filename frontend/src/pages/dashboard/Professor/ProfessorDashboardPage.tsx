@@ -9,15 +9,15 @@ import AssignedCoursesSection from "./AssignedCoursesSection";
 
 import { useAuth } from "../../../ctx/AuthCtx";
 
-import type { CourseSelectDto, TabItem, UserDetailsDto } from "../../../lib/types";
+import type { CourseInfo, TabItem } from "../../../lib/types";
 import { handleLogout } from "../../../lib/funcs";
-import { getUser } from "../../../api/usersRequest";
+import { getProfessorCourses } from "../../../api/professorRequests";
 
 export default function ProfessorDashboardPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    const [courses, setCourses] = useState<CourseSelectDto[]>([]);
+    const [courses, setCourses] = useState<CourseInfo[]>([]);
     const [loadingCourses, setLoadingCourses] = useState(true);
     const [coursesError, setCoursesError] = useState<string | null>(null);
 
@@ -27,9 +27,10 @@ export default function ProfessorDashboardPage() {
         setLoadingCourses(true);
         setCoursesError(null);
 
-        getUser(user.id)
-            .then((data: UserDetailsDto) => {
-                setCourses(data.professor?.courses ?? []);
+        getProfessorCourses()
+            .then((res) => {
+                console.log(res);
+                setCourses(res ?? []);
             })
             .catch(() => {
                 setCoursesError("Failed to load assigned courses.");
