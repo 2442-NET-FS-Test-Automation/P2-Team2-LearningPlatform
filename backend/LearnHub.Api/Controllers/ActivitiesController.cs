@@ -82,6 +82,7 @@ public class ActivitiesController : ControllerBase
     [Authorize(Roles = "Professor,Student,Admin")]
     public async Task<ActionResult<PagedResult<ActivitySummaryDto>>> GetByCourse(
         int courseId,
+        [FromQuery] bool? isActive = null,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10
     )
@@ -119,8 +120,7 @@ public class ActivitiesController : ControllerBase
                 TotalPages = res.TotalPages
             });
         }
-
-        var result = await _repo.GetByCourseAsync(courseId, page, pageSize);
+        var result = await _repo.GetByCourseAsync(courseId, isActive ,page, pageSize);
 
         return Ok(new PagedResult<ActivitySummaryDto>
         {
@@ -186,6 +186,28 @@ public class ActivitiesController : ControllerBase
         }
 
         await _repo.DeleteAsync(id);
+        return NoContent();
+    }
+
+    [HttpPatch("{id:int}/reactivate")]
+    [Authorize(Roles = "Admin,Professor")]
+    public async Task<IActionResult> Reactivate(int id)
+    {
+        if (!DataTypeVerification.IsNumValid(id)) return BadRequest();
+
+        var activity = await _repo.GetByIdAsync(id);
+        if (activity is null) return NotFound();
+
+        var username = User.Identity?.Name;
+        var role = User.FindFirstValue(ClaimTypes.Role);
+
+        if (role == "Professor")
+        {
+            var teaches = await _repo.ProfessorTeachesCourseAsync(username!, activity.CourseId);
+            if (!teaches) return Forbid();
+        }
+
+        await _repo.ReactivateAsync(id);
         return NoContent();
     }
 

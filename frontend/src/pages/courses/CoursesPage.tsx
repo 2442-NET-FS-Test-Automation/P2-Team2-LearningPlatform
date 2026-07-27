@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import CourseCard from "../../components/CourseCard";
 import PaginationControls from "../../components/layout/PaginationControls";
 import { COURSE_CATEGORIES, type CourseCategory, type CourseCompact } from "../../lib/types";
-import { getEnabledCourses } from "../../api/coursesRequests";
+import { getEnabledCourses, getEnabledCoursesPaged } from "../../api/coursesRequests";
 import { Search } from "lucide-react";
 import Loading from "../../components/layout/Loading";
 
@@ -21,7 +21,7 @@ export default function CoursesPage() {
     // Get Courses from the API    
     useEffect(() => {
         setIsLoading(true);
-        getEnabledCourses(currentPage, itemsPerPage, 
+        getEnabledCoursesPaged(currentPage, itemsPerPage, 
             searchTerm.trim(), categoryFilter == "All" ? null : categoryFilter)
             .then((res) => {
                 setCourses(res.items);
@@ -36,7 +36,7 @@ export default function CoursesPage() {
     }, [currentPage, categoryFilter])
 
     useEffect(() => {
-        getEnabledCourses(currentPage, itemsPerPage, 
+        getEnabledCoursesPaged(currentPage, itemsPerPage, 
             searchTerm.trim(), categoryFilter == "All" ? null : categoryFilter)
             .then((res) => {
                 setCourses(res.items);

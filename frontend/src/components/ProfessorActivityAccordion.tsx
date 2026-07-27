@@ -1,41 +1,93 @@
 import { useState } from "react";
-import { ChevronDown, GraduationCap } from "lucide-react";
+import { ChevronDown, GraduationCap, Trash2, RotateCcw } from "lucide-react";
 import type { ActivityWithSubmissions, Submission } from "../lib/types";
 import { getApiError } from "../lib/funcs";
 
 type Props = {
     activity: ActivityWithSubmissions;
     onGrade: (submissionId: number, grade: number, feedback: string) => Promise<void>;
+    onDelete: (id:number)=>void;
+    onReactivate:(id:number)=>void;
+    activityTab:"active"|"archived";
 }
 
-export default function ProfessorActivityAccordion({ activity, onGrade }: Props) {
+export default function ProfessorActivityAccordion({ 
+    activity, 
+    onGrade,
+    onDelete,
+    onReactivate,
+    activityTab
+}: Props) {
     const [open, setOpen] = useState(false);
     const ungraded = activity.submissions.filter(s => s.gradedAt == null).length;
 
     return (
         <div className="card">
-            <button onClick={() => setOpen(!open)} className="flex w-full items-center justify-between text-left">
-                <div>
-                    <h3 className="font-semibold">{activity.title}</h3>
-                    <p className="text-sm text-muted">
-                        {activity.submissions.length} submission{activity.submissions.length !== 1 ? "s" : ""}
-                        {ungraded > 0 && ` · ${ungraded} awaiting grade`}
-                    </p>
-                </div>
-                <ChevronDown size={20} className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
-            </button>
+            <div className="flex items-center justify-between">
+                <button
+                    onClick={() => setOpen(prev => !prev)}
+                    className="flex flex-1 items-center justify-between text-left"
+                >
+                    <div>
+                        <h3 className="font-semibold">{activity.title}</h3>
+                        <p className="text-sm text-muted">
+                            {activity.submissions.length} submission{activity.submissions.length !== 1 ? "s" : ""}
+                            {ungraded > 0 && ` · ${ungraded} awaiting grade`}
+                        </p>
+                    </div>
 
-            {open && (
-                <div className="divider-block mt-4 space-y-3">
+                    <ChevronDown
+                        size={20}
+                        className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+                    />
+                </button>
+
+                {activityTab === "active" ? (
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(activity.id);
+                        }}
+                        className="ml-3 rounded-full p-2 text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
+                        title="Archive activity"
+                    >
+                        <Trash2 size={18}/>
+                    </button>
+                ) : (
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onReactivate(activity.id);
+                        }}
+                        className="ml-3 rounded-full p-2 text-emerald-600 transition-colors hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/30"
+                        title="Reactivate activity"
+                    >
+                        <RotateCcw size={18}/>
+                    </button>
+                )}
+            </div>
+
+            <div
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    open ? "max-h-[1000px] opacity-100 mt-4" : "max-h-0 opacity-0"
+                }`}
+            >
+                <div className="divider-block space-y-3">
                     {activity.submissions.length === 0 ? (
-                        <p className="text-sm text-muted">No submissions yet.</p>
+                        <p className="text-sm text-muted">
+                            No submissions yet.
+                        </p>
                     ) : (
                         activity.submissions.map((s) => (
-                            <SubmissionRow key={s.id} submission={s} onGrade={onGrade} />
+                            <SubmissionRow
+                                key={s.id}
+                                submission={s}
+                                onGrade={onGrade}
+                            />
                         ))
                     )}
                 </div>
-            )}
+            </div>
         </div>
     );
 }
