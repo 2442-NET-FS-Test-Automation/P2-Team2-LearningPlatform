@@ -124,4 +124,6 @@ public class ActivityRepo : IActivityRepo
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<bool> CourseExistsAsync(int courseId) => await _context.Courses.AnyAsync(c => c.Id == courseId);
 }

@@ -19,4 +19,5 @@ public interface IActivityRepo
     Task<ActivitySubmission?> GetSubmissionAsync(int activityId, int studentId);
     Task<ActivitySubmission> CreateSubmissionAsync(ActivitySubmission submission);
     Task<bool> GradeSubmissionAsync(int submissionId, string feedback, decimal score);
+    Task<bool> CourseExistsAsync(int courseId);
 }

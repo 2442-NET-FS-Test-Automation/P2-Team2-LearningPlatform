@@ -102,6 +102,10 @@ public class ActivitiesController : ControllerBase
     {
         if (!DataTypeVerification.IsNumValid(dto.CourseId)) return BadRequest();
 
+        if (dto.DueDate <= DateTime.UtcNow) return BadRequest(new { error = "Due date must be in the future" });
+
+        if (!await _repo.CourseExistsAsync(dto.CourseId))return NotFound(new { error = "Course not found" });
+
         var username = User.Identity?.Name;
         var role = User.FindFirstValue(ClaimTypes.Role);
 
