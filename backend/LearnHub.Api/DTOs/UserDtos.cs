@@ -98,6 +98,8 @@ public class StudentInfoDto
 
 public class ProfessorInfoDto
 {
+    public int Id { get; set; }
+
     public DateOnly ContractDate {get;set;}
 
     public int ShiftId {get;set;}
