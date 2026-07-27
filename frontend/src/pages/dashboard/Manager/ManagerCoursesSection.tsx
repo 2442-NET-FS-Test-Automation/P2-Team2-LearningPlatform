@@ -2,16 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Pencil, Plus, Search, Trash } from "lucide-react";
 
+import CreateCourseModal from "../../../components/modals/CreateCourseModal";
 import PaginationControls from "../../../components/layout/PaginationControls";
 import EditCourseModal from "../../../components/modals/EditCourseModal";
 import ConfirmModal from "../../../components/modals/ConfirmModal";
+import Loading from "../../../components/layout/Loading";
 
 import { getAllCourses, deleteCourse } from "../../../api/coursesRequests";
 import { COURSE_CATEGORIES, type CourseCategory, type CourseDetails } from "../../../lib/types";
-import Loading from "../../../components/layout/Loading";
 
 export default function ManageUsersSection() {
-    const [courses, setCourses] = useState<CourseDetails[]>([]); // TODO: Specify type
+    const [courses, setCourses] = useState<CourseDetails[]>([]);
     const [search, setSearch] = useState("");
     const [categoryFilter, setCategoryFilter] = useState<CourseCategory | "All">("All");
     const [isActiveFilter, setIsActiveFilter] = useState<boolean | null>(null);
@@ -211,11 +212,12 @@ export default function ManageUsersSection() {
             </div>
 
             {showCreateModal && (
-                <></> // TODO: Make the CreateCourseModal
-                // <CreateUserModal
-                //     onClose={() => setShowCreateModal(false)}
-                //     onCreated={loadUsers}
-                // />
+                <CreateCourseModal
+                    onClose={() => setShowCreateModal(false)}
+                    onCreated={() => {
+                        setCreated((c) => !c);
+                    }}
+                />
             )}
 
             {editCourseId && (

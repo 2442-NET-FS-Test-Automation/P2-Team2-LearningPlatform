@@ -1,4 +1,5 @@
-import type { CourseCategory, CourseDetails, CourseSelectDto, UpdateCourseDto } from "../lib/types";
+import type { CourseCategory, CourseDetails, CourseDto, CourseSelectDto, CreateCourseDto, UpdateCourseDto } from "../lib/types";
+import { COURSE_CATEGORIES } from "../lib/types";
 import { api } from "./api";
 
 export async function getAllCourses(page: number = 1, pageSize: number = 6, search: string | null = null, category: CourseCategory | null = null, isActiveFilter: boolean | null = null) {
@@ -52,6 +53,25 @@ export async function getCoursesForSelect(): Promise<CourseSelectDto[]> {
     });
 
     return response.data.items;
+}
+
+export async function createCourse(dto: CreateCourseDto): Promise<CourseDto> {
+    const categoryIndex = COURSE_CATEGORIES.indexOf(dto.category);
+
+    const request = {
+        professorId: dto.professorId,
+        name: dto.name,
+        description: dto.description,
+        about: dto.about,
+        category: categoryIndex >= 0 ? categoryIndex : dto.category,
+        capacity: Number(dto.capacity) || 0,
+        price: Number(dto.price) || 0,
+        hours: Number(dto.hours) || 0,
+        certification: Boolean(dto.certification),
+    };
+
+    const response = await api.post("/Courses", request);
+    return response.data;
 }
 
 export async function updateCourse(id: number, data: UpdateCourseDto): Promise<void> {
