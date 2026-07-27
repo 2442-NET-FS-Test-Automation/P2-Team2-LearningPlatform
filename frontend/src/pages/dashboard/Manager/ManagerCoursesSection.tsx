@@ -8,6 +8,7 @@ import ConfirmModal from "../../../components/modals/ConfirmModal";
 
 import { getAllCourses, deleteCourse } from "../../../api/coursesRequests";
 import { COURSE_CATEGORIES, type CourseCategory, type CourseDetails } from "../../../lib/types";
+import CreateCourseModal from "../../../components/modals/CreateCourseModal";
 
 export default function ManageUsersSection() {
     const [courses, setCourses] = useState<CourseDetails[]>([]); // TODO: Specify type
@@ -200,11 +201,12 @@ export default function ManageUsersSection() {
             </div>
 
             {showCreateModal && (
-                <></> // TODO: Make the CreateCourseModal
-                // <CreateUserModal
-                //     onClose={() => setShowCreateModal(false)}
-                //     onCreated={loadUsers}
-                // />
+                <CreateCourseModal
+                    onClose={() => setShowCreateModal(false)}
+                    onCreated={() => {
+                        setCreated((c) => !c);
+                    }}
+                />
             )}
 
             {editCourseId && (

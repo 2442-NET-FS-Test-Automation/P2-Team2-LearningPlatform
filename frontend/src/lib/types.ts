@@ -156,6 +156,31 @@ export interface CreateUserDto {
     contractDate?: string;
 }
 
+export interface CreateCourseDto {
+    professorId: number;
+    name: string;
+    description: string;
+    about: string;
+    category: CourseCategory;
+    price: number;
+    hours: number;
+    capacity: number;
+    certification: boolean;
+    isActive: boolean;
+
+}
+
+export type CourseDto = {
+    id: number,
+    name: string,
+    description: string,
+    about: string,
+    category: CourseCategory,
+    price: number,
+    hours: number,
+    capacity: number,
+}
+
 export type TopCourse = {
     courseId: number;
     courseName: string;
@@ -207,6 +232,7 @@ export interface StudentInfoDto {
 }
 
 export interface ProfessorInfoDto {
+    id: number;
     contractDate?: string;
     shiftId?: number;
     isActive:boolean;
