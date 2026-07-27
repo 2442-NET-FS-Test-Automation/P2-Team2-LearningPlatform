@@ -58,7 +58,7 @@ public class ActivitiesController : ControllerBase
     }
 
     [HttpGet("course/{courseId:int}")]
-    [Authorize(Roles = "Professor,Student")]
+    [Authorize(Roles = "Professor,Student,Admin")]
     public async Task<ActionResult<PagedResult<ActivitySummaryDto>>> GetByCourse(
         int courseId,
         [FromQuery] int page = 1,
@@ -76,6 +76,7 @@ public class ActivitiesController : ControllerBase
 
         var hasAccess = role switch
         {
+            "Admin" => true,
             "Professor" => await _repo.ProfessorTeachesCourseAsync(username!, courseId),
             "Student"   => await _repo.StudentEnrolledInCourseAsync(username!, courseId),
             _           => false
