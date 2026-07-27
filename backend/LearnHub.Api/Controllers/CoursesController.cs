@@ -95,7 +95,8 @@ public class CoursesController : ControllerBase
                     Name = c.Name,
                     Description = c.Description,
                     Category = c.CategoryName.ToString(),
-                    IsActive = c.IsActive
+                    IsActive = c.IsActive,
+                    Price = c.EnrollmentPrice
                 }).ToList(),
 
                 Page = result.Page,

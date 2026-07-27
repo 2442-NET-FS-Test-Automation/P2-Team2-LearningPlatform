@@ -2,16 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Pencil, Plus, Search, Trash } from "lucide-react";
 
+import CreateCourseModal from "../../../components/modals/CreateCourseModal";
 import PaginationControls from "../../../components/layout/PaginationControls";
 import EditCourseModal from "../../../components/modals/EditCourseModal";
 import ConfirmModal from "../../../components/modals/ConfirmModal";
+import Loading from "../../../components/layout/Loading";
 
 import { getAllCourses, deleteCourse } from "../../../api/coursesRequests";
 import { COURSE_CATEGORIES, type CourseCategory, type CourseDetails } from "../../../lib/types";
-import CreateCourseModal from "../../../components/modals/CreateCourseModal";
 
 export default function ManageUsersSection() {
-    const [courses, setCourses] = useState<CourseDetails[]>([]); // TODO: Specify type
+    const [courses, setCourses] = useState<CourseDetails[]>([]);
     const [search, setSearch] = useState("");
     const [categoryFilter, setCategoryFilter] = useState<CourseCategory | "All">("All");
     const [isActiveFilter, setIsActiveFilter] = useState<boolean | null>(null);
@@ -49,11 +50,23 @@ export default function ManageUsersSection() {
             })
             .catch((e) => {
                 setError(e);
+            });
+    }, [currentPage, itemsPerPage, categoryFilter, isActiveFilter, created, search]);
+
+    useEffect(() => {
+        setLoading(true);
+        getAllCourses(currentPage, itemsPerPage, search, categoryFilter == "All" ? null : categoryFilter, isActiveFilter)
+            .then((res) => {
+                setCourses(res.items);
+                setTotalPages(res.totalPages);
+            })
+            .catch((e) => {
+                setError(e);
             })
             .finally(() => {
                 setLoading(false);
             });
-    }, [currentPage, itemsPerPage, categoryFilter, isActiveFilter, created, search]);
+    }, []);
 
     useMemo(() => {
         setCurrentPage(1);
@@ -107,9 +120,7 @@ export default function ManageUsersSection() {
                 </div>
 
                 {loading ? (
-                    <p className="text-muted">
-                        Loading courses...
-                    </p>
+                    <Loading fullh={false} message="Loading Courses. . ." />
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
@@ -143,8 +154,8 @@ export default function ManageUsersSection() {
                                 {courses.length === 0 ? (
                                 <p className="text-muted">
                                     No courses found.
-                                </p>) :
-                                (
+                                </p>
+                                ) : (
                                     courses.map((c) => (
                                         < tr
                                             key = { c.id }
