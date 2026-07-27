@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
 import type { CreateUserDto } from "../../lib/types";
 import { isAlphanumeric, isBirthDateValid } from "../../lib/funcs";
 
 import { createUser } from "../../api/usersRequest";
+import { getShifts } from "../../api/shiftsRequests";
+import type { ShiftDto } from "../../lib/types";
+
 
 interface Props {
     onClose: () => void;
@@ -17,6 +20,39 @@ export default function CreateUserModal({
 }: Props) {
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [shifts, setShifts] = useState<ShiftDto[]>([]);
+
+
+    //get shifts from api
+    useEffect(() => {
+        let cancelled = false;
+
+        async function loadShifts() {
+            try {
+                const res = await getShifts(1, 10, "");
+                const loadedShifts = res.items ?? [];
+
+                if(!cancelled) {
+                    setShifts(loadedShifts);
+                }
+            } catch (err: any) {
+                console.error(err.response?.data);
+                setError(err.response?.data.error);
+            }
+        }
+
+
+
+        loadShifts();
+
+        return () => {
+            cancelled = true;
+        };
+
+        
+    }, []);
+
+
 
     const [form, setForm] = useState<CreateUserDto>({
         username: "",
@@ -203,36 +239,51 @@ export default function CreateUserModal({
                             />
                         </div>
                     )}
-
-                    {/* Professor fields */}
                     {form.role === "Professor" && (
-                        <div className="rounded-lg border p-4">
-                            <h3 className="font-semibold mb-3">
-                                Professor Information
-                            </h3>
-
+                        <div className="p-0">
                             <div className="grid grid-cols-2 gap-4">
-                                <input
-                                    className="form-input"
-                                    type="number"
-                                    placeholder="Shift ID"
-                                    name="shiftId"
-                                    value={form.shiftId ?? ""}
-                                    onChange={(e) =>
-                                        setForm({
-                                            ...form,
-                                            shiftId: Number(e.target.value)
-                                        })
-                                    }
-                                />
+                                <div>
+                                    <h3 className="font-semibold mb-3">
+                                        Available Shifts
+                                    </h3>
+                                    <select
+                                        className="form-input w-full"
+                                        name="shiftId"
+                                        value={form.shiftId ?? ""}
+                                        onChange={handleChange}
+                                    >
+                                        {shifts.length > 0 ? (
+                                            <>
+                                                <option value="" disabled>
+                                                    Select a shift
+                                                </option>
+                                                {shifts.map((shift) => (
+                                                    <option
+                                                        key={shift.id}
+                                                        value={shift.id}
+                                                    >
+                                                        {shift.name}
+                                                    </option>
+                                                ))}
+                                            </>
+                                        ) : (
+                                            <option>No shifts available</option>
+                                        )}
+                                    </select>
+                                </div>
 
-                                <input
-                                    className="form-input"
-                                    type="date"
-                                    name="contractDate"
-                                    value={form.contractDate}
-                                    onChange={handleChange}
-                                />
+                                <div>
+                                    <h3 className="font-semibold mb-3">
+                                        Contract Date
+                                    </h3>
+                                    <input
+                                        className="form-input w-full"
+                                        type="date"
+                                        name="contractDate"
+                                        value={form.contractDate}
+                                        onChange={handleChange}
+                                    />
+                                </div>
                             </div>
                         </div>
                     )}
