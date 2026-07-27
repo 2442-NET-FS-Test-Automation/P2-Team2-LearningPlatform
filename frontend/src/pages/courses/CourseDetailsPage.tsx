@@ -14,7 +14,7 @@ import NotFoundPage from "../NotFoundPage";
 
 import { useAuth } from "../../ctx/AuthCtx";
 
-import { isStudentEnrolled, studentEnroll } from "../../api/studentsRequests";
+import { isStudentEnrolled, setCourseCompleted, studentEnroll } from "../../api/studentsRequests";
 import { getCourseDetails } from "../../api/coursesRequests";
 import {
     getStudentActivities,
@@ -40,6 +40,7 @@ export default function CourseDetailsPage() {
     const { id } = useParams();
     const [course, setCourse] = useState<CourseDetails>()
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [isEnrolling, setIsEnrolling] = useState(false);
@@ -67,20 +68,20 @@ export default function CourseDetailsPage() {
 
     useEffect(() => {
         if (!user) return;
-        if (user.role !== "Student") return;
-        isStudentEnrolled(user.id, Number(id))
-            .then((res) => {
-                if (res.status === 200) setIsEnrolled(true);
-            });
-    }, []);
-
-    useEffect(() => {
-        if (!user) return;
 
         if (user.role === "Student") {
-            getStudentActivities(Number(id))
-                .then(setStudentActivities)
-                .catch(e => console.log(e));
+            isStudentEnrolled(user.id, Number(id))
+                .then((res) => {
+                    if (res.status === 200) {
+                        setIsEnrolled(true);
+                        getStudentActivities(Number(id))
+                            .then(setStudentActivities)
+                            .catch(e => console.log(e));
+                    }
+                })
+                .catch(() => {
+                    setIsEnrolled(false);
+                });
         } else if (user.role === "Professor" || user.role === "Admin") {
             getCourseActivities(Number(id))
                 .then(setCourseActivities)
@@ -88,7 +89,7 @@ export default function CourseDetailsPage() {
                     if (e.status == 403) setForbid(true);
                 });
         }
-    }, [user, id, updated]);
+    }, [user, id, updated, studentActivities]);
 
     const handleEnroll = () => {
         if (!user) {
@@ -110,6 +111,17 @@ export default function CourseDetailsPage() {
     const pendingActivities = studentActivities.filter(a => !a.submission);
     const completedActivities = studentActivities.filter(a => a.submission);
 
+    const handleComplete = () => {
+        if (!user) return null;
+        setCourseCompleted(user.id, Number(id))
+            .then(() => {
+                setUpdated(!updated);
+            })
+            .catch((e) => {
+                console.log(e);
+                setError(e.error ?? "There was an error");  
+            })
+    }
     const handleSubmitActivity = async (activityId: number, text: string) => {
         if (!user) return;
         setSubmittingActivityId(activityId);
@@ -325,7 +337,7 @@ export default function CourseDetailsPage() {
                                                         <span className="big-stat">
                                                             {studentActivities.length > 0
                                                                 ? Math.round((completedActivities.length / studentActivities.length) * 100)
-                                                                : 0}%
+                                                                : 100}%
                                                         </span>
                                                         <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
                                                             <ListChecks size={16} />
@@ -338,10 +350,23 @@ export default function CourseDetailsPage() {
                                                             style={{
                                                                 width: `${studentActivities.length > 0
                                                                     ? (completedActivities.length / studentActivities.length) * 100
-                                                                    : 0}%`
+                                                                    : 100}%`
                                                             }}
                                                         />
                                                     </div>
+                                                    {pendingActivities.length === 0 &&
+                                                        <button
+                                                            className="btn-primary w-full justify-center gap-2 text-center mt-2"
+                                                            onClick={() => {handleComplete()}}
+                                                        >
+                                                            Mark as completed
+                                                        </button>
+                                                    }
+                                                    {error && 
+                                                        <p className="text-red-600 dark:text-red-400 text-sm mt-2">
+                                                            {error}
+                                                        </p>
+                                                    }
                                                 </div>
                                             ) : (
                                                 <EnrollmentCard

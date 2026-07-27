@@ -11,4 +11,5 @@ public interface IStudentRepo
     Task<bool> EnrollAsync(int studentId, int courseId);
     Task<bool> UnenrollAsync(int studentId, int courseId);
     Task<StudentCourse?> GetStudentCourseByIds(int studentId, int courseId);
+    Task<bool> CompleteStudentCourse(int studentId, int courseId);
 }
