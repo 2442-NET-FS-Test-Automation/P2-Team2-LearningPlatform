@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { BookOpen, GraduationCap, Users } from "lucide-react";
 
-import { getAllCourses } from "../../api/coursesRequests";
+import { getEnabledCourses } from "../../api/coursesRequests";
 import { getUsers } from "../../api/usersRequest";
 
 
@@ -15,7 +15,7 @@ export default function Features() {
     console.log(courseStat);
     
     async function coursesCount() {
-        let result = await getAllCourses(1, 200);
+        let result = await getEnabledCourses(1, 200);
         setCourseStat(result.items.length);
     }
 
