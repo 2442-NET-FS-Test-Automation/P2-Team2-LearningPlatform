@@ -66,6 +66,7 @@ export default function CourseDetailsPage() {
 
     useEffect(() => {
         if (!user) return;
+        if (user.role !== "Student") return;
         isStudentEnrolled(user.id, Number(id))
             .then((res) => {
                 if (res.status === 200) setIsEnrolled(true);
