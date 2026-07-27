@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 import { useAuth } from "../../ctx/AuthCtx";
@@ -40,7 +40,11 @@ export default function LoginPage() {
         }
     };
     
-    if (user) navigate(getDashboardRoute(user.role));
+    useEffect(() => {
+        if (user) {
+            navigate(getDashboardRoute(user.role));
+        }
+    }, [user, navigate]);
 
     return (
         <div className="auth-shell">
