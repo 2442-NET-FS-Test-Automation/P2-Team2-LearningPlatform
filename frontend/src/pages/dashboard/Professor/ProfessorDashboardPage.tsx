@@ -1,15 +1,45 @@
-import { useState } from "react";
-import { BookOpen, CalendarDays, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BookOpen, CalendarDays, LayoutDashboard, User } from "lucide-react";
 
 import DashboardSideNav from "../../../components/DashboardSideNav";
 import ProfileSection from "../ProfileSection";
 import WeeklyScheduleSection from "../WeeklyScheduleSection";
 import AssignedCoursesSection from "./AssignedCoursesSection";
 
-import type { TabItem } from "../../../lib/types";
+import { useAuth } from "../../../ctx/AuthCtx";
+
+import type { CourseSelectDto, TabItem, UserDetailsDto } from "../../../lib/types";
 import { handleLogout } from "../../../lib/funcs";
+import { getUser } from "../../../api/usersRequest";
 
 export default function ProfessorDashboardPage() {
+    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const [courses, setCourses] = useState<CourseSelectDto[]>([]);
+    const [loadingCourses, setLoadingCourses] = useState(true);
+    const [coursesError, setCoursesError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!user) return;
+
+        setLoadingCourses(true);
+        setCoursesError(null);
+
+        getUser(user.id)
+            .then((data: UserDetailsDto) => {
+                setCourses(data.professor?.courses ?? []);
+            })
+            .catch(() => {
+                setCoursesError("Failed to load assigned courses.");
+            })
+            .finally(() => {
+                setLoadingCourses(false);
+            });
+    }, [user]);
+
+    
     const [activeTab, setActiveTab] = useState<string>("courses");
     const tabs: TabItem[] = [
         { Id: "profile", Label: "Profile", Icon: <User size={18} /> },
@@ -17,19 +47,30 @@ export default function ProfessorDashboardPage() {
         { Id: "schedule", Label: "Schedule", Icon: <CalendarDays size={18} />}
     ];
 
+    if (!user) navigate("/login");
+
     return (
-        <div className="section-white min-h-screen py-10">
-            <div className="container-page">
-                <h1 className="mb-8 text-3xl font-extrabold">Professor Dashboard</h1>
+        <div className="section-light relative min-h-screen overflow-hidden py-10">
+            <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl dark:bg-blue-500/10" aria-hidden="true" />
+            
+            <div className="container-page relative">
+                <span className="eyebrow-badge">
+                    <LayoutDashboard size={14} />
+                    Professor Dashboard
+                </span>
+                <h1 className="mt-4 mb-8 text-3xl font-extrabold leading-tight sm:text-4xl">
+                    Welcome back{user ? <>, <span className="text-blue-600 dark:text-blue-400">{user.firstName}</span></> : null}
+                </h1>
                 <div className="flex flex-col gap-8 lg:flex-row">
+
                     {/* Side Navigation */}
                     <DashboardSideNav Tabs={tabs} ActiveTab={activeTab} OnTabChange={setActiveTab} OnLogout={handleLogout} />
 
                     {/* Main Content */}
-                    <div className="flex-1">
+                    <div key={activeTab} className="flex-1 animate-fade-in-up">
                         {activeTab === "profile" && <ProfileSection />}
-                        {activeTab === "courses" && <AssignedCoursesSection />}
-                        {activeTab === "schedule" && <WeeklyScheduleSection Courses={[]} />}
+                        {activeTab === "courses" && <AssignedCoursesSection courses={courses} loading={loadingCourses} error={coursesError} />}
+                        {activeTab === "schedule" && <WeeklyScheduleSection Courses={courses} />}
                     </div>
                 </div>
             </div>

@@ -29,34 +29,37 @@ export default function DashboardSideNav({
     };
     
     return (
-    <aside className={`lg:w-64 shrink-0 ${ClassName}`}>
-        <nav className="card space-y-1 p-4">
-            {Tabs.map((tab) => (
-                <button
-                    key={tab.Id}
-                    onClick={() => OnTabChange(tab.Id)}
-                    className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors 
-              ${ActiveTab === tab.Id
-                            ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-                            : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-                        }`}
-                >
-                    {tab.Icon}
-                    {tab.Label}
-                </button>
-            ))}
+    <aside className={`lg:sticky lg:w-64 shrink-0 ${ClassName}`}>
+        <nav className="flex flex-col card p-4">
+            <div className="space-y-1">
+                {Tabs.map((tab) => (
+                    <button
+                        key={tab.Id}
+                        onClick={() => OnTabChange(tab.Id)}
+                        className={`flex w-full items-center gap-3 rounded-lg border-l-4 px-4 py-3 text-sm font-medium transition-colors 
+                            ${ActiveTab === tab.Id
+                                ? "blue-accent-chip border-blue-600 dark:border-blue-400"
+                                : "border-transparent text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                            }`}
+                    >
+                        {tab.Icon}
+                        {tab.Label}
+                    </button>
+                ))}
+            </div>
+
 
             {OnLogout && (
-                <>
+                <div className="mt-auto">
                     <hr className="my-2 border-slate-200 dark:border-slate-700" />
                     <button
                         onClick={handleLogout}
-                        className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+                        className="flex w-full items-center gap-3 rounded-lg border-transparent border-l-4 px-4 py-3 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
                     >
                         <LogOut size={18} />
                         Logout
                     </button>
-                </>
+                </div>
             )}
         </nav>
     </aside>

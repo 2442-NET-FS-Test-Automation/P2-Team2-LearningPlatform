@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BookCopy, CalendarClock, NotebookText, User, UsersRound } from "lucide-react";
+import { BookCopy, CalendarClock, LayoutDashboard, NotebookText, User, UsersRound } from "lucide-react";
 
 import DashboardSideNav from "../../../components/DashboardSideNav";
 import ProfileSection from "../ProfileSection";
@@ -24,15 +24,24 @@ export default function ManagerDashboardPage() {
     ];
 
     return (
-        <div className="section-white min-h-screen py-10">
-            <div className="container-page">
-                <h1 className="mb-8 text-3xl font-extrabold">Manager Dashboard</h1>
+        <div className="section-light relative min-h-screen overflow-hidden py-10">
+            <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl dark:bg-blue-500/10" aria-hidden="true" />
+            
+            <div className="container-page relative">
+                <span className="eyebrow-badge">
+                    <LayoutDashboard size={14} />
+                    Manager Dashboard
+                </span>
+                <h1 className="mt-4 mb-8 text-3xl font-extrabold leading-tight sm:text-4xl">
+                    Manager <span className="text-blue-600 dark:text-blue-400">Dashboard</span>
+                </h1>
                 <div className="flex flex-col gap-8 lg:flex-row">
+
                     {/* Side Navigation */}
                     <DashboardSideNav Tabs={tabs} ActiveTab={activeTab} OnTabChange={setActiveTab} OnLogout={handleLogout} />
 
                     {/* Main Content */}
-                    <div className="flex-1">
+                    <div key={activeTab} className="flex-1 animate-fade-in-up">
                         {activeTab === "profile" && <ProfileSection />}
                         {activeTab === "reports" && <ManagerReportsSection />}
                         {activeTab === "manageusers" && <ManageUsersSection />}

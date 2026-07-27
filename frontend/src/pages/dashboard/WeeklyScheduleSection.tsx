@@ -1,3 +1,4 @@
+import { CalendarDays } from "lucide-react";
 import EventBox from "../../components/EventBox";
 import { DAY_NAMES_SHORT, type ScheduleEvent, type CoursesInfo } from "../../lib/types";
 
@@ -29,7 +30,10 @@ export default function WeeklyScheduleSection({ Courses }: CoursesInfo) {
 
     return (
         <div className="card space-y-4">
-            <h2 className="text-xl font-semibold">Weekly Schedule</h2>
+            <h2 className="flex items-center gap-3 text-xl font-semibold">
+                <CalendarDays size={25} className="text-blue-600 dark:text-blue-400" />
+                Weekly Schedule
+            </h2>
 
             {events.length === 0 ? (
                 <p className="text-muted">No scheduled class times for your current courses.</p>
