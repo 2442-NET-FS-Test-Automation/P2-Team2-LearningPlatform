@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, BookOpen, BarChart3, CalendarDays } from "lucide-react";
+import { User, BookOpen, BarChart3, CalendarDays, LayoutDashboard } from "lucide-react";
 
 import DashboardSideNav from "../../../components/DashboardSideNav";
 import ProfileSection from "../ProfileSection";
@@ -49,15 +49,24 @@ export default function StudentDashboardPage() {
     if (!user) navigate("/login");
     
     return (
-        <div className="section-white min-h-screen py-10">
-            <div className="container-page">
-                <h1 className="mb-8 text-3xl font-extrabold">Dashboard</h1>
+        <div className="section-white relative min-h-screen overflow-hidden py-10">
+            <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl dark:bg-blue-500/10" aria-hidden="true" />
+            
+            <div className="container-page relative">
+                <span className="eyebrow-badge">
+                    <LayoutDashboard size={14} />
+                    Student Dashboard
+                </span>
+                <h1 className="mt-4 mb-8 text-3xl font-extrabold leading-tight sm:text-4xl">
+                    Welcome back{user ? <>, <span className="text-blue-600 dark:text-blue-400">{user.firstName}</span></> : null}
+                </h1>
+
                 <div className="flex flex-col gap-8 lg:flex-row">
                     {/* Side Navigation */}
                     <DashboardSideNav Tabs={tabs} ActiveTab={activeTab} OnTabChange={setActiveTab} OnLogout={handleLogout} />
 
                     {/* Main Content */}
-                    <div className="flex-1">
+                    <div key={activeTab} className="flex-1 animate-fade-in-up">
                         {activeTab === "profile" && <ProfileSection />}
                         {activeTab === "courses" && <CoursesSection userId={user!.id} courses={courses} onChange={() => setOnChange((c) => !c)} />}
                         {activeTab === "progress" && <ProgressSection TotalCourses={stats.TotalCourses} Completed={stats.Completed} AvgGrade={stats.AvgGrade} />}
