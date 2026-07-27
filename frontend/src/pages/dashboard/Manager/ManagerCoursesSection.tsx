@@ -135,7 +135,6 @@ export default function ManageUsersSection() {
                                                 value={categoryFilter}
                                                 onChange={(e) => setCategoryFilter(e.target.value as CourseCategory | "All")}
                                                     className="p-2 w-22 text-xs form-input"
-                                                defaultValue={"All"}
                                             >
                                                 <option value="All">All</option>
                                                 {COURSE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -152,9 +151,11 @@ export default function ManageUsersSection() {
 
                             <tbody>
                                 {courses.length === 0 ? (
-                                <p className="text-muted">
-                                    No courses found.
-                                </p>
+                                    <tr>
+                                        <td className="text-muted" colSpan={5}>
+                                            No courses found.
+                                        </td>
+                                    </tr>
                                 ) : (
                                     courses.map((c) => (
                                         < tr

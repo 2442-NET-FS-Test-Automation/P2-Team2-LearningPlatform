@@ -47,6 +47,7 @@ export default function CourseDetailsPage() {
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [updated, setUpdated] = useState(false);
+    const [forbid, setForbid] = useState(false);
 
     const [studentActivities, setStudentActivities] = useState<ActivityWithSubmission[]>([]);
     const [courseActivities, setCourseActivities] = useState<ActivityWithSubmissions[]>([]);
@@ -83,7 +84,9 @@ export default function CourseDetailsPage() {
         } else if (user.role === "Professor" || user.role === "Admin") {
             getCourseActivities(Number(id))
                 .then(setCourseActivities)
-                .catch(e => console.log(e));
+                .catch(e => {
+                    if (e.status == 403) setForbid(true);
+                });
         }
     }, [user, id, updated]);
 
@@ -250,7 +253,7 @@ export default function CourseDetailsPage() {
                                         )}
                                     </div>
                                 </>
-                                ) : user.role === "Professor" ? (
+                                ) : user.role === "Professor" && !forbid ? (
                                 <>
                                     <div className="divider-block flex items-center justify-between">
                                         <div>
