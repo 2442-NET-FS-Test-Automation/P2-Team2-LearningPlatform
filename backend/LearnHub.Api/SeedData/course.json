@@ -9,7 +9,47 @@
         "about": "This course is about the basics of C#",
         "certification": true,
         "hours": 40,
-        "professorId": 1
+        "professorUsername": "ada",
+        "schedule": [
+            {
+                "day": "Monday",
+                "startTime": "09:00",
+                "endTime": "10:30"
+            },
+            {
+                "day": "Wednesday",
+                "startTime": "09:00",
+                "endTime": "10:30"
+            },
+            {
+                "day": "Friday",
+                "startTime": "09:00",
+                "endTime": "10:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Console Budget Tracker",
+                "description": "Build a C# console application that records income and expenses, validates input, and displays the current balance.",
+                "dueDate": "2026-08-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Object-Oriented Library System",
+                "description": "Model books, members, and loans with classes, collections, and exception handling; include a short README with design decisions.",
+                "dueDate": "2026-08-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "C# Testing and Code Review",
+                "description": "Add automated tests to a provided C# service, identify defects through code review, and submit a corrected implementation with a concise review summary.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Advanced JavaScript",
@@ -21,7 +61,42 @@
         "about": "Master closures, async/await, modules, and design patterns in JavaScript.",
         "certification": true,
         "hours": 45,
-        "professorId": 2
+        "professorUsername": "alan",
+        "schedule": [
+            {
+                "day": "Tuesday",
+                "startTime": "14:00",
+                "endTime": "16:00"
+            },
+            {
+                "day": "Thursday",
+                "startTime": "14:00",
+                "endTime": "16:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Asynchronous API Dashboard",
+                "description": "Build a dashboard that fetches data from two public APIs using async/await and handles loading, empty, and error states.",
+                "dueDate": "2026-08-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Reusable Module Refactor",
+                "description": "Refactor a provided script into ES modules using closures and at least one appropriate design pattern; add unit tests for core behavior.",
+                "dueDate": "2026-08-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "JavaScript Performance Audit",
+                "description": "Profile a browser application, locate avoidable performance costs, and submit an optimized version with measurements demonstrating the improvement.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Python for Beginners",
@@ -33,7 +108,47 @@
         "about": "Write clean Python scripts using variables, loops, functions, and OOP basics.",
         "certification": true,
         "hours": 36,
-        "professorId": 1
+        "professorUsername": "grace",
+        "schedule": [
+            {
+                "day": "Monday",
+                "startTime": "11:00",
+                "endTime": "12:30"
+            },
+            {
+                "day": "Wednesday",
+                "startTime": "11:00",
+                "endTime": "12:30"
+            },
+            {
+                "day": "Saturday",
+                "startTime": "09:00",
+                "endTime": "11:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Personal Expense Analyzer",
+                "description": "Write a Python program that reads expense data, groups it by category, and reports totals using functions and data structures.",
+                "dueDate": "2026-08-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Command-Line Contact Book",
+                "description": "Create a menu-driven contact manager with input validation, file persistence, and clear separation between data and presentation logic.",
+                "dueDate": "2026-08-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Python Automation Project",
+                "description": "Automate a repetitive file-processing workflow with Python, including command-line options, useful error messages, logging, and automated tests.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Java Fundamentals",
@@ -45,7 +160,47 @@
         "about": "Cover Java syntax, OOP, collections, and exception handling with hands-on labs.",
         "certification": true,
         "hours": 48,
-        "professorId": 2
+        "professorUsername": "dennis",
+        "schedule": [
+            {
+                "day": "Tuesday",
+                "startTime": "10:00",
+                "endTime": "12:00"
+            },
+            {
+                "day": "Thursday",
+                "startTime": "10:00",
+                "endTime": "12:00"
+            },
+            {
+                "day": "Friday",
+                "startTime": "16:00",
+                "endTime": "18:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Inventory Management CLI",
+                "description": "Develop a Java console application using classes, interfaces, collections, and custom exceptions to manage store inventory.",
+                "dueDate": "2026-08-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Order Processing Test Suite",
+                "description": "Implement an order-processing service and test normal, boundary, and failure cases with JUnit.",
+                "dueDate": "2026-08-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Java Collections Case Study",
+                "description": "Select appropriate Java collection types for a scheduling problem, implement the solution, and justify the performance and design tradeoffs.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Full-Stack Web Development",
@@ -57,7 +212,52 @@
         "about": "Learn HTML, CSS, React, and ASP.NET Core to ship production-ready web applications.",
         "certification": true,
         "hours": 80,
-        "professorId": 1
+        "professorUsername": "tim",
+        "schedule": [
+            {
+                "day": "Monday",
+                "startTime": "13:00",
+                "endTime": "15:30"
+            },
+            {
+                "day": "Wednesday",
+                "startTime": "13:00",
+                "endTime": "15:30"
+            },
+            {
+                "day": "Friday",
+                "startTime": "13:00",
+                "endTime": "15:00"
+            },
+            {
+                "day": "Saturday",
+                "startTime": "09:00",
+                "endTime": "12:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Responsive Product Catalog",
+                "description": "Create an accessible responsive catalog UI with filtering, reusable components, and polished loading and empty states.",
+                "dueDate": "2026-08-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Full-Stack Booking Capstone",
+                "description": "Build and document a booking application with a React client, ASP.NET Core API, relational persistence, validation, and authentication.",
+                "dueDate": "2026-08-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Production Readiness Review",
+                "description": "Prepare the capstone for release by adding end-to-end tests, observability, deployment documentation, and a prioritized production-readiness checklist.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "React Fundamentals",
@@ -69,7 +269,42 @@
         "about": "Build interactive UIs with React components, hooks, and state management.",
         "certification": true,
         "hours": 36,
-        "professorId": 2
+        "professorUsername": "alan",
+        "schedule": [
+            {
+                "day": "Tuesday",
+                "startTime": "09:00",
+                "endTime": "11:00"
+            },
+            {
+                "day": "Thursday",
+                "startTime": "09:00",
+                "endTime": "11:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Component Library Challenge",
+                "description": "Build reusable Button, Modal, FormField, and Card components with documented props and accessible interactions.",
+                "dueDate": "2026-08-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Task Board with Hooks",
+                "description": "Create a task board using hooks, derived state, form validation, filtering, and persistence in local storage.",
+                "dueDate": "2026-08-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Accessible Data Explorer",
+                "description": "Build a React data explorer with search, sorting, pagination, keyboard navigation, and tests for important user interactions.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "ASP.NET Core Web APIs",
@@ -81,7 +316,47 @@
         "about": "Create secure, scalable Web APIs using controllers, EF Core, and authentication.",
         "certification": true,
         "hours": 50,
-        "professorId": 1
+        "professorUsername": "ada",
+        "schedule": [
+            {
+                "day": "Monday",
+                "startTime": "16:00",
+                "endTime": "18:00"
+            },
+            {
+                "day": "Wednesday",
+                "startTime": "16:00",
+                "endTime": "18:00"
+            },
+            {
+                "day": "Friday",
+                "startTime": "16:00",
+                "endTime": "17:30"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Course Enrollment API",
+                "description": "Implement RESTful enrollment endpoints with DTO validation, correct status codes, EF Core relationships, and integration tests.",
+                "dueDate": "2026-08-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Secure API Assessment",
+                "description": "Add JWT authentication and role-based authorization to an API, then document and test protected workflows.",
+                "dueDate": "2026-08-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "API Observability and Resilience",
+                "description": "Add structured logging, centralized exception handling, health checks, request tracing, and resilience behavior to an ASP.NET Core API.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "iOS App Development with Swift",
@@ -93,7 +368,47 @@
         "about": "Design and ship iOS applications with Swift, SwiftUI, and Apple frameworks.",
         "certification": true,
         "hours": 60,
-        "professorId": 2
+        "professorUsername": "barbara",
+        "schedule": [
+            {
+                "day": "Tuesday",
+                "startTime": "13:00",
+                "endTime": "15:30"
+            },
+            {
+                "day": "Thursday",
+                "startTime": "13:00",
+                "endTime": "15:30"
+            },
+            {
+                "day": "Sunday",
+                "startTime": "09:00",
+                "endTime": "12:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "SwiftUI Habit Tracker",
+                "description": "Build a SwiftUI habit tracker with reusable views, state management, validation, and local persistence.",
+                "dueDate": "2026-08-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Weather App Prototype",
+                "description": "Create an iOS app that consumes a weather API, handles network failures, and presents an accessible adaptive interface.",
+                "dueDate": "2026-08-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "iOS Release Candidate",
+                "description": "Polish an iOS application for release with tests, accessibility improvements, error handling, app icons, and a concise App Store release note.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Android Development with Kotlin",
@@ -105,7 +420,47 @@
         "about": "Learn Kotlin, Android Studio, and Jetpack Compose to create modern mobile apps.",
         "certification": true,
         "hours": 55,
-        "professorId": 1
+        "professorUsername": "barbara",
+        "schedule": [
+            {
+                "day": "Monday",
+                "startTime": "10:00",
+                "endTime": "12:00"
+            },
+            {
+                "day": "Wednesday",
+                "startTime": "10:00",
+                "endTime": "12:00"
+            },
+            {
+                "day": "Friday",
+                "startTime": "10:00",
+                "endTime": "11:30"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Compose Expense Tracker",
+                "description": "Develop an expense tracker with Jetpack Compose, navigation, form validation, and a ViewModel-driven UI state.",
+                "dueDate": "2026-08-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Offline Notes Application",
+                "description": "Build a notes app using Room and coroutines with create, edit, search, delete, and offline persistence workflows.",
+                "dueDate": "2026-08-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Android Release Candidate",
+                "description": "Prepare an Android application release with UI tests, accessibility checks, offline error handling, and a signed-build workflow description.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Data Science with Python",
@@ -117,7 +472,47 @@
         "about": "Explore data wrangling, statistical analysis, and visualization with Python.",
         "certification": true,
         "hours": 50,
-        "professorId": 2
+        "professorUsername": "grace",
+        "schedule": [
+            {
+                "day": "Tuesday",
+                "startTime": "15:00",
+                "endTime": "17:00"
+            },
+            {
+                "day": "Thursday",
+                "startTime": "15:00",
+                "endTime": "17:00"
+            },
+            {
+                "day": "Saturday",
+                "startTime": "10:00",
+                "endTime": "12:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Retail Data Cleaning Report",
+                "description": "Clean a messy retail dataset with pandas, document assumptions, and produce a reproducible notebook with quality checks.",
+                "dueDate": "2026-08-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Exploratory Sales Dashboard",
+                "description": "Analyze sales trends and customer segments, then communicate findings through well-labeled visualizations and a concise executive summary.",
+                "dueDate": "2026-08-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Reproducible Analysis Presentation",
+                "description": "Turn a completed analysis into a reproducible report and present three evidence-based recommendations to a nontechnical stakeholder.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Machine Learning Essentials",
@@ -129,7 +524,47 @@
         "about": "Understand core ML algorithms, model evaluation, and practical pipelines.",
         "certification": true,
         "hours": 65,
-        "professorId": 1
+        "professorUsername": "guido",
+        "schedule": [
+            {
+                "day": "Monday",
+                "startTime": "14:00",
+                "endTime": "16:30"
+            },
+            {
+                "day": "Wednesday",
+                "startTime": "14:00",
+                "endTime": "16:30"
+            },
+            {
+                "day": "Friday",
+                "startTime": "14:00",
+                "endTime": "16:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Customer Churn Baseline",
+                "description": "Prepare a churn dataset, train two classification models, and compare them using appropriate metrics and cross-validation.",
+                "dueDate": "2026-08-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Clustering Analysis Brief",
+                "description": "Segment customers with an unsupervised method, justify feature preparation and cluster selection, and explain actionable findings.",
+                "dueDate": "2026-08-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Model Risk and Monitoring Plan",
+                "description": "Evaluate a trained model for bias, drift, and operational failure modes, then propose measurable monitoring thresholds and response actions.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Deep Learning with Neural Networks",
@@ -141,7 +576,47 @@
         "about": "Cover CNNs, RNNs, and transfer learning with hands-on coding projects.",
         "certification": true,
         "hours": 70,
-        "professorId": 2
+        "professorUsername": "guido",
+        "schedule": [
+            {
+                "day": "Tuesday",
+                "startTime": "16:00",
+                "endTime": "18:00"
+            },
+            {
+                "day": "Thursday",
+                "startTime": "16:00",
+                "endTime": "18:00"
+            },
+            {
+                "day": "Saturday",
+                "startTime": "08:00",
+                "endTime": "11:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Image Classifier Experiment",
+                "description": "Train and evaluate a CNN image classifier, track experiments, inspect failure cases, and propose targeted improvements.",
+                "dueDate": "2026-09-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Transfer Learning Capstone",
+                "description": "Fine-tune a pretrained model for a real dataset and submit reproducible code, evaluation metrics, and a model card covering limitations.",
+                "dueDate": "2026-09-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Neural Network Error Analysis",
+                "description": "Perform systematic error analysis on a trained network, categorize failure patterns, and run one justified experiment that improves a selected weakness.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Ethical Hacking Basics",
@@ -153,7 +628,52 @@
         "about": "Practice ethical hacking techniques, vulnerability scanning, and secure coding.",
         "certification": true,
         "hours": 48,
-        "professorId": 1
+        "professorUsername": "tim",
+        "schedule": [
+            {
+                "day": "Monday",
+                "startTime": "17:00",
+                "endTime": "18:00"
+            },
+            {
+                "day": "Wednesday",
+                "startTime": "17:00",
+                "endTime": "18:00"
+            },
+            {
+                "day": "Friday",
+                "startTime": "15:00",
+                "endTime": "17:00"
+            },
+            {
+                "day": "Sunday",
+                "startTime": "10:00",
+                "endTime": "12:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Authorized Vulnerability Assessment",
+                "description": "Assess the provided lab target, record evidence safely, rank findings by risk, and recommend specific remediation steps.",
+                "dueDate": "2026-09-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Secure Coding Remediation",
+                "description": "Identify and fix vulnerabilities in a sample application and demonstrate each correction with repeatable security tests.",
+                "dueDate": "2026-09-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Incident Response Exercise",
+                "description": "Analyze a simulated security incident, construct a timeline, preserve relevant evidence, and write containment, eradication, and recovery recommendations.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "SQL and Relational Databases",
@@ -165,7 +685,42 @@
         "about": "Design schemas, write efficient queries, and manage relational databases.",
         "certification": true,
         "hours": 32,
-        "professorId": 2
+        "professorUsername": "margaret",
+        "schedule": [
+            {
+                "day": "Tuesday",
+                "startTime": "11:00",
+                "endTime": "12:30"
+            },
+            {
+                "day": "Thursday",
+                "startTime": "11:00",
+                "endTime": "12:30"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Normalized Library Database",
+                "description": "Design a normalized library schema with constraints, keys, an ER diagram, and seed data that demonstrates its relationships.",
+                "dueDate": "2026-09-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Reporting Query Portfolio",
+                "description": "Write and explain queries using joins, aggregation, subqueries, CTEs, and window functions against the course dataset.",
+                "dueDate": "2026-09-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Database Performance Clinic",
+                "description": "Diagnose slow queries using execution plans, add justified indexes, and report the performance impact without changing expected query results.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "NoSQL with MongoDB",
@@ -177,7 +732,42 @@
         "about": "Learn document modeling, aggregation pipelines, and indexing in MongoDB.",
         "certification": true,
         "hours": 30,
-        "professorId": 1
+        "professorUsername": "margaret",
+        "schedule": [
+            {
+                "day": "Monday",
+                "startTime": "15:00",
+                "endTime": "16:30"
+            },
+            {
+                "day": "Wednesday",
+                "startTime": "15:00",
+                "endTime": "16:30"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Catalog Document Model",
+                "description": "Design a MongoDB model for a product catalog, justify embedding versus referencing, and provide representative documents.",
+                "dueDate": "2026-09-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Analytics Aggregation Pipeline",
+                "description": "Build aggregation pipelines for business questions, create appropriate indexes, and compare query execution before and after indexing.",
+                "dueDate": "2026-09-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "MongoDB Reliability Review",
+                "description": "Add schema validation, backup guidance, index monitoring, and failure-handling recommendations to an existing MongoDB application design.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Cloud Computing with AWS",
@@ -189,7 +779,47 @@
         "about": "Learn EC2, S3, Lambda, IAM, and cloud architecture best practices.",
         "certification": true,
         "hours": 52,
-        "professorId": 2
+        "professorUsername": "bjarne",
+        "schedule": [
+            {
+                "day": "Tuesday",
+                "startTime": "13:00",
+                "endTime": "15:00"
+            },
+            {
+                "day": "Thursday",
+                "startTime": "13:00",
+                "endTime": "15:00"
+            },
+            {
+                "day": "Saturday",
+                "startTime": "09:00",
+                "endTime": "12:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Highly Available Web Architecture",
+                "description": "Design an AWS architecture for a resilient web application with networking, scaling, monitoring, security, and a cost estimate.",
+                "dueDate": "2026-09-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Serverless Processing Pipeline",
+                "description": "Implement an event-driven processing workflow with managed AWS services, least-privilege IAM, logging, and deployment instructions.",
+                "dueDate": "2026-09-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Cloud Cost and Security Review",
+                "description": "Review an AWS workload for cost and security risks, prioritize findings, and propose changes supported by estimated impact and AWS best practices.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "DevOps and CI/CD Pipelines",
@@ -201,7 +831,47 @@
         "about": "Use Docker, GitHub Actions, and infrastructure as code to streamline delivery.",
         "certification": true,
         "hours": 45,
-        "professorId": 1
+        "professorUsername": "linus",
+        "schedule": [
+            {
+                "day": "Monday",
+                "startTime": "09:00",
+                "endTime": "11:00"
+            },
+            {
+                "day": "Wednesday",
+                "startTime": "09:00",
+                "endTime": "11:00"
+            },
+            {
+                "day": "Friday",
+                "startTime": "09:00",
+                "endTime": "10:30"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Quality-Gated CI Pipeline",
+                "description": "Create a pipeline that restores dependencies, runs tests and static analysis, builds an artifact, and blocks merges on failure.",
+                "dueDate": "2026-09-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Staged Deployment Workflow",
+                "description": "Design a deployment pipeline with environment configuration, approvals, health checks, rollback behavior, and release documentation.",
+                "dueDate": "2026-09-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Pipeline Incident Retrospective",
+                "description": "Diagnose a failed deployment from supplied logs, repair the pipeline, and write a blameless retrospective with concrete prevention actions.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Docker and Kubernetes",
@@ -213,7 +883,47 @@
         "about": "Build images with Docker and deploy workloads with Kubernetes.",
         "certification": true,
         "hours": 48,
-        "professorId": 2
+        "professorUsername": "bjarne",
+        "schedule": [
+            {
+                "day": "Tuesday",
+                "startTime": "16:00",
+                "endTime": "18:00"
+            },
+            {
+                "day": "Thursday",
+                "startTime": "16:00",
+                "endTime": "18:00"
+            },
+            {
+                "day": "Sunday",
+                "startTime": "08:00",
+                "endTime": "11:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Production-Ready Container",
+                "description": "Containerize an application with a multi-stage build, non-root runtime user, health check, and documented local workflow.",
+                "dueDate": "2026-09-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Kubernetes Service Deployment",
+                "description": "Deploy the application with ConfigMaps, Secrets, probes, resource limits, scaling, and a repeatable rollout and rollback procedure.",
+                "dueDate": "2026-09-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Kubernetes Operations Drill",
+                "description": "Investigate an unhealthy Kubernetes workload using events and logs, restore service, and document diagnosis, remediation, and prevention steps.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Software Engineering Principles",
@@ -225,7 +935,47 @@
         "about": "Learn clean code, architecture, testing strategies, and team collaboration.",
         "certification": true,
         "hours": 42,
-        "professorId": 1
+        "professorUsername": "tim",
+        "schedule": [
+            {
+                "day": "Monday",
+                "startTime": "11:00",
+                "endTime": "13:00"
+            },
+            {
+                "day": "Thursday",
+                "startTime": "11:00",
+                "endTime": "13:00"
+            },
+            {
+                "day": "Friday",
+                "startTime": "11:00",
+                "endTime": "12:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Architecture Decision Record",
+                "description": "Evaluate two architectural approaches for a realistic feature and write an ADR explaining context, tradeoffs, and consequences.",
+                "dueDate": "2026-09-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Legacy Code Refactoring",
+                "description": "Refactor a supplied module using SOLID principles while preserving behavior with characterization and unit tests.",
+                "dueDate": "2026-09-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Team Design Review",
+                "description": "Review a proposed system design for maintainability, testing, security, and scalability, then provide prioritized, actionable engineering feedback.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Algorithms and Data Structures",
@@ -237,7 +987,47 @@
         "about": "Practice coding interviews and algorithmic thinking with real problems.",
         "certification": true,
         "hours": 55,
-        "professorId": 2
+        "professorUsername": "dennis",
+        "schedule": [
+            {
+                "day": "Tuesday",
+                "startTime": "09:00",
+                "endTime": "11:30"
+            },
+            {
+                "day": "Thursday",
+                "startTime": "09:00",
+                "endTime": "11:30"
+            },
+            {
+                "day": "Saturday",
+                "startTime": "09:00",
+                "endTime": "12:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Performance Benchmark Lab",
+                "description": "Implement and benchmark multiple search and sorting algorithms, then explain observed time and space behavior.",
+                "dueDate": "2026-09-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Route Planner Challenge",
+                "description": "Model a transport network as a graph and implement a shortest-path solution with tests for disconnected and edge-case inputs.",
+                "dueDate": "2026-09-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Algorithm Selection Report",
+                "description": "Solve the same realistic problem with two algorithmic approaches, benchmark both, and recommend one based on measured constraints and tradeoffs.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "TypeScript for Developers",
@@ -249,7 +1039,42 @@
         "about": "Learn types, interfaces, generics, and TypeScript tooling for real apps.",
         "certification": true,
         "hours": 34,
-        "professorId": 1
+        "professorUsername": "alan",
+        "schedule": [
+            {
+                "day": "Wednesday",
+                "startTime": "14:00",
+                "endTime": "16:00"
+            },
+            {
+                "day": "Friday",
+                "startTime": "14:00",
+                "endTime": "16:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Typed API Client",
+                "description": "Build a type-safe API client using interfaces, generics, discriminated unions, and robust error handling.",
+                "dueDate": "2026-09-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Strict Mode Migration",
+                "description": "Migrate a JavaScript module to strict TypeScript, remove unsafe types, and document how the type system prevented likely defects.",
+                "dueDate": "2026-09-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Type-Safe Form Workflow",
+                "description": "Implement a validated form workflow with TypeScript, typed server responses, exhaustive error handling, and tests covering success and failure paths.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     },
     {
         "name": "Git and Version Control",
@@ -261,6 +1086,41 @@
         "about": "Master commits, branches, merges, pull requests, and team Git workflows.",
         "certification": false,
         "hours": 16,
-        "professorId": 2
+        "professorUsername": "linus",
+        "schedule": [
+            {
+                "day": "Saturday",
+                "startTime": "09:00",
+                "endTime": "12:00"
+            },
+            {
+                "day": "Sunday",
+                "startTime": "09:00",
+                "endTime": "12:00"
+            }
+        ],
+        "activities": [
+            {
+                "title": "Collaborative Feature Workflow",
+                "description": "Complete a simulated feature using branches, focused commits, a pull request, review feedback, and a clean merge history.",
+                "dueDate": "2026-09-14T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Merge Conflict Recovery Lab",
+                "description": "Resolve a multi-file conflict, explain each decision, recover a deliberately lost commit with reflog, and document the commands used.",
+                "dueDate": "2026-09-28T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            },
+            {
+                "title": "Release Management Simulation",
+                "description": "Create and tag a release from a shared repository, produce a changelog, apply a hotfix, and document the branching and recovery workflow.",
+                "dueDate": "2026-10-12T23:59:00Z",
+                "isActive": true,
+                "submissions": []
+            }
+        ]
     }
 ]

@@ -10,10 +10,11 @@ namespace LearnHub.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class StudentsController(ICourseRepo courseRepo, IStudentRepo studentRepo): ControllerBase
+public class StudentsController(ICourseRepo courseRepo, IStudentRepo studentRepo, IUserRepo userRepo): ControllerBase
 {
     private readonly ICourseRepo _courseRepo = courseRepo;
     private readonly IStudentRepo _studentRepo = studentRepo;
+    private readonly IUserRepo _userRepo = userRepo;
     
     [HttpGet("{id}")]
     [Authorize]
@@ -140,5 +141,29 @@ public class StudentsController(ICourseRepo courseRepo, IStudentRepo studentRepo
             TotalPages = result.TotalPages
         };
         return Ok(response);
+    }
+
+    [HttpPost("{userId:int}/Courses/{courseId:int}/complete")]
+    [Authorize(Roles = "Student")]  
+    public async Task<ActionResult> CompleteCourse(int userId, int courseId)
+    {
+        var student = await _studentRepo.GetByUserIdAsync(userId);
+        if (student == null) return BadRequest(error: "User is not a student");
+        
+        var username = User.Identity?.Name;
+        var user = await _userRepo.GetByIdAsync(student.UserId);
+        if (user == null) return BadRequest(error: "User does not exist");
+        if (username != user.Username) return Forbid();
+
+        try
+        {
+            bool success = await _studentRepo.CompleteStudentCourse(student.Id, courseId);
+            if (!success) return NotFound();
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return Conflict(error: e.Message);
+        }
     }
 }

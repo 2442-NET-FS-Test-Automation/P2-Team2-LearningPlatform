@@ -252,4 +252,11 @@ public class CourseRepo : ICourseRepo
         return await _context.Courses
             .AnyAsync(c => c.Id == courseId && c.IsActive);
     }
+    public async Task<bool> IsCourseCompleted(int studentId, int courseId)
+    {
+        var studentCourse = await _context.StudentCourses.FirstOrDefaultAsync(sc => sc.CourseId == courseId && sc.StudentId == studentId);
+        if (studentCourse == null) return false;
+        return studentCourse.EndDate != null;
+    }
+
 }

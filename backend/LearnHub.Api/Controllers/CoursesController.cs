@@ -7,6 +7,7 @@ using LearnHub.Api.DTOs.Courses;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
 using LearnHub.Api.Filters;
+using System.Security.Claims;
 
 namespace LearnHub.Api.Controllers;
 
@@ -18,6 +19,8 @@ public class CoursesController : ControllerBase
 {
     // Our Repository context
     private readonly ICourseRepo _repo;
+    private readonly IUserRepo _userRepo;
+    private readonly IStudentRepo _studentRepo;
     
     //adding cache
     private readonly IMemoryCache _cache;
@@ -49,10 +52,12 @@ public class CoursesController : ControllerBase
 
 
     // Builder
-    public CoursesController(ICourseRepo repo, IMemoryCache cache)
+    public CoursesController(ICourseRepo repo, IMemoryCache cache, IUserRepo userRepo, IStudentRepo studentRepo)
     {
         _repo = repo;
         _cache = cache;
+        _userRepo = userRepo;
+        _studentRepo = studentRepo;
     }
 
 
@@ -198,6 +203,17 @@ public class CoursesController : ControllerBase
 
             var schedule = await _repo.GetCourseScheduleById(id);
 
+            bool? completed = null;
+            if (User.FindFirstValue(ClaimTypes.Role) == "Student")
+            {
+                var user = await _userRepo.GetByEmailOrUsernameAsync(User.Identity?.Name!);
+                if (user != null)
+                {
+                    var student = await _studentRepo.GetByUserIdAsync(user.Id);
+                    if (student != null) completed  = await _repo.IsCourseCompleted(student.Id, id);
+                }
+            }
+
             // create the dto in base of the object
             var dto = new CourseDetailDto
             {
@@ -218,6 +234,7 @@ public class CoursesController : ControllerBase
                         course.Professor.User.LastName
                         : "No assigned",
                 EnrolledStudents = enrolledStudents,
+                Completed = completed,
                 Schedule = schedule
                     .Select(s => new CourseScheduleDto
                     {

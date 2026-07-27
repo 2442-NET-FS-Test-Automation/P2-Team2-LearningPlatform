@@ -49,7 +49,8 @@ export type CourseDetails = {
     isActive: boolean,
     certification: boolean,
     enrolledStudents: number,
-    schedule?: CourseSchedule[]
+    schedule?: CourseSchedule[],
+    completed?: boolean
 }
 
 export type CourseCompact = {
