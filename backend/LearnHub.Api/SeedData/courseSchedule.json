@@ -1,0 +1,26 @@
+[
+    {
+        "courseId": 1,
+        "day": "Monday",
+        "startTime": "09:00",
+        "endTime": "10:00"
+    },
+    {
+        "courseId": 2,
+        "day": "Tuesday",
+        "startTime": "10:00",
+        "endTime": "11:00"
+    },
+    {
+        "courseId": 3,
+        "day": "Wednesday",
+        "startTime": "11:00",
+        "endTime": "12:00"
+    },
+    {
+        "courseId": 4,
+        "day": "Thursday",
+        "startTime": "12:00",
+        "endTime": "13:00"
+    }
+]
