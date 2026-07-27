@@ -100,7 +100,6 @@ export default function CoursesPage() {
                         value={categoryFilter}
                         onChange={(e) => setCategoryFilter(e.target.value as CourseCategory | "All")}
                         className="form-input sm:w-56 text-sm"
-                        defaultValue={"All"}
                     >
                         <option value="All">All categories</option>
                         {COURSE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
