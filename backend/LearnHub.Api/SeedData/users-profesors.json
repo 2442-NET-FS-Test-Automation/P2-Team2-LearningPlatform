@@ -1,5 +1,15 @@
 [
     {
+        "username": "admin",
+        "email": "admin@learnhub.com",
+        "password": "password123",
+        "firstName": "Admin",
+        "lastName": "Admin",
+        "bio": "Admin of the platform ",
+        "role": "Admin",
+        "birthDate": "2002-03-14"
+    },
+    {
         "username": "ada",
         "email": "ada@learnhub.com",
         "password": "password123",
@@ -218,5 +228,205 @@
         "bio": "Building projects in C# and React",
         "role": "Student",
         "birthDate": "2001-04-21"
+    },
+    {
+        "username": "karen",
+        "email": "karen.mitchell@learnhub.com",
+        "password": "password123",
+        "firstName": "Karen",
+        "lastName": "Mitchell",
+        "bio": "Interested in backend development and clean API design.",
+        "role": "Student",
+        "birthDate": "2002-10-16"
+    },
+    {
+        "username": "leo",
+        "email": "leo.ramirez@learnhub.com",
+        "password": "password123",
+        "firstName": "Leo",
+        "lastName": "Ramirez",
+        "bio": "Learning cloud infrastructure and deployment automation.",
+        "role": "Student",
+        "birthDate": "2001-02-08"
+    },
+    {
+        "username": "maya",
+        "email": "maya.patel@learnhub.com",
+        "password": "password123",
+        "firstName": "Maya",
+        "lastName": "Patel",
+        "bio": "Exploring data science and practical machine learning.",
+        "role": "Student",
+        "birthDate": "2003-09-19"
+    },
+    {
+        "username": "nathan",
+        "email": "nathan.brooks@learnhub.com",
+        "password": "password123",
+        "firstName": "Nathan",
+        "lastName": "Brooks",
+        "bio": "Focused on Java, algorithms, and interview preparation.",
+        "role": "Student",
+        "birthDate": "2000-06-11"
+    },
+    {
+        "username": "olivia",
+        "email": "olivia.chen@learnhub.com",
+        "password": "password123",
+        "firstName": "Olivia",
+        "lastName": "Chen",
+        "bio": "Building accessible interfaces with React and TypeScript.",
+        "role": "Student",
+        "birthDate": "2002-12-04"
+    },
+    {
+        "username": "pablo",
+        "email": "pablo.santos@learnhub.com",
+        "password": "password123",
+        "firstName": "Pablo",
+        "lastName": "Santos",
+        "bio": "Interested in cybersecurity and secure software development.",
+        "role": "Student",
+        "birthDate": "2001-05-27"
+    },
+    {
+        "username": "quinn",
+        "email": "quinn.foster@learnhub.com",
+        "password": "password123",
+        "firstName": "Quinn",
+        "lastName": "Foster",
+        "bio": "Learning mobile development across iOS and Android.",
+        "role": "Student",
+        "birthDate": "2003-03-15"
+    },
+    {
+        "username": "rosa",
+        "email": "rosa.martinez@learnhub.com",
+        "password": "password123",
+        "firstName": "Rosa",
+        "lastName": "Martinez",
+        "bio": "Developing full-stack applications and database skills.",
+        "role": "Student",
+        "birthDate": "2000-08-23"
+    },
+    {
+        "username": "samuel",
+        "email": "samuel.green@learnhub.com",
+        "password": "password123",
+        "firstName": "Samuel",
+        "lastName": "Green",
+        "bio": "Practicing DevOps workflows, containers, and CI/CD.",
+        "role": "Student",
+        "birthDate": "2002-01-30"
+    },
+    {
+        "username": "tanya",
+        "email": "tanya.wilson@learnhub.com",
+        "password": "password123",
+        "firstName": "Tanya",
+        "lastName": "Wilson",
+        "bio": "Interested in software architecture and collaborative engineering.",
+        "role": "Student",
+        "birthDate": "2001-11-12"
+    },
+    {
+        "username": "umar",
+        "email": "umar.khan@learnhub.com",
+        "password": "password123",
+        "firstName": "Umar",
+        "lastName": "Khan",
+        "bio": "Studying Python automation and data analysis.",
+        "role": "Student",
+        "birthDate": "2003-07-06"
+    },
+    {
+        "username": "valeria",
+        "email": "valeria.cruz@learnhub.com",
+        "password": "password123",
+        "firstName": "Valeria",
+        "lastName": "Cruz",
+        "bio": "Creating web applications with modern frontend tools.",
+        "role": "Student",
+        "birthDate": "2000-04-18"
+    },
+    {
+        "username": "william",
+        "email": "william.turner@learnhub.com",
+        "password": "password123",
+        "firstName": "William",
+        "lastName": "Turner",
+        "bio": "Learning relational databases and backend systems.",
+        "role": "Student",
+        "birthDate": "2002-06-29"
+    },
+    {
+        "username": "ximena",
+        "email": "ximena.lopez@learnhub.com",
+        "password": "password123",
+        "firstName": "Ximena",
+        "lastName": "Lopez",
+        "bio": "Exploring artificial intelligence and responsible model development.",
+        "role": "Student",
+        "birthDate": "2001-09-14"
+    },
+    {
+        "username": "yusuf",
+        "email": "yusuf.ali@learnhub.com",
+        "password": "password123",
+        "firstName": "Yusuf",
+        "lastName": "Ali",
+        "bio": "Building Android applications with Kotlin and Compose.",
+        "role": "Student",
+        "birthDate": "2003-02-25"
+    },
+    {
+        "username": "zoe",
+        "email": "zoe.carter@learnhub.com",
+        "password": "password123",
+        "firstName": "Zoe",
+        "lastName": "Carter",
+        "bio": "Interested in UX, React, and accessible component design.",
+        "role": "Student",
+        "birthDate": "2000-10-09"
+    },
+    {
+        "username": "andres",
+        "email": "andres.morales@learnhub.com",
+        "password": "password123",
+        "firstName": "Andres",
+        "lastName": "Morales",
+        "bio": "Improving C# and ASP.NET Core development skills.",
+        "role": "Student",
+        "birthDate": "2002-04-07"
+    },
+    {
+        "username": "bianca",
+        "email": "bianca.rossi@learnhub.com",
+        "password": "password123",
+        "firstName": "Bianca",
+        "lastName": "Rossi",
+        "bio": "Learning AWS architecture and serverless development.",
+        "role": "Student",
+        "birthDate": "2001-12-20"
+    },
+    {
+        "username": "caleb",
+        "email": "caleb.jackson@learnhub.com",
+        "password": "password123",
+        "firstName": "Caleb",
+        "lastName": "Jackson",
+        "bio": "Practicing Git workflows and software engineering principles.",
+        "role": "Student",
+        "birthDate": "2003-05-13"
+    },
+    {
+        "username": "diana",
+        "email": "diana.nguyen@learnhub.com",
+        "password": "password123",
+        "firstName": "Diana",
+        "lastName": "Nguyen",
+        "bio": "Interested in deep learning and computer vision projects.",
+        "role": "Student",
+        "birthDate": "2000-07-31"
     }
 ]

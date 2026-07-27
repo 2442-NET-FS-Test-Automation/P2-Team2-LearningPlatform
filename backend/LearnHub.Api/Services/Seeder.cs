@@ -35,8 +35,13 @@ public class Seeder: ISeeder {
     }
     
     public async Task<string?> SeedAsync() {
-        if(await _db.Users.AnyAsync())
-            return "Users already seeded";
+        
+        await _db.Database.EnsureDeletedAsync();
+        await _db.Database.MigrateAsync();
+        // return "Data found. Clean up and fresh data seeded";
+        
+
+            
 
         var shiftDtos = await LoadAsync<List<ShiftSeedDto>>("shifts.json");
         var usersProfessorsDtos = await LoadAsync<List<UserProfessorsSeedDto>>("users-profesors.json");
@@ -108,19 +113,27 @@ public class Seeder: ISeeder {
 
 
         //3 - courses
-        // professorId in JSON is a 1-based index among seeded professors (not DB identity),
-        // so this still works if SQL identity does not restart at 1 after prior deletes.
-        var professors = await _db.Professors.OrderBy(p => p.Id).ToListAsync();
+        var professors = await _db.Professors
+            .Include(p => p.User)
+            .ToListAsync();
         if (professors.Count == 0)
             throw new InvalidOperationException("No professors were seeded");
 
+        var professorsByUsername = professors.ToDictionary(
+            p => p.User.Username,
+            StringComparer.OrdinalIgnoreCase);
+
+        var students = await _db.Students.OrderBy(s => s.Id).ToListAsync();
+
         foreach (var c in coursesDtos)
         {
-            if (c.ProfessorId < 1 || c.ProfessorId > professors.Count)
+            if (string.IsNullOrWhiteSpace(c.ProfessorUsername))
                 throw new InvalidOperationException(
-                    $"Professor index {c.ProfessorId} not found (seeded {professors.Count} professors)");
+                    $"Course '{c.Name}' does not specify a professor username");
 
-            var professor = professors[c.ProfessorId - 1];
+            if (!professorsByUsername.TryGetValue(c.ProfessorUsername, out var professor))
+                throw new InvalidOperationException(
+                    $"Professor '{c.ProfessorUsername}' assigned to course '{c.Name}' was not found");
 
             var course = new Course
             {
@@ -137,11 +150,79 @@ public class Seeder: ISeeder {
             };
             _db.Courses.Add(course);
             await _db.SaveChangesAsync();
+
+
+            foreach(var schedule in c.Schedule) 
+            {
+                var courseSchedule = new CourseSchedule
+                {
+                    CourseId = course.Id,
+                    Day = Enum.Parse<DayOfWeek>(schedule.Day),
+                    StartTime = TimeOnly.Parse(schedule.StartTime.ToString()),
+                    EndTime = TimeOnly.Parse(schedule.EndTime.ToString())
+                };
+                _db.CourseSchedules.Add(courseSchedule);
+                await _db.SaveChangesAsync();
+            }
+
+
+
+            //3.1 - activities
+            foreach (var a in c.Activities)
+            {
+                var activity = new Activity
+                {
+                    CourseId = course.Id,
+                    CreatedByUserId = professor.UserId, // professor of this course
+                    Title = a.Title,
+                    Description = a.Description,
+                    DueDate = a.DueDate,
+                    CreatedAt = DateTime.UtcNow,
+                    IsActive = a.IsActive
+                };
+                _db.Activities.Add(activity);
+                await _db.SaveChangesAsync();
+                foreach (var sub in a.Submissions)
+                {
+                    if (sub.StudentIndex < 1 || sub.StudentIndex > students.Count)
+                        throw new InvalidOperationException($"Bad studentIndex {sub.StudentIndex}");
+                    _db.ActivitySubmissions.Add(new ActivitySubmission
+                    {
+                        ActivityId = activity.Id,
+                        StudentId = students[sub.StudentIndex - 1].Id,
+                        File = sub.File,
+                        Feedback = sub.Feedback,
+                        Score = sub.Score,
+                        SubmittedAt = DateTime.UtcNow.AddDays(-2),
+                        GradedAt = sub.GradedAt
+                    });
+                }
+                await _db.SaveChangesAsync();
+            }
         }
+
+        //4 - student courses
+        var courses = await _db.Courses.OrderBy(c => c.Id).ToListAsync();
+
+        for (var i = 0; i < students.Count; i++)
+        {
+            var course = courses[i % courses.Count]; // rotate
+            _db.StudentCourses.Add(new StudentCourse
+            {
+                StudentId = students[i].Id,
+                CourseId = course.Id,
+                EnrollmentDate = DateOnly.FromDateTime(DateTime.UtcNow)
+            });
+        }
+        await _db.SaveChangesAsync();
+
+
+        
+
+
+
+
 
         return null;
     }
-
-
-
 }
