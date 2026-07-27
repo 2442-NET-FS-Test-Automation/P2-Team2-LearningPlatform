@@ -67,6 +67,7 @@ export default function CourseDetailsPage() {
     }, [id, updated]);
 
     useEffect(() => {
+        if (!user) return;
         getStudentActivities(Number(id))
             .then(setStudentActivities)
             .catch(e => console.log(e));
