@@ -247,4 +247,9 @@ public class CourseRepo : ICourseRepo
 
         await _context.SaveChangesAsync();
     }
+    public async Task<bool> IsCourseActiveAsync(int courseId)
+    {
+        return await _context.Courses
+            .AnyAsync(c => c.Id == courseId && c.IsActive);
+    }
 }

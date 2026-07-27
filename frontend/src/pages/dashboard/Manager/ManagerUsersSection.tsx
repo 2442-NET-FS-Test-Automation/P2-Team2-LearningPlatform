@@ -81,7 +81,7 @@ export default function ManageUsersSection() {
             setCreated(c => !c);
         }
         catch {
-            alert("Couldn't reactivate user.");
+            setError("Couldn't reactivate course.");
         } finally {
             setReactivateUserId(null);
         }

@@ -20,9 +20,6 @@ public interface ICourseRepo
 
     Task<int> GetEnrollmentCountAsync(int courseId);
 
-
-    // Nuevos
-
     Task AddStudentAsync(int studentId, int courseId);
 
     Task RemoveStudentAsync(int studentId, int courseId);
@@ -32,4 +29,5 @@ public interface ICourseRepo
     Task RemoveProfessorAsync(int courseId);
     Task<List<Course>> GetByProfessorAsync(int professorId);
     Task UpdateScheduleAsync(int courseId, List<CourseSchedule> schedules);
+    Task<bool> IsCourseActiveAsync(int courseId);
 }

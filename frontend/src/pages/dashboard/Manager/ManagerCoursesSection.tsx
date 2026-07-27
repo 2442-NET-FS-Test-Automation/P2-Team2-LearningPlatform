@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Pencil, Plus, Search, Trash } from "lucide-react";
+import { Pencil, Plus, Search, Trash, RotateCcw } from "lucide-react";
 
 import CreateCourseModal from "../../../components/modals/CreateCourseModal";
 import PaginationControls from "../../../components/layout/PaginationControls";
@@ -8,7 +8,7 @@ import EditCourseModal from "../../../components/modals/EditCourseModal";
 import ConfirmModal from "../../../components/modals/ConfirmModal";
 import Loading from "../../../components/layout/Loading";
 
-import { getAllCourses, deleteCourse } from "../../../api/coursesRequests";
+import { getAllCourses, deleteCourse, reactivateCourse } from "../../../api/coursesRequests";
 import { COURSE_CATEGORIES, type CourseCategory, type CourseDetails } from "../../../lib/types";
 
 export default function ManageUsersSection() {
@@ -29,6 +29,7 @@ export default function ManageUsersSection() {
 
     const [editCourseId, setEditCourseId] = useState<number | null>(null);
     const [deleteCourseId, setDeleteCourseId] = useState<number | null>(null);
+    const [reactivateCourseId, setReactivateCourseId] = useState<number | null>(null);
 
     const handleDelete = async () => {
         if (!deleteCourseId) return;
@@ -39,6 +40,20 @@ export default function ManageUsersSection() {
             setError(e.message || "Failed to delete course.");
         } finally {
             setDeleteCourseId(null);
+        }
+    };
+
+    const handleReactivate = async () => {
+        if (!reactivateCourseId) return;
+        try {
+            await reactivateCourse(reactivateCourseId);
+            setCreated(c => !c);
+        }
+        catch {
+            setError("Couldn't reactivate course.");
+        }
+        finally {
+            setReactivateCourseId(null);
         }
     };
 
@@ -192,9 +207,23 @@ export default function ManageUsersSection() {
                                                         <Pencil size={18} />
                                                     </button>
 
-                                                    <button onClick={() => setDeleteCourseId(c.id)} className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70">
-                                                        <Trash size={18} />
-                                                    </button>
+                                                    {c.isActive ? (
+                                                        <button
+                                                            onClick={() => setDeleteCourseId(c.id)}
+                                                            className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70"
+                                                            title="Deactivate"
+                                                        >
+                                                            <Trash size={18} />
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            onClick={() => setReactivateCourseId(c.id)}
+                                                            className="btn-outline p-2 mr-3 text-emerald-600 border-emerald-600"
+                                                            title="Reactivate"
+                                                        >
+                                                            <RotateCcw size={18} />
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>
@@ -245,6 +274,16 @@ export default function ManageUsersSection() {
                     message="Are you sure you want to delete this course? This action cannot be undone."
                     onConfirm={handleDelete}
                     onCancel={() => setDeleteCourseId(null)}
+                />
+            )}
+            {reactivateCourseId && (
+                <ConfirmModal
+                    title="Reactivate Course"
+                    message="Are you sure you want to reactivate this course? Students and professors will be able to access it again."
+                    onConfirm={handleReactivate}
+                    onCancel={() => setReactivateCourseId(null)}
+                    confirmLabel="Reactivate"
+                    variant="default"
                 />
             )}
         </>

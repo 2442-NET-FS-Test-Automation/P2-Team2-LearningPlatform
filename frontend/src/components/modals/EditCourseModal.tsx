@@ -140,11 +140,6 @@ export default function EditCourseModal({ courseId, onClose, onUpdated }: Props)
                                 <input type="checkbox" name="certification" checked={form.certification || false} onChange={handleChange} className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600" />
                                 <span className="text-sm font-medium">Has Certification</span>
                             </label>
-
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" name="isActive" checked={form.isActive || false} onChange={handleChange} className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600" />
-                                <span className="text-sm font-medium">Is Active</span>
-                            </label>
                         </div>
 
                         <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800">
