@@ -169,9 +169,11 @@ export default function ManageUsersSection() {
 
                             <tbody>
                                 {users.length === 0 ? (
-                                <p className="text-muted">
-                                    No users found.
-                                </p>
+                                    <tr>
+                                        <td className="text-muted" colSpan={6}>
+                                            No users found.
+                                        </td>
+                                    </tr>
                                 ) : (
                                     users.map((user) => (
                                         <tr
