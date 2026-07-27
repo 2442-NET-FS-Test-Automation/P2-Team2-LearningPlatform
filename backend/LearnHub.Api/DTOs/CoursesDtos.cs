@@ -14,6 +14,8 @@ public class CourseListDto
     public string Category { get; set; } = default!;
 
     public bool IsActive { get; set; }
+
+    public decimal? Price { get; set; }
 }
 
 public class CourseScheduleDto
