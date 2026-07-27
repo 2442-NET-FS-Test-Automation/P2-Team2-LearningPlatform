@@ -144,7 +144,8 @@ export default function CoursesPage() {
                 {!isLoading && !error && (
                     <PaginationControls
                         totalPages={totalPages} 
-                        currentPage={currentPage} 
+                        currentPage={currentPage}
+                        defaultIPP={itemsPerPage}
                         goToPage={goToPage} 
                         handlePrevious={handlePrevious} 
                         handleNext={handleNext} 

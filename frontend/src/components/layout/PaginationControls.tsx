@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 export type PaginationControlsProps = {
     totalPages: number,
     currentPage: number,
+    defaultIPP: number,
     goToPage: (pagenum: number) => void,
     handlePrevious: () => void,
     handleNext: () => void,
@@ -12,6 +13,7 @@ export type PaginationControlsProps = {
 export default function PaginationControls({
     totalPages,
     currentPage,
+    defaultIPP,
     goToPage,
     handlePrevious,
     handleNext,
@@ -57,11 +59,12 @@ export default function PaginationControls({
             {/* Items Per Page Selector */}
             <div className="flex items-center justify-center gap-2">
                 <label htmlFor="itemsperpage" className="text-sm">Per Page: </label>
-                <select defaultValue={6}
+                <select defaultValue={defaultIPP}
                     name="itemsperpage" id="itemsperpage" 
                     onChange={(e) => setItemsPerPage(Number(e.target.value))}
                     className="form-input py-1 px-2 w-auto">
                     <option value="6">6</option>
+                    <option value="9">9</option>
                     <option value="12">12</option>
                     <option value="18">18</option>
                     <option value="24">24</option>

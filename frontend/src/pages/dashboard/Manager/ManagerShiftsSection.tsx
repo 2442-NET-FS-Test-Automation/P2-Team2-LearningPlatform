@@ -8,13 +8,14 @@ import { deleteShift, getShifts } from "../../../api/shiftsRequests";
 import type { ShiftDto } from "../../../lib/types";
 import EditShiftModal from "../../../components/modals/EditShiftModal";
 import ConfirmModal from "../../../components/modals/ConfirmModal";
+import Loading from "../../../components/layout/Loading";
 
 export default function ManageShiftsSection() {
     const [shifts, setShifts] = useState<ShiftDto[]>([]); // TODO: Specify type
     const [search, setSearch] = useState("");
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(6);
+    const [itemsPerPage, setItemsPerPage] = useState(9);
     const [totalPages, setTotalPages] = useState(0);
 
     const [loading, setLoading] = useState(false);
@@ -69,7 +70,7 @@ export default function ManageShiftsSection() {
 
     return (
         <>
-            <div className="card space-y-6">
+            <div className="flex flex-col card dashboard-section space-y-6">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <h2 className="text-2xl font-bold">
                         Manage Shifts
@@ -100,10 +101,14 @@ export default function ManageShiftsSection() {
                     </div>
                 </div>
 
+                {error && (
+                    <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+                        {error}
+                    </div>
+                )}
+
                 {loading ? (
-                    <p className="text-muted">
-                        Loading shifts...
-                    </p>
+                    <Loading fullh={false} message="Loading shifts..." />
                 ) : shifts.length === 0 ? (
                     <p className="text-muted">
                         No shifts found.
@@ -163,6 +168,7 @@ export default function ManageShiftsSection() {
                         <PaginationControls
                             totalPages={totalPages}
                             currentPage={currentPage}
+                            defaultIPP={itemsPerPage}
                             goToPage={goToPage}
                             handlePrevious={handlePrevious}
                             handleNext={handleNext}

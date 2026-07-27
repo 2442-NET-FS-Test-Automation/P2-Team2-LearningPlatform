@@ -3,6 +3,8 @@ import { BookOpen, Users, ClipboardList, Trophy } from "lucide-react";
 
 import type { AdminReport } from "../../../lib/types";
 import { getGeneralReport } from "../../../api/reportsRequests";
+import Loading from "../../../components/layout/Loading";
+import { Link } from "react-router-dom";
 
 export default function ManagerReportsSection() {
     const [report, setReport] = useState<AdminReport | null>(null);
@@ -28,11 +30,14 @@ export default function ManagerReportsSection() {
     }
 
     if (loading) {
-        return (
+        return ( 
+        <>
             <div className="card space-y-6">
                 <h2 className="text-2xl font-bold">Reports</h2>
-                <p className="text-muted">Loading report data...</p>
+                <Loading message="Loading report data..." />
             </div>
+            
+        </>
         );
     }
 
@@ -55,7 +60,7 @@ export default function ManagerReportsSection() {
 
     return (
         <>
-            <div className="card space-y-6">
+            <div className="card space-y-6 transition-shadow hover:shadow-lg">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <h2 className="text-2xl font-bold">Reports</h2>
                     <button className="btn-outline flex items-center gap-2 text-sm" onClick={loadReport}>
@@ -65,18 +70,24 @@ export default function ManagerReportsSection() {
 
                 {/* Stat cards */}
                 <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="stat-card space-y-1">
-                        <BookOpen size={24} className="mx-auto text-blue-500" />
+                    <div className="stat-card space-y-2">
+                        <div className="blue-accent-chip mx-auto flex h-10 w-10 items-center justify-center rounded-full">
+                            <BookOpen size={20} />
+                        </div>
                         <p className="big-stat">{report.totalCourses}</p>
                         <p className="text-sm text-muted">Total Courses</p>
                     </div>
-                    <div className="stat-card space-y-1">
-                        <Users size={24} className="mx-auto text-amber-500" />
+                    <div className="stat-card space-y-2">
+                        <div className="amber-accent-chip mx-auto flex h-10 w-10 items-center justify-center rounded-full">
+                            <Users size={20} />
+                        </div>
                         <p className="big-stat">{report.totalStudents}</p>
                         <p className="text-sm text-muted">Total Students</p>
                     </div>
-                    <div className="stat-card space-y-1">
-                        <ClipboardList size={24} className="mx-auto text-indigo-500" />
+                    <div className="stat-card space-y-2">
+                        <div className="indigo-accent-chip mx-auto flex h-10 w-10 items-center justify-center rounded-full">
+                            <ClipboardList size={20} />
+                        </div>
                         <p className="big-stat">{report.totalEnrollments}</p>
                         <p className="text-sm text-muted">Total Enrollments</p>
                     </div>
@@ -84,7 +95,7 @@ export default function ManagerReportsSection() {
             </div>
 
             {/* Top Courses */}
-            <div className="card space-y-6 mt-6">
+            <div className="card space-y-6 mt-6 transition-shadow hover:shadow-lg">
                 <div className="flex items-center gap-2">
                     <Trophy size={20} className="text-amber-500" />
                     <h3 className="text-xl font-bold">Top Courses by Enrollment</h3>
@@ -143,7 +154,7 @@ export default function ManagerReportsSection() {
                                                 #{index + 1}
                                             </span>
                                         </td>
-                                        <td className="font-medium">{course.courseName}</td>
+                                        <td className="font-medium"><Link to={"/courses/"+course.courseId}>{course.courseName}</Link></td>
                                         <td className="text-right">{course.enrollmentCount}</td>
                                     </tr>
                                 ))}

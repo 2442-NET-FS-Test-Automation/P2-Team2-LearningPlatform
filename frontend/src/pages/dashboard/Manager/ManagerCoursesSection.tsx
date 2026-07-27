@@ -18,7 +18,7 @@ export default function ManageUsersSection() {
     const [isActiveFilter, setIsActiveFilter] = useState<boolean | null>(null);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(6);
+    const [itemsPerPage, setItemsPerPage] = useState(9);
     const [totalPages, setTotalPages] = useState(0);
 
     const [loading, setLoading] = useState(false);
@@ -78,7 +78,7 @@ export default function ManageUsersSection() {
 
     return(
         <>
-            <div className="card space-y-6">
+            <div className="flex flex-col card dashboard-section space-y-6">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <h2 className="text-2xl font-bold">
                         Manage Courses
@@ -119,8 +119,14 @@ export default function ManageUsersSection() {
                     </select>
                 </div>
 
+                {error && (
+                    <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+                        {error}
+                    </div>
+                )}
+
                 {loading ? (
-                    <Loading fullh={false} message="Loading Courses. . ." />
+                    <Loading fullh={false} message="Loading Courses..." />
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
@@ -202,6 +208,7 @@ export default function ManageUsersSection() {
                         <PaginationControls
                             totalPages={totalPages}
                             currentPage={currentPage}
+                            defaultIPP={itemsPerPage}
                             goToPage={goToPage}
                             handlePrevious={handlePrevious}
                             handleNext={handleNext}

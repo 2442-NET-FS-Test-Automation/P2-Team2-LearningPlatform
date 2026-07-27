@@ -9,6 +9,7 @@ import type { UserDto, UserRole, UserDetailsDto } from "../../../lib/types";
 import { getUsers, getUser, deactivateUser, reactivateUser } from "../../../api/usersRequest";
 import PaginationControls from "../../../components/layout/PaginationControls";
 import ConfirmModal from "../../../components/modals/ConfirmModal";
+import Loading from "../../../components/layout/Loading";
 
 export default function ManageUsersSection() {
     const [users, setUsers] = useState<UserDto[]>([]);
@@ -18,7 +19,7 @@ export default function ManageUsersSection() {
     const [isActiveFilter, setIsActiveFilter] = useState<boolean | null>(null);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(6);
+    const [itemsPerPage, setItemsPerPage] = useState(9);
     const [totalPages, setTotalPages] = useState(0);
 
     const [loading, setLoading] = useState(false);
@@ -45,7 +46,7 @@ export default function ManageUsersSection() {
                 setTotalPages(res.totalPages);
             })
             .catch((e) => {
-                setError(e.message);
+                setError(e.message || "Failed to load users.");
             })
             .finally(() => {
                 setLoading(false);
@@ -60,6 +61,7 @@ export default function ManageUsersSection() {
     const handlePrevious = () => {setCurrentPage((prev) => Math.max(prev - 1, 1))};
     const handleNext = () => {setCurrentPage((prev) => Math.min(prev + 1, totalPages))};
     const goToPage = (pagenum: number) => {setCurrentPage(Math.min(Math.max(pagenum, 1), totalPages))};
+
     const handleDeactivateUser = async () => {
         if (!deactivateUserId) return;
         try {
@@ -132,10 +134,14 @@ export default function ManageUsersSection() {
                     </select>
                 </div>
 
+                {error && (
+                    <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+                        {error}
+                    </div>
+                )}
+
                 {loading ? (
-                    <p className="text-muted">
-                        Loading users...
-                    </p>
+                    <Loading fullh={false} message="Loading users..." />
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
@@ -196,6 +202,16 @@ export default function ManageUsersSection() {
 
                                             <td className="text-right">
                                                 <div className="flex justify-end gap-2">
+                                                    {user.role === "Student" && (
+                                                        <button
+                                                            className="btn-outline p-2 text-emerald-600 border-emerald-600"
+                                                            onClick={() => handlePromoteClick(user)}
+                                                            title="Promote to Professor"
+                                                        >
+                                                            <GraduationCap size={18} />
+                                                        </button>
+                                                    )}
+
                                                     <button
                                                         className="btn-outline p-2"
                                                         onClick={async () => {
@@ -206,16 +222,6 @@ export default function ManageUsersSection() {
                                                     >
                                                         <Pencil size={18}/>
                                                     </button>
-
-                                                    {user.role === "Student" && (
-                                                        <button
-                                                            className="btn-outline p-2 text-emerald-600 border-emerald-600"
-                                                            onClick={() => handlePromoteClick(user)}
-                                                            title="Promote to Professor"
-                                                        >
-                                                            <GraduationCap size={18} />
-                                                        </button>
-                                                    )}
 
                                                     {user.isActive ? (
                                                         <button className="btn-outline p-2 mr-3 text-red-500/80 border-red-500/70"
@@ -241,7 +247,8 @@ export default function ManageUsersSection() {
                     <div className="mt-auto">
                         <PaginationControls
                             totalPages={totalPages} 
-                            currentPage={currentPage} 
+                            currentPage={currentPage}
+                            defaultIPP={itemsPerPage}
                             goToPage={goToPage} 
                             handlePrevious={handlePrevious} 
                             handleNext={handleNext} 
@@ -294,6 +301,7 @@ export default function ManageUsersSection() {
                     }}
                 />
             )}
+
             {showEditModal && selectedUser && (
                 <EditUserModal
                     user={selectedUser}
