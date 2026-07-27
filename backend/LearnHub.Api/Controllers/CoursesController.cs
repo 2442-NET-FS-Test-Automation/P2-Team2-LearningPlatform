@@ -262,6 +262,18 @@ public class CoursesController : ControllerBase
 
         // await for the creation of the course
         var createdCourse = await _repo.CreateAsync(course);
+        
+        if (dto.Schedule != null && dto.Schedule.Any())
+        {
+            var mappedSchedules = dto.Schedule.Select(s => new CourseSchedule
+            {
+                Day = s.Day,
+                StartTime = s.StartTime,
+                EndTime = s.EndTime
+            }).ToList();
+            await _repo.UpdateScheduleAsync(createdCourse.Id, mappedSchedules);
+        }
+
         InvalidateCoursesCache();
 
         // Return where you can consult the createdCourse and the required parameters
@@ -315,6 +327,18 @@ public class CoursesController : ControllerBase
 
             // await for  update the info with our data
             await _repo.UpdateAsync(course);
+            
+            if (dto.Schedule != null)
+            {
+                var mappedSchedules = dto.Schedule.Select(s => new CourseSchedule
+                {
+                    Day = s.Day,
+                    StartTime = s.StartTime,
+                    EndTime = s.EndTime
+                }).ToList();
+                await _repo.UpdateScheduleAsync(id, mappedSchedules);
+            }
+
             InvalidateCoursesCache();
 
             // return noContent

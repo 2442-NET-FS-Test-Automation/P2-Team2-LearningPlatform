@@ -230,4 +230,21 @@ public class CourseRepo : ICourseRepo
             .Where(c => c.ProfessorId == professorId)
             .ToListAsync();
     }
+
+    public async Task UpdateScheduleAsync(int courseId, List<CourseSchedule> schedules)
+    {
+        var existing = await _context.CourseSchedules
+            .Where(cs => cs.CourseId == courseId)
+            .ToListAsync();
+
+        _context.CourseSchedules.RemoveRange(existing);
+
+        foreach (var s in schedules)
+        {
+            s.CourseId = courseId;
+            _context.CourseSchedules.Add(s);
+        }
+
+        await _context.SaveChangesAsync();
+    }
 }

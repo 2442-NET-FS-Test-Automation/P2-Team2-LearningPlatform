@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
-import { COURSE_CATEGORIES, type CourseCategory, type UpdateCourseDto } from "../../lib/types";
+import { COURSE_CATEGORIES, DAY_NAMES, type CourseSchedule, type CourseCategory, type UpdateCourseDto } from "../../lib/types";
 import { getCourseDetails, updateCourse } from "../../api/coursesRequests";
 
 interface Props {
@@ -16,6 +16,7 @@ export default function EditCourseModal({ courseId, onClose, onUpdated }: Props)
     const [error, setError] = useState<string | null>(null);
 
     const [form, setForm] = useState<UpdateCourseDto>({});
+    const [newSchedule, setNewSchedule] = useState<Partial<CourseSchedule>>({ day: 1, startTime: "08:00", endTime: "10:00" });
 
     useEffect(() => {
         getCourseDetails(courseId)
@@ -30,6 +31,7 @@ export default function EditCourseModal({ courseId, onClose, onUpdated }: Props)
                     capacity: course.capacity,
                     certification: course.certification,
                     isActive: course.isActive,
+                    schedule: course.schedule ?? [],
                 });
             })
             .catch(() => setError("Failed to load course details"))
@@ -143,6 +145,80 @@ export default function EditCourseModal({ courseId, onClose, onUpdated }: Props)
                                 <input type="checkbox" name="isActive" checked={form.isActive || false} onChange={handleChange} className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600" />
                                 <span className="text-sm font-medium">Is Active</span>
                             </label>
+                        </div>
+
+                        <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800">
+                            <h3 className="text-sm font-semibold mb-3">Course Schedule</h3>
+                            
+                            {form.schedule && form.schedule.length > 0 ? (
+                                <ul className="space-y-2 mb-4">
+                                    {form.schedule.map((s, idx) => (
+                                        <li key={idx} className="flex items-center justify-between bg-slate-50 dark:bg-slate-800 p-2 rounded-md border border-slate-200 dark:border-slate-700">
+                                            <span className="text-sm font-medium">
+                                                {DAY_NAMES[s.day]}s, {s.startTime.substring(0,5)} - {s.endTime.substring(0,5)}
+                                            </span>
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setForm({ ...form, schedule: form.schedule?.filter((_, i) => i !== idx) })}
+                                                className="text-red-500 hover:text-red-700 p-1"
+                                            >
+                                                <X size={16} />
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="text-sm text-slate-500 mb-4">No schedules added yet.</p>
+                            )}
+
+                            <div className="flex items-end gap-2 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-md border border-slate-200 dark:border-slate-700">
+                                <div className="flex-1 space-y-1">
+                                    <label className="text-xs font-medium">Day</label>
+                                    <select 
+                                        className="form-input w-full py-1.5 text-sm"
+                                        value={newSchedule.day}
+                                        onChange={e => setNewSchedule({ ...newSchedule, day: Number(e.target.value) })}
+                                    >
+                                        {DAY_NAMES.map((d, i) => (
+                                            <option key={i} value={i}>{d}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="flex-1 space-y-1">
+                                    <label className="text-xs font-medium">Start</label>
+                                    <input 
+                                        type="time" 
+                                        className="form-input w-full py-1.5 text-sm"
+                                        value={newSchedule.startTime}
+                                        onChange={e => setNewSchedule({ ...newSchedule, startTime: e.target.value })}
+                                    />
+                                </div>
+                                <div className="flex-1 space-y-1">
+                                    <label className="text-xs font-medium">End</label>
+                                    <input 
+                                        type="time" 
+                                        className="form-input w-full py-1.5 text-sm"
+                                        value={newSchedule.endTime}
+                                        onChange={e => setNewSchedule({ ...newSchedule, endTime: e.target.value })}
+                                    />
+                                </div>
+                                <button 
+                                    type="button"
+                                    className="btn-outline py-1.5 px-3 text-sm h-[34px] flex-shrink-0"
+                                    onClick={() => {
+                                        if (newSchedule.startTime && newSchedule.endTime) {
+                                            const scheduleItem: CourseSchedule = {
+                                                day: newSchedule.day!,
+                                                startTime: newSchedule.startTime + (newSchedule.startTime.length === 5 ? ":00" : ""),
+                                                endTime: newSchedule.endTime + (newSchedule.endTime.length === 5 ? ":00" : "")
+                                            };
+                                            setForm({ ...form, schedule: [...(form.schedule || []), scheduleItem] });
+                                        }
+                                    }}
+                                >
+                                    Add
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
