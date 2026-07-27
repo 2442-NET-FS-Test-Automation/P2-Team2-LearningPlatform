@@ -8,7 +8,6 @@ export async function getStudentActivities(courseId: number): Promise<ActivityWi
 
 export async function getCourseActivities(courseId: number): Promise<ActivityWithSubmissions[]> {
     const result = await api.get(`/Activities/course/${courseId}`);
-    console.log("course", result.data)
     const summaries = result.data.items;
 
     const details = await Promise.all(

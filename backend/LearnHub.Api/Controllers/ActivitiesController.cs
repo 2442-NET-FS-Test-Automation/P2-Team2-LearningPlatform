@@ -22,7 +22,7 @@ public class ActivitiesController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Professor")]
     public async Task<ActionResult<PagedResult<ActivitySummaryDto>>> GetAll(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
