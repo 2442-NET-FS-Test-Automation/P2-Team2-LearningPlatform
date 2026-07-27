@@ -76,10 +76,12 @@ export default function CourseDetailsPage() {
         if (!user) return;
 
         if (user.role === "Student") {
+            // TODO: replace with the real endpoint, getStudentActivities(user.id, Number(id))
             getStudentActivities(Number(id))
                 .then(setStudentActivities)
                 .catch(e => console.log(e));
         } else if (user.role === "Professor" || user.role === "Admin") {
+            // TODO: replace with the real endpoint, getCourseActivities(Number(id))
             getCourseActivities(Number(id))
                 .then(setCourseActivities)
                 .catch(e => console.log(e));
@@ -109,6 +111,7 @@ export default function CourseDetailsPage() {
     const handleSubmitActivity = async (activityId: number, text: string) => {
         if (!user) return;
         setSubmittingActivityId(activityId);
+        // TODO: replace with a real submitActivity(activityId, user.id, text) API call
         try {
             await submitActivity(activityId, text);
             setUpdated(prev => !prev);
@@ -120,6 +123,7 @@ export default function CourseDetailsPage() {
     };
 
     const handleGradeSubmission = async (_activityId: number, submissionId: number, grade: number, feedback: string) => {
+        // TODO: replace with a real gradeSubmission(submissionId, grade, feedback) API call
         try {
             await gradeSubmission(submissionId, grade, feedback);
             setUpdated(prev => !prev);
@@ -129,6 +133,7 @@ export default function CourseDetailsPage() {
     };
 
     const handleCreateActivity = async (dto: CreateActivityDto) => {
+        // TODO: replace with a real createActivity(Number(id), dto) API call
         if (!user) return;
         try {
             await createActivity(Number(id), dto);
@@ -140,6 +145,7 @@ export default function CourseDetailsPage() {
     };
 
     const handleDeleteActivity = async () => {
+        // TODO: replace with a real deleteActivity(deleteActivityId) API call
         if (deleteActivityId == null) return;
         try {
             await deleteActivity(deleteActivityId);
