@@ -27,6 +27,7 @@ public record ActivityDetailDto
 public record ActivitySubmissionDto
 {
     public int Id { get; set; }
+    public int StudentId { get; set; }
     public string StudentName { get; set; } = default!;
     public string? File { get; set; }
     public decimal? Score { get; set; }
@@ -35,6 +36,10 @@ public record ActivitySubmissionDto
     public DateTime? GradedAt { get; set; }
 }
 
+public record ActivityWithSubmissionDto : ActivitySummaryDto
+{
+    public ActivitySubmissionDto? Submission { get; set; }
+}
 
 
 public class CreateActivityDto

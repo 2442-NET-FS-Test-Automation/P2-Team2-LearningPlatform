@@ -33,8 +33,10 @@ export default function ActivitySubmissionForm({ activity, onSubmit, isSubmittin
                             : "amber-accent-chip"
                         }`}
                 >
-                    <CalendarClock size={14} />
-                    Due {dueDate.toLocaleDateString()}
+                    <div className="flex items-center gap-2">
+                        <CalendarClock size={14} />
+                        Due {dueDate.toLocaleDateString()}
+                    </div>
                 </span>
             </div>
 
@@ -53,8 +55,10 @@ export default function ActivitySubmissionForm({ activity, onSubmit, isSubmittin
                         disabled={isSubmitting || !text.trim()}
                         className="btn-primary gap-2 disabled:opacity-60"
                     >
-                        <Send size={16} />
-                        {isSubmitting ? "Submitting..." : "Submit"}
+                        <div className="flex items-center gap-2">
+                            <Send size={16} />
+                            {isSubmitting ? "Submitting..." : "Submit"}
+                        </div>
                     </button>
                 </div>
             </form>

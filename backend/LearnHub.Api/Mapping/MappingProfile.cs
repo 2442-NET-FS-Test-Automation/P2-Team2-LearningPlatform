@@ -101,13 +101,18 @@ public class MappingProfile : Profile
             .ForMember(
                 dest => dest.CreatedBy,
                 opt => opt.MapFrom(src => src.CreatedBy.FirstName + " " + src.CreatedBy.LastName)
-            );
+            )
+            .ForMember(
+                dest => dest.Submissions, 
+                opt => opt.MapFrom(s => s.Submissions));
 
         CreateMap<ActivitySubmission, ActivitySubmissionDto>()
             .ForMember(
                 dest => dest.StudentName,
                 opt => opt.MapFrom(src => src.Student.User.FirstName + " " + src.Student.User.LastName)
             );
+        CreateMap<Activity, ActivityWithSubmissionDto>()
+            .ForMember(d => d.Submission, o => o.MapFrom(s => s.Submissions.FirstOrDefault()));
 
         CreateMap<CourseSchedule, CourseScheduleDto>();
     }

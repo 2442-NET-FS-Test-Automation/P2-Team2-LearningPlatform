@@ -54,7 +54,28 @@ public class ActivitiesController : ControllerBase
         var activity = await _repo.GetByIdAsync(id);
         if (activity is null) return NotFound();
 
-        return Ok(_mapper.Map<ActivityDetailDto>(activity));
+        var username = User.Identity?.Name;
+        var role = User.FindFirstValue(ClaimTypes.Role);
+
+        var hasAccess = role switch
+        {
+            "Admin" => true,
+            "Professor" => await _repo.ProfessorTeachesCourseAsync(username!, activity.CourseId),
+            "Student" => await _repo.StudentEnrolledInCourseAsync(username!, activity.CourseId),
+            _ => false
+        };
+        if (!hasAccess) return Forbid();
+
+        var dto = _mapper.Map<ActivityDetailDto>(activity);
+
+        // Students shouldn't see classmates' submissions — trim to just their own
+        if (role == "Student")
+        {
+            var studentId = await _repo.GetStudentIdByUsernameAsync(username!);
+            dto.Submissions = dto.Submissions.Where(s => s.StudentId == studentId).ToList();
+        }
+
+        return Ok(dto);
     }
 
     [HttpGet("course/{courseId:int}")]
@@ -83,6 +104,21 @@ public class ActivitiesController : ControllerBase
         };
 
         if (!hasAccess) return Forbid();
+
+        if (role == "Student")
+        {
+            var studentId = await _repo.GetStudentIdByUsernameAsync(username!);
+            var res = await _repo.GetByCourseWithStudentSubmissionAsync(courseId, studentId, page, pageSize);
+
+            return Ok(new PagedResult<ActivityWithSubmissionDto>
+            {
+                Items = _mapper.Map<List<ActivityWithSubmissionDto>>(res.Items),
+                Page = res.Page,
+                PageSize = res.PageSize,
+                TotalItems = res.TotalItems,
+                TotalPages = res.TotalPages
+            });
+        }
 
         var result = await _repo.GetByCourseAsync(courseId, page, pageSize);
 
