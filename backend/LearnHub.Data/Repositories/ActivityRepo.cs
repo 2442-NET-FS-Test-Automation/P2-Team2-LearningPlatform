@@ -126,4 +126,28 @@ public class ActivityRepo : IActivityRepo
     }
 
     public async Task<bool> CourseExistsAsync(int courseId) => await _context.Courses.AnyAsync(c => c.Id == courseId);
+
+    // example implementation
+    public async Task<Activity?> GetByIdWithSubmissionsAsync(int id) =>
+        await _context.Activities
+            .Include(a => a.Submissions)
+                .ThenInclude(s => s.Student)
+            .FirstOrDefaultAsync(a => a.Id == id);
+
+    public async Task<PagedResult<Activity>> GetByCourseWithStudentSubmissionAsync(
+        int courseId, int studentId, int page, int pageSize)
+    {
+        var query = _context.Activities
+            .Where(a => a.CourseId == courseId && a.IsActive)
+            .Include(a => a.Submissions.Where(s => s.StudentId == studentId));
+
+        var total = await query.CountAsync();
+        var items = await query
+            .OrderBy(a => a.DueDate)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<Activity> { Items = items, Page = page, PageSize = pageSize, TotalItems = total, TotalPages = (int)Math.Ceiling(total / (double)pageSize) };
+    }
 }

@@ -7,7 +7,7 @@ type Props = {
 }
 
 export default function CompletedActivityItem({ activity, submission }: Props) {
-    const isGraded = submission.gradedAt != null && submission.grade != null;
+    const isGraded = submission.gradedAt != null && submission.score != null;
 
     return (
         <div className="card space-y-2">
@@ -15,7 +15,7 @@ export default function CompletedActivityItem({ activity, submission }: Props) {
                 <h3 className="font-semibold">{activity.title}</h3>
                 {isGraded ? (
                     <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                        {submission.grade}/100
+                        {submission.score}/100
                     </span>
                 ) : (
                     <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">

@@ -40,15 +40,14 @@ export default function ProfessorActivityAccordion({ activity, onGrade }: Props)
 }
 
 function SubmissionRow({ submission, onGrade }: { submission: Submission, onGrade: Props["onGrade"] }) {
-    const [grade, setGrade] = useState(submission.grade?.toString() ?? "");
+    const [grade, setGrade] = useState(submission.score?.toString() ?? "");
     const [feedback, setFeedback] = useState(submission.feedback ?? "");
     const isGraded = submission.gradedAt != null;
 
     return (
         <div className="rounded-lg border border-slate-200 p-3 dark:border-slate-800">
             <p className="text-xs text-slate-500 dark:text-slate-400">
-                {/* TODO: swap studentId for the student's name once the API includes it */}
-                Student #{submission.studentId} · Submitted {new Date(submission.submittedAt).toLocaleDateString()}
+                Student {submission.studentName} #{submission.studentId} · Submitted {new Date(submission.submittedAt).toLocaleDateString()}
             </p>
             <p className="mt-2 text-sm">{submission.file}</p>
 
@@ -74,8 +73,10 @@ function SubmissionRow({ submission, onGrade }: { submission: Submission, onGrad
                     disabled={grade === ""}
                     className="btn-primary gap-2 disabled:opacity-60"
                 >
-                    <GraduationCap size={16} />
-                    {isGraded ? "Update" : "Save"}
+                    <div className="flex items-center gap-2">
+                        <GraduationCap size={16} />
+                        {isGraded ? "Update" : "Save"}
+                    </div>
                 </button>
             </div>
         </div>
