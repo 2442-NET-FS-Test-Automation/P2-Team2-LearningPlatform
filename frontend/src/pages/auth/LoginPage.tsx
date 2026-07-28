@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
 import { useAuth } from "../../ctx/AuthCtx";
 
@@ -11,6 +13,7 @@ export default function LoginPage() {
 
     const [emailOrUsername, setEmailOrUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     
@@ -27,12 +30,23 @@ export default function LoginPage() {
         try {
             const user = await login({ EmailOrUsername: emailOrUsername, Password: password });
             navigate(getDashboardRoute(user.role));
-        } catch (e: any) {
+        } catch (e: unknown) {
             try {
-                switch (e.response.status) {
-                    case 401: { setError("Invalid username/email or password."); break; }
-                    case 403: { setError("User was deactivated."); break; }
-                    default: setError("Something went wrong. Try again later.");
+                if (axios.isAxiosError(e)) {
+                    switch (e.response?.status) {
+                        case 401:
+                            setError("Invalid username/email or password.");
+                            break;
+
+                        case 403:
+                            setError("User was deactivated.");
+                            break;
+
+                        default:
+                            setError("Something went wrong. Try again later.");
+                    }
+                } else {
+                    setError("API is down. Try again later.");
                 }
             } catch { setError("API is down. Try again later."); }
         } finally {
@@ -70,13 +84,23 @@ export default function LoginPage() {
                         </div>
                         <div>
                             <label className="form-label">Password</label>
-                            <input
-                                type="password"
-                                placeholder="Enter your password"
-                                className="form-input"
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Enter your password"
+                                    className="form-input pr-12"
+                                    value = {password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+                                >
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button> 
+                            </div>                          
                         </div>
                         <button className="btn-primary w-full py-3">
                             {isSubmitting ? "Logging in…" : "Login"}

@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 import { useAuth } from "../../ctx/AuthCtx";
 
@@ -22,6 +23,7 @@ export default function RegisterPage() {
     const [form, setForm] = useState<RegisterData>(emptyForm);
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const updateField = (field: keyof RegisterData) => (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -131,13 +133,23 @@ export default function RegisterPage() {
                         </div>
                         <div className="md:col-span-2">
                             <label className="form-label">Password</label>
-                            <input
-                                type="password"
-                                placeholder="Enter your password"
-                                className="form-input"
-                                onChange={updateField("Password")}
-                                required
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Enter your password"
+                                    className="form-input pr-12"
+                                    value = {form.Password}
+                                    onChange={updateField("Password")}
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(prev => !prev)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slat-700 dark:text-slate-400 dark:hover:text-slate-200"
+                                >
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
+                            </div>
                         </div>
                         {error && (
                             <p className="md:col-span-2 text-sm text-red-600 dark:text-red-400">{error}</p>
