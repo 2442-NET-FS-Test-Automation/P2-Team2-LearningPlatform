@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Clock, GraduationCap, ListChecks, Plus, Trash2, Trophy, Users, RotateCcw } from "lucide-react";
+import { Clock, GraduationCap, ListChecks, Plus, Archive, Trophy, Users, RotateCcw } from "lucide-react";
 
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import ActivitySubmissionForm from "../../components/forms/ActivitySubmissionForm";
@@ -429,10 +429,10 @@ export default function CourseDetailsPage() {
                                                         {activityTab === "active" ? (
                                                             <button
                                                                 onClick={() => setDeleteActivityId(a.id)}
-                                                                className="rounded-full p-2 text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
+                                                                className="rounded-full p-2 text-amber-600 transition-colors hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-900/30"
                                                                 title="Archive activity"
                                                             >
-                                                                <Trash2 size={18}/>
+                                                                <Archive size={18}/>
                                                             </button>
                                                         ) : (
                                                             <button
@@ -592,9 +592,9 @@ export default function CourseDetailsPage() {
         )}
         {deleteActivityId !== null &&
             <ConfirmModal
-                title="Delete this activity?"
-                message="Students will lose access to this activity and any submissions tied to it. This can't be undone."
-                confirmLabel="Delete"
+                title="Archive this activity?"
+                message="Students will lose access to this activity and any submissions tied to it."
+                confirmLabel="Archive"
                 variant="danger"
                 onConfirm={handleDeleteActivity}
                 onCancel={() => setDeleteActivityId(null)}
