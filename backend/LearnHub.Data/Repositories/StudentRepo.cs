@@ -36,20 +36,28 @@ public class StudentRepo(LearnHubDbContext context): IStudentRepo
 
     public async Task<bool> EnrollAsync(int studentId, int courseId)
     {
-        try {
-            var exists = await _context.StudentCourses.AnyAsync(sc => sc.CourseId == courseId && sc.StudentId == studentId);
-            if (exists) return false;
 
-            var enrollment = new StudentCourse{ StudentId = studentId, CourseId = courseId };
+        var exists = await _context.StudentCourses.AnyAsync(sc => sc.CourseId == courseId && sc.StudentId == studentId);
+        if (exists) return false;
 
-            await _context.StudentCourses.AddAsync(enrollment);
-            await _context.SaveChangesAsync();
-            return true;
-        } 
-        catch
-        {
-            return false;
-        }
+        var course = await _context.Courses
+            .FirstOrDefaultAsync(c => c.Id == courseId);
+
+        if (course == null)
+            throw new KeyNotFoundException("Course not found.");
+
+        var enrolled = await _context.StudentCourses
+            .CountAsync(sc => sc.CourseId == courseId);
+
+        if (enrolled >= course.Capacity)
+            throw new InvalidOperationException("Course is full.");
+
+        var enrollment = new StudentCourse{ StudentId = studentId, CourseId = courseId };
+
+        await _context.StudentCourses.AddAsync(enrollment);
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 
     public async Task<bool> UnenrollAsync(int studentId, int courseId)
