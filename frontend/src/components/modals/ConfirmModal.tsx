@@ -1,4 +1,4 @@
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Info } from "lucide-react";
 
 
 export type ConfirmModalProps = {
@@ -22,7 +22,7 @@ export default function ConfirmModal({
 }: ConfirmModalProps){
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
+            className="modal-container"
             onClick={onCancel}
         >
             <div
@@ -33,11 +33,13 @@ export default function ConfirmModal({
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex items-start gap-3">
-                    {variant === "danger" && (
-                        <div className="rounded-full bg-red-100 p-2 text-red-600 dark:bg-red-900/40 dark:text-red-400">
-                            <AlertTriangle size={20} />
-                        </div>
-                    )}
+                    <div className={
+                            variant === "danger"
+                                ? "rounded-full bg-red-100 p-2.5 text-red-600 dark:bg-red-900/40 dark:text-red-400"
+                                : "rounded-full bg-blue-100 p-2.5 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400"
+                        }>
+                        {variant === "danger" ? <AlertTriangle size={20} /> : <Info size={20} />}
+                    </div>
                     <div>
                         <h2 id="confirm-modal-title" className="text-lg font-semibold">
                             {title}

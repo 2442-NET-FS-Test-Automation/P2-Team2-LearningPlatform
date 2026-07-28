@@ -1,7 +1,9 @@
-import { X } from "lucide-react";
+import { Clock3 } from "lucide-react";
 import { useState } from "react";
 import { createShift } from "../../api/shiftsRequests";
 import { isValidTimeRange } from "../../lib/funcs";
+import ModalHeader from "./ModalHeader";
+import ErrorMessage from "../ErrorMessage";
 
 interface Props {
     onClose: () => void;
@@ -56,27 +58,14 @@ export default function CreateUserModal({
 
     return (
         <>
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                <div className="card w-full max-w-3xl max-h-screen shadow-xl overflow-auto animate-in fade-in zoom-in duration-200">
-                    {/* Header */}
-                    <div className="flex items-center justify-between border-b pb-4 mb-6">
-                        <div>
-                            <h2 className="text-2xl font-bold">
-                                Create shift
-                            </h2>
+            <div className="modal-container">
+                <div className="card modal-card animate-fade-in-up">
+                    <ModalHeader 
+                        Icon={Clock3} 
+                        Title={"Create Shift"} 
+                        Description={"Add a new shift for professors"} 
+                        OnClose={onClose} />
 
-                            <p className="text-sm text-muted">
-                                Add a new shift for professors
-                            </p>
-                        </div>
-
-                        <button
-                            onClick={onClose}
-                            className="text-slate-400 hover:text-white text-xl"
-                        >
-                            <X />
-                        </button>
-                    </div>
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="flex-col">
                             <label className="form-label">Name</label>
@@ -109,9 +98,10 @@ export default function CreateUserModal({
                                 required
                             />
                         </div>
-                        {/* Footer */}
+                        
+                        {error && <ErrorMessage error={error}/>}
+                        
                         <div className="flex justify-end gap-3 border-t pt-5">
-                            {error && <p className="flex items-center align-center text-sm text-red-600 dark:text-red-400">{error}</p>}
                             <button
                                 type="button"
                                 className="btn-outline"

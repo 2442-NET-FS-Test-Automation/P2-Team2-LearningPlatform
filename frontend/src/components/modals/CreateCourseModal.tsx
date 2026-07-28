@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
+import { BookOpen } from "lucide-react";
 
 import {
     COURSE_CATEGORIES,
@@ -8,6 +8,8 @@ import {
 } from "../../lib/types";
 import { createCourse } from "../../api/coursesRequests";
 import { getUser, getUsers } from "../../api/usersRequest";
+import ErrorMessage from "../ErrorMessage";
+import ModalHeader from "./ModalHeader";
 
 interface Props {
     onClose: () => void;
@@ -141,29 +143,13 @@ export default function CreateCourseModal({ onClose, onCreated }: Props) {
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-            <div className="card w-full max-w-3xl max-h-screen shadow-xl overflow-auto animate-in fade-in zoom-in duration-200">
-                <div className="flex items-center justify-between border-b pb-4 mb-6">
-                    <div>
-                        <h2 className="text-2xl font-bold">Add Course</h2>
-                        <p className="text-sm text-muted">
-                            Add a new course to LearnHub
-                        </p>
-                    </div>
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="text-slate-400 hover:text-white text-xl"
-                    >
-                        <X />
-                    </button>
-                </div>
-
-                {error && (
-                    <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
-                        {error}
-                    </div>
-                )}
+        <div className="modal-container">
+            <div className="card modal-card animate-fade-in-up">
+                <ModalHeader 
+                    Icon={BookOpen}
+                    Title={"Add Course"} 
+                    Description={"Add a new course to LearnHub"} 
+                    OnClose={onClose} />
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-2">
@@ -304,6 +290,8 @@ export default function CreateCourseModal({ onClose, onCreated }: Props) {
                             <span className="text-sm font-medium">Is Active</span>
                         </label>
                     </div>
+
+                    {error && <ErrorMessage error={error}/>}
 
                     <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200 dark:border-slate-800">
                         <button
