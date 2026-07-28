@@ -1,3 +1,5 @@
+using LearnHub.Api.Controllers;
+using LearnHub.Api.DTOs;
 using LearnHub.Api.DTOs.Courses;
 using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -61,5 +63,25 @@ public class ProfessorsController: ControllerBase
             });
         };
         return response;
+    }
+
+    [HttpGet("Shift")]
+    public async Task<ActionResult<ReturnShiftDto>> GetProfessorShift()
+    {
+        var username = User.Identity?.Name;
+        if (username == null) return Unauthorized();
+
+        var user = await _userRepo.GetByEmailOrUsernameAsync(username);
+        if (user == null) return BadRequest(error: "User does not exist");
+
+        var shift = await _professorRepo.GetShiftByIdAsync(user.Id);
+        if (shift == null) return NotFound();
+        
+        return Ok(new ReturnShiftDto {
+            Id = shift.Id,
+            Name = shift.Name,
+            StartTime = shift.StartTime.ToString(),
+            EndTime = shift.EndTime.ToString()
+        });
     }
 }

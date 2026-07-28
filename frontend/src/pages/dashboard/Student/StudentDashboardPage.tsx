@@ -19,12 +19,22 @@ export default function StudentDashboardPage() {
 
     const [courses, setCourses] = useState<StudentCourseInfo[]>([]);
     const [onChange, setOnChange] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         if (!user) return;
+        setLoading(true);
         getStudentCourses(user.id)
             .then((res) => {
                 setCourses(res.items);
                 setStats(calculateStats(res.items))
+            })
+            .catch(() => {
+                setError("There was an error loading courses")
+            })
+            .finally(() => {
+                setLoading(false);
             })
     }, [onChange])
 
@@ -70,7 +80,8 @@ export default function StudentDashboardPage() {
                         {activeTab === "profile" && <ProfileSection />}
                         {activeTab === "courses" && <CoursesSection userId={user!.id} courses={courses} onChange={() => setOnChange((c) => !c)} />}
                         {activeTab === "progress" && <ProgressSection TotalCourses={stats.TotalCourses} Completed={stats.Completed} AvgGrade={stats.AvgGrade} />}
-                        {activeTab === "schedule" && <WeeklyScheduleSection Courses={courses.filter(c => c.completed === false)} />}
+                        {activeTab === "schedule" && <WeeklyScheduleSection Courses={courses.filter(c => c.completed === false)} 
+                            loading={loading} error={error} />}
                     </div>
                 </div>
             </div>
