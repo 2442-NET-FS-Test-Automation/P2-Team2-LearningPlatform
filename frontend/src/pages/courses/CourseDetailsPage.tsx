@@ -33,6 +33,7 @@ import type {
     CreateActivityDto
 } from "../../lib/types";
 import EnrollmentCard from "../../components/EnrollmentCard";
+import ErrorMessage from "../../components/ErrorMessage";
 
 export default function CourseDetailsPage() {
     const { user } = useAuth();
@@ -286,7 +287,7 @@ export default function CourseDetailsPage() {
                                         {/* Título y botón */}
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <h2 className="text-xl font-semibold">Student Activities</h2>
+                                                <h2 className="text-2xl font-semibold">Student Activities</h2>
                                                 <p className="mt-2 text-muted">
                                                     Your students have submitted
                                                 </p>
@@ -496,11 +497,7 @@ export default function CourseDetailsPage() {
                                                                 Mark as completed
                                                             </button>
                                                     }
-                                                    {error && 
-                                                        <p className="text-red-600 dark:text-red-400 text-sm mt-2">
-                                                            {error}
-                                                        </p>
-                                                    }
+                                                    {error && <ErrorMessage error={error} />}
                                                 </div>
                                             ) : (
                                                 <EnrollmentCard

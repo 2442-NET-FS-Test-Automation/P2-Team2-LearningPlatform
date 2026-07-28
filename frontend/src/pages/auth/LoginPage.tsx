@@ -6,6 +6,7 @@ import axios from "axios";
 import { useAuth } from "../../ctx/AuthCtx";
 
 import { getDashboardRoute } from "../../lib/funcs";
+import ErrorMessage from "../../components/ErrorMessage";
 
 export default function LoginPage() {
     const { user, login } = useAuth();
@@ -105,7 +106,7 @@ export default function LoginPage() {
                         <button className="btn-primary w-full py-3">
                             {isSubmitting ? "Logging in…" : "Login"}
                         </button>
-                        {error && <p className="text-red-600 dark:text-red-400 text-sm mt-2">{error}</p>}
+                        {error && <ErrorMessage error={error} />}
                     </form>
                     <p className="mt-6 text-center dark:text-slate-300">
                         Don't have an account?{" "}
