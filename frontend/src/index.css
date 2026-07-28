@@ -132,7 +132,7 @@
 
     /* Modals */
     .modal-container {
-        @apply fixed inset-0 flex items-center justify-center p-4 backdrop-blur-sm;
+        @apply fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm;
     }
     .modal-card {
         @apply w-full max-w-3xl max-h-screen shadow-xl overflow-auto bg-white dark:bg-slate-800;
