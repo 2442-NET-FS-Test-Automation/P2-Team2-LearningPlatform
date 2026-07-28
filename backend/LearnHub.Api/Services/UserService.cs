@@ -17,13 +17,15 @@ public class UserService : IUserService
     private readonly IStudentRepo _studentRepo;
     private readonly IUserRepo _userRepo;
     private readonly ICourseRepo _courseRepo;
+    private readonly ILogger<UserService> _logger;
 
 
     public UserService(LearnHubDbContext db, IPasswordHasher<User> hasher, 
         IProfessorRepo professorRepo, 
         IStudentRepo studentRepo,
         IUserRepo userRepo,
-        ICourseRepo courseRepo)
+        ICourseRepo courseRepo,
+        ILogger<UserService> logger)
     {
         _db = db;
         _hasher = hasher;
@@ -31,6 +33,7 @@ public class UserService : IUserService
         _studentRepo = studentRepo;
         _userRepo = userRepo;
         _courseRepo = courseRepo;
+        _logger = logger;
     }
 
     // -- Regster user task --
@@ -44,14 +47,22 @@ public class UserService : IUserService
         string password
     )
     {
+        _logger.LogInformation("Registration attempt for user {Username}", username);
         //validate if email exists
         if(await _userRepo.EmailExistsAsync(email))
+        {
+            _logger.LogWarning("Registration rejected, {Email} already registered", email);
             return "Email already registered";
+        }
+            
         
         
         //validate if user exists
         if(await _userRepo.UsernameExistsAsync(username))
+        {
+            _logger.LogWarning("Registration rejected, {Username} username is already registered", username);
             return "Username already registered";
+        }
 
             
 
@@ -69,13 +80,19 @@ public class UserService : IUserService
 
 
         var date = DateOnly.Parse(birthDate);
-        Console.WriteLine(date);
+        // Console.WriteLine(date); //to be REMOVED
 
         if(date > DateOnly.FromDateTime(DateTime.Today))
+        {
+            _logger.LogWarning("Registration rejected, birth date cannot be in the future");
             return "Birth date cannot be in the future";
+        }
 
         if(date > DateOnly.FromDateTime(DateTime.Today.AddYears(-12)))
+        {
+            _logger.LogWarning("Registraton rejected, you must be at least 12 years old to register");
             return "You must be at least 12 years old to register";
+        }
         
 
         var student = new Student
@@ -85,19 +102,28 @@ public class UserService : IUserService
         };
 
         await _studentRepo.AddAsync(student);
+
+        _logger.LogInformation("User {Username} registered successfully", username);
         return null;
     }
 
     public async Task<User?> CreateUserAsync(CreateUserDto dto)
     {
         if(await _userRepo.EmailExistsAsync(dto.Email))
+        {
+            _logger.LogWarning("Email already exists {Email}", dto.Email);
             throw new ArgumentException("Email already exists");
+        }
 
         if(await _userRepo.UsernameExistsAsync(dto.Username))
+        {
+            _logger.LogWarning("Username already exists {Username}", dto.Username);
             throw new ArgumentException("Username already exists");
+        }
             
         if (!Enum.TryParse<UserRoles>(dto.Role, true, out var role))
         {
+            _logger.LogWarning("Invalid role {Role}", dto.Role);
             throw new ArgumentException("Invalid role");
         }
         using var transaction = await _db.Database.BeginTransactionAsync();
@@ -112,7 +138,10 @@ public class UserService : IUserService
             if(role == UserRoles.Professor)
             {
                 if(dto.ShiftId == null || dto.ContractDate == null)
+                {
+                    _logger.LogWarning("Professor data missing {ShiftId} and {ContractDate}", dto.ShiftId, dto.ContractDate);
                     throw new ArgumentException("Professor data missing");
+                }
             }
             switch(role)
             {
@@ -125,6 +154,7 @@ public class UserService : IUserService
                         ContractDate = dto.ContractDate!.Value,
                         IsActive = true
                     });
+                    
 
                     break;
 
@@ -145,13 +175,16 @@ public class UserService : IUserService
 
             await _db.SaveChangesAsync();
 
+
             await transaction.CommitAsync();
+            _logger.LogInformation("User {Username} created successfully", user.Username);
 
             return user;
         }
-        catch
+        catch (Exception ex)
         {
             await transaction.RollbackAsync();
+            _logger.LogError(ex, "Error creating user {Username}", dto.Username);
             throw;
         }
     }
@@ -170,6 +203,8 @@ public class UserService : IUserService
 
         user.PasswordHash =
             _hasher.HashPassword(user, dto.Password);
+
+        
 
         return user;
     }
@@ -229,6 +264,7 @@ public class UserService : IUserService
         }
 
         await _userRepo.UpdateAsync(user);
+        _logger.LogInformation("User {Username} updated successfully", user?.Username);
 
         return user;
     }
@@ -237,12 +273,22 @@ public class UserService : IUserService
         //validate if user exists
         User? foundUser = await _userRepo.GetByEmailOrUsernameAsync(emailOrUsername);
 
-        if(foundUser is null) return null;
+        if(foundUser is null) {
+            _logger.LogWarning("Login failed, user not found: {EmailOrUsername}", emailOrUsername);
+            return null;
+        }
 
         //verify password
         var result = _hasher.VerifyHashedPassword(foundUser, foundUser.PasswordHash, password);
 
-        return result == PasswordVerificationResult.Success ? foundUser : null;
+        if(result != PasswordVerificationResult.Success)
+        {
+            _logger.LogWarning("Login failed: invalid password for user {Username}", foundUser?.Username);
+            return null;
+        }
+
+        _logger.LogInformation("User {Username} logged in successfully", foundUser?.Username);
+        return foundUser;
     }
 
     public async Task<bool> UpdateStudentCoursesAsync(
@@ -252,7 +298,10 @@ public class UserService : IUserService
         var student = await _studentRepo.GetByIdAsync(studentId);
 
         if(student == null)
+        {
+            _logger.LogWarning("Student not found {StudentId}", studentId);
             return false;
+        }
 
 
         var currentCourses = student.StudentCourses
@@ -296,7 +345,7 @@ public class UserService : IUserService
                 courseId);
         }
 
-
+        _logger.LogInformation("Student {StudentId} courses updated successfully", studentId);
         return true;
     }
 
@@ -307,7 +356,10 @@ public class UserService : IUserService
         var professor = await _professorRepo.GetByIdAsync(professorId);
 
         if(professor == null)
+        {
+            _logger.LogWarning("Professor not found {ProfessorId}", professorId);
             return false;
+        }
 
 
         var currentCourses = professor.Courses
@@ -348,7 +400,7 @@ public class UserService : IUserService
                 courseId);
         }
 
-
+        _logger.LogInformation("Professor {ProfessorId} courses updated successfully", professorId);
         return true;
     }
 
@@ -356,7 +408,7 @@ public class UserService : IUserService
     {
         return await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
     }
-
+    
     public async Task<bool> PromoteToProfessorAsync(
         int userId,
         PromoteProfessorDto dto)
@@ -368,13 +420,22 @@ public class UserService : IUserService
             var user = await _userRepo.GetByIdAsync(userId);
 
             if (user == null)
+            {
+                _logger.LogWarning("Promote failed: user not found {UserId}", userId);
                 return false;
+            }
 
             if (user.Student == null)
+            {
+                _logger.LogWarning("Promote failed: user {UserId} is not a student", userId);
                 return false;
+            }
 
             if (user.Professor != null)
+            {
+                _logger.LogWarning("Promote failed: user {UserId} is already a professor", userId);
                 return false;
+            }
 
             user.Role = UserRoles.Professor;
 
@@ -389,14 +450,15 @@ public class UserService : IUserService
             _professorRepo.Add(professor);
 
             await _db.SaveChangesAsync();
-
             await transaction.CommitAsync();
 
+            _logger.LogInformation("User {UserId} promoted to professor successfully", userId);
             return true;
         }
-        catch
+        catch (Exception ex)
         {
             await transaction.RollbackAsync();
+            _logger.LogError(ex, "Error promoting user {UserId}", userId);
             throw;
         }
     }
