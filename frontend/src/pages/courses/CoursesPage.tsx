@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import CourseCard from "../../components/CourseCard";
 import PaginationControls from "../../components/layout/PaginationControls";
 import { COURSE_CATEGORIES, type CourseCategory, type CourseCompact } from "../../lib/types";
-import { getEnabledCourses, getEnabledCoursesPaged } from "../../api/coursesRequests";
+import { getEnabledCoursesPaged } from "../../api/coursesRequests";
 import { Search } from "lucide-react";
 import Loading from "../../components/layout/Loading";
 
@@ -127,7 +127,7 @@ export default function CoursesPage() {
                                         className="animate-fade-in-up"
                                         style={{ animationDelay: `${Math.min(i, 8) * 60}ms` }}
                                     >
-                                        <CourseCard Id={c.id} Name={c.name} Description={c.description} CategoryName={c.category} IsFull={c.isFull} />
+                                        <CourseCard Id={c.id} Name={c.name} Description={c.description} CategoryName={c.category} IsFull={c.isFull} IsEnrolled={c.isEnrolled}/>
                                     </div>
                                 ))}
                             </div>

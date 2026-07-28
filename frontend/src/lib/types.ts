@@ -58,7 +58,8 @@ export type CourseCompact = {
     name: string,
     description: string,
     category: CourseCategory,
-    isFull: number
+    isFull: number,
+    isEnrolled: boolean
 }
 
 export type CourseSchedule = {
