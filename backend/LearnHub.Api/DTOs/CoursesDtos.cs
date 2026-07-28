@@ -16,6 +16,7 @@ public class CourseListDto
     public bool IsActive { get; set; }
 
     public decimal? Price { get; set; }
+    public int isFull {get; set;}
 }
 
 public class CourseScheduleDto
