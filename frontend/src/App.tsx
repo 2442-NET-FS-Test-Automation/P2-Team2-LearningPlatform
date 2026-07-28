@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, ScrollRestoration } from "react-router-dom";
 
 import PublicLayout from "./components/layout/PublicLayout";
 import LandingPage from "./pages/LandingPage";
@@ -19,6 +19,8 @@ import UnauthorizedPage from "./pages/UnauthorizedPage";
 
 export default function App() {
     return (
+        <>
+        <ScrollRestoration />
         <Routes>
             <Route element={<PublicLayout />}>
                 <Route path="/" element={<LandingPage />} />
@@ -54,5 +56,6 @@ export default function App() {
                 <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>
+        </>
     );
 }
