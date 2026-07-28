@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { X } from "lucide-react";
+import { ClipboardList } from "lucide-react";
 import type { CreateActivityDto } from "../../lib/types";
 import { getApiError } from "../../lib/funcs";
+import ErrorMessage from "../ErrorMessage";
+import ModalHeader from "./ModalHeader";
 
 type Props = {
     onClose: () => void;
@@ -44,14 +46,13 @@ export default function CreateActivityModal({ onClose, onCreate }: Props) {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-            <div className="card w-full max-w-lg shadow-xl">
-                <div className="mb-6 flex items-center justify-between">
-                    <h2 className="text-xl font-bold">New Activity</h2>
-                    <button onClick={onClose} className="rounded-full p-2 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800">
-                        <X size={20} />
-                    </button>
-                </div>
+        <div className="modal-container">
+            <div className="modal-card card animate-fade-in-up">
+                <ModalHeader 
+                    Icon={ClipboardList} 
+                    Title={"New Activity"} 
+                    Description={"Assign new coursework to this course"} 
+                    OnClose={onClose} />
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
@@ -68,11 +69,10 @@ export default function CreateActivityModal({ onClose, onCreate }: Props) {
                         <label className="text-sm font-medium">Due Date</label>
                         <input type="date" name="dueDate" value={form.dueDate} onChange={handleChange} className="form-input w-full" required />
                     </div>
-                    {error &&(
-                        <p className="text-sm text-red-500 dark:text-red-400">{error}</p>
-                    )}
 
-                    <div className="flex justify-end gap-3 pt-2">
+                    {error && <ErrorMessage error={error} />}
+
+                    <div className="flex justify-end gap-3 border-t border-slate-200 pt-5 dark:border-slate-800">
                         <button type="button" onClick={onClose} className="btn-outline">Cancel</button>
                         <button type="submit" disabled={submitting} className="btn-primary disabled:opacity-50">
                             {submitting ? "Creating..." : "Create Activity"}
