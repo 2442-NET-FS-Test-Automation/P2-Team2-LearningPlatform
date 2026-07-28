@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { ChevronDown, GraduationCap, Trash2, RotateCcw } from "lucide-react";
+import { ChevronDown, GraduationCap, Archive, RotateCcw } from "lucide-react";
 import type { ActivityWithSubmissions, Submission } from "../lib/types";
 import { getApiError } from "../lib/funcs";
+import ErrorMessage from "./ErrorMessage";
 
 type Props = {
     activity: ActivityWithSubmissions;
@@ -48,10 +49,10 @@ export default function ProfessorActivityAccordion({
                             e.stopPropagation();
                             onDelete(activity.id);
                         }}
-                        className="ml-3 rounded-full p-2 text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
+                        className="ml-3 rounded-full p-2 text-amber-600 transition-colors hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-900/30"
                         title="Archive activity"
                     >
-                        <Trash2 size={18}/>
+                        <Archive size={18}/>
                     </button>
                 ) : (
                     <button
@@ -119,36 +120,36 @@ function SubmissionRow({ submission, onGrade }: { submission: Submission, onGrad
             </p>
             <p className="mt-2 text-sm">{submission.file}</p>
 
-            <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-[100px_1fr_auto] sm:items-start">
-                <input
-                    type="number"
-                    min={0}
-                    max={100}
-                    value={grade}
-                    onChange={(e) => setGrade(e.target.value)}
-                    placeholder="Grade"
-                    className="form-input"
-                />
-                <textarea
-                    value={feedback}
-                    onChange={(e) => setFeedback(e.target.value)}
-                    placeholder="Feedback"
-                    className="form-input"
-                    rows={1}
-                />
-                <button
-                    onClick={handleGrade}
-                    disabled={grade === "" || saving}
-                    className="btn-primary gap-2 disabled:opacity-60"
-                >
-                    <div className="flex items-center gap-2">
-                        <GraduationCap size={16} />
-                        {saving? "Saving..." : isGraded ? "Update" : "Save"}
-                    </div>
-                </button>
-                {error &&(
-                    <p className="mt-2 text-sm text-red-500 dark:text-red-400 whitespace-nowrap">{error}</p>               
-                )}
+            <div className="flex flex-col mt-3 gap-2">
+                <div className="flex flex-grow flex-col gap-2 sm:flex-row">
+                    <input
+                        type="number"
+                        min={0}
+                        max={100}
+                        value={grade}
+                        onChange={(e) => setGrade(e.target.value)}
+                        placeholder="Grade"
+                        className="form-input max-w-20"
+                    />
+                    <textarea
+                        value={feedback}
+                        onChange={(e) => setFeedback(e.target.value)}
+                        placeholder="Feedback"
+                        className="form-input"
+                        rows={1}
+                    />
+                    <button
+                        onClick={handleGrade}
+                        disabled={grade === "" || saving}
+                        className="btn-primary gap-2 disabled:opacity-60"
+                    >
+                        <div className="flex items-center gap-2">
+                            <GraduationCap size={16} />
+                            {saving? "Saving..." : isGraded ? "Update" : "Save"}
+                        </div>
+                    </button>
+                </div>
+                {error && <div className="col-span-3"><ErrorMessage error={error} /></div>}
             </div>
         </div>
     );

@@ -10,6 +10,7 @@ import Loading from "../../../components/layout/Loading";
 
 import { getAllCourses, deleteCourse, reactivateCourse } from "../../../api/coursesRequests";
 import { COURSE_CATEGORIES, type CourseCategory, type CourseDetails } from "../../../lib/types";
+import ErrorMessage from "../../../components/ErrorMessage";
 
 export default function ManageUsersSection() {
     const [courses, setCourses] = useState<CourseDetails[]>([]);
@@ -134,11 +135,7 @@ export default function ManageUsersSection() {
                     </select>
                 </div>
 
-                {error && (
-                    <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
-                        {error}
-                    </div>
-                )}
+                {error && <ErrorMessage error={error} />}
 
                 {loading ? (
                     <Loading fullh={false} message="Loading Courses..." />

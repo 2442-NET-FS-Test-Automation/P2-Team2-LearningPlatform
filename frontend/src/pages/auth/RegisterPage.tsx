@@ -6,6 +6,7 @@ import { useAuth } from "../../ctx/AuthCtx";
 
 import { getDashboardRoute, isAlphanumeric, isBirthDateValid } from "../../lib/funcs";
 import type { RegisterData } from "../../lib/typesAuth";
+import ErrorMessage from "../../components/ErrorMessage";
 
 const emptyForm: RegisterData = {
     FirstName: "",
@@ -70,7 +71,7 @@ export default function RegisterPage() {
 
     return (
         <div className="auth-shell">
-            <div className="auth-card">
+            <div className="auth-card animate-fade-in-up">
                 {/* Form */}
                 <div className="auth-form-panel">
                     <h1 className="text-4xl font-bold">
@@ -151,10 +152,8 @@ export default function RegisterPage() {
                                 </button>
                             </div>
                         </div>
-                        {error && (
-                            <p className="md:col-span-2 text-sm text-red-600 dark:text-red-400">{error}</p>
-                        )}
-                        <button className="btn-primary md:col-span-2 mt-3 w-full py-3 font-semibold" disabled={isSubmitting}>
+                        {error && <div className="md:col-span-2"><ErrorMessage error={error} /></div>}
+                        <button className="btn-primary md:col-span-2 mt-1 w-full py-3 font-semibold" disabled={isSubmitting}>
                             {isSubmitting ? "Creating account…" : "Create Account"}
                         </button>
                     </form>
