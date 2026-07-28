@@ -58,7 +58,7 @@ export default function CourseDetailsPage() {
     const [deleteActivityId, setDeleteActivityId] = useState<number | null>(null);
     const [reactivateActivityId, setReactivateActivityId] = useState<number | null>(null);
     const [activityTab, setActivityTab] = useState<"active" | "archived">("active");
-
+    
     useEffect(() => {
         getCourseDetails(Number(id))
             .then(res => {
