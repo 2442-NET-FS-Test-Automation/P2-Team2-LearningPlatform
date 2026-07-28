@@ -162,7 +162,8 @@ public class CoursesController : ControllerBase
                 Name = c.Name,
                 Description = c.Description,
                 Category = c.CategoryName.ToString(),
-                IsActive = c.IsActive
+                IsActive = c.IsActive,
+                isFull =  c.Capacity == 0 ? 0 : (int)Math.Round(c.StudentCourses.Count * 100.0 / c.Capacity)
             }).ToList(),
 
             Page = result.Page,

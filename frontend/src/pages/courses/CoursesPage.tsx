@@ -127,7 +127,7 @@ export default function CoursesPage() {
                                         className="animate-fade-in-up"
                                         style={{ animationDelay: `${Math.min(i, 8) * 60}ms` }}
                                     >
-                                        <CourseCard Id={c.id} Name={c.name} Description={c.description} CategoryName={c.category} />
+                                        <CourseCard Id={c.id} Name={c.name} Description={c.description} CategoryName={c.category} IsFull={c.isFull} />
                                     </div>
                                 ))}
                             </div>
