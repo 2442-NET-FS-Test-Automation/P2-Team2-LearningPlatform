@@ -4,6 +4,7 @@ import { BookOpen } from "lucide-react";
 import Loading from "../../../components/layout/Loading";
 
 import type { CourseSelectDto } from "../../../lib/types";
+import ErrorMessage from "../../../components/ErrorMessage";
 
 interface Props {
     courses: CourseSelectDto[];
@@ -19,11 +20,7 @@ export default function AssignedCoursesSection({ courses, loading, error }: Prop
                 My Courses
             </h2>
 
-            {error && (
-                <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
-                    {error}
-                </div>
-            )}
+            {error && <ErrorMessage error={error} />}
 
             {loading ? (
                 <Loading fullh={false} message="Loading courses..." />
