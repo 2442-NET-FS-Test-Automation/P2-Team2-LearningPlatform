@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, GraduationCap, Trash2, RotateCcw } from "lucide-react";
+import { ChevronDown, GraduationCap, Archive, RotateCcw } from "lucide-react";
 import type { ActivityWithSubmissions, Submission } from "../lib/types";
 import { getApiError } from "../lib/funcs";
 import ErrorMessage from "./ErrorMessage";
@@ -49,10 +49,10 @@ export default function ProfessorActivityAccordion({
                             e.stopPropagation();
                             onDelete(activity.id);
                         }}
-                        className="ml-3 rounded-full p-2 text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
+                        className="ml-3 rounded-full p-2 text-amber-600 transition-colors hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-900/30"
                         title="Archive activity"
                     >
-                        <Trash2 size={18}/>
+                        <Archive size={18}/>
                     </button>
                 ) : (
                     <button
