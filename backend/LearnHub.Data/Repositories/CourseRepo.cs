@@ -150,17 +150,18 @@ public class CourseRepo : ICourseRepo
                 sc.StudentId == studentId &&
                 sc.CourseId == courseId);
 
-
         if(exists)
             return;
 
+        var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);;
+
+        if(course is null) throw new KeyNotFoundException("Course not found.");
 
         var studentCourse = new StudentCourse
         {
             StudentId = studentId,
             CourseId = courseId
         };
-
 
         _context.StudentCourses.Add(studentCourse);
 

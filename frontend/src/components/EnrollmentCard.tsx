@@ -31,21 +31,19 @@ export default function EnrollmentCard({
             </div>
             <button
                 onClick={handleClick}
-                disabled={isEnrolling}
+                disabled={isEnrolling || isFull}
                 className="btn-primary w-full justify-center gap-2 text-center disabled:opacity-70"
             >
                 <div className="flex items-center">
                     {isEnrolling && <Loader2 size={18} className="animate-spin" />}
                     <p className="mx-auto">
-                        {userLogged ? (
-                            isEnrolling
-                                ? "Enrolling..."
-                                : "Enroll Now"
-                        ) : (
-                            "Login to Enroll"
-                        )
-                        }
-                        
+                        {isFull
+                            ? "Course Full"
+                            : userLogged
+                                ? isEnrolling
+                                    ? "Enrolling..."
+                                    : "Enroll Now"
+                                :  "login to Enroll"}
                     </p>
                 </div>
             </button>

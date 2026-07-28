@@ -57,11 +57,21 @@ public class StudentsController(ICourseRepo courseRepo, IStudentRepo studentRepo
         var student = await _studentRepo.GetByUserIdAsync(userId);
         if (student == null) return BadRequest(new { error = "User is not a student" });
 
-        if (await _studentRepo.EnrollAsync(student.Id, courseId))
+        try
         {
-            return Ok();
+            if (await _studentRepo.EnrollAsync(student.Id, courseId))
+                return Ok();
+
+            return Conflict(new { error = "Student is already enrolled." });
         }
-        return Conflict();      
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
     }
 
     [HttpDelete("{userId:int}/Courses/{courseId:int}")]
