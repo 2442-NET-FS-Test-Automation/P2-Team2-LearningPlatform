@@ -70,7 +70,7 @@ export default function RegisterPage() {
 
     return (
         <div className="auth-shell">
-            <div className="auth-card">
+            <div className="auth-card animate-fade-in-up">
                 {/* Form */}
                 <div className="auth-form-panel">
                     <h1 className="text-4xl font-bold">

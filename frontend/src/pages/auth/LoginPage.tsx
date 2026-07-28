@@ -62,7 +62,7 @@ export default function LoginPage() {
 
     return (
         <div className="auth-shell">
-            <div className="auth-card">
+            <div className="auth-card animate-fade-in-up">
                 {/* Left */}
                 <div className="auth-form-panel">
                     <h1 className="text-4xl font-bold">
