@@ -1,4 +1,3 @@
-using LearnHub.Api.Controllers;
 using LearnHub.Api.DTOs;
 using LearnHub.Api.DTOs.Courses;
 using LearnHub.Data.Repositories;

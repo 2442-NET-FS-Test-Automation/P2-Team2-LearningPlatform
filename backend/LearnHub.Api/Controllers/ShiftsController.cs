@@ -1,4 +1,3 @@
-using AutoMapper;
 using LearnHub.Data;
 using LearnHub.Data.Entities;
 using LearnHub.Data.Repositories;
