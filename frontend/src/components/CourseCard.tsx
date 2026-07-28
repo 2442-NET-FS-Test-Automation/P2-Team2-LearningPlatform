@@ -5,7 +5,8 @@ export type CourseCardProps = {
     Name: string,
     Description: string,
     CategoryName: string,
-    IsFull: number
+    IsFull: number,
+    IsEnrolled: boolean
 }
 
 export default function CourseCard({
@@ -13,10 +14,16 @@ export default function CourseCard({
     Name,
     Description,
     CategoryName,
-    IsFull
+    IsFull,
+    IsEnrolled
 }: CourseCardProps) {
     const occupancy =
-        IsFull >= 100
+        IsEnrolled === true
+        ? {
+            text: "Enrolled",
+            className: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+        }
+        : IsFull >= 100
         ? {
             text: "Full",
             className: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"

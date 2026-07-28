@@ -40,7 +40,8 @@ export async function getEnabledCoursesPaged(
     pageSize: number = 6,
     search: string | null = null,
     category: CourseCategory | null = null,
-    isFull: number = 0
+    IsFull: number = 0,
+    IsEnrolled: boolean = false
 ) {
     try {
         const result = await api.get("/Courses/enabled", {
@@ -49,7 +50,8 @@ export async function getEnabledCoursesPaged(
                 pageSize,
                 searchName: search,
                 categoryFilter: category,
-                isFull : isFull
+                isFull : IsFull,
+                isEnrolled: IsEnrolled
             }
         });
 
