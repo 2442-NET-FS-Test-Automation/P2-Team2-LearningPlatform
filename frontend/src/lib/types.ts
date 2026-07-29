@@ -312,3 +312,18 @@ export type Notification = {
     createdAt: string;
     link?: string;
 }
+
+export interface ProfessorTopCourse {
+    courseId: number;
+    name: string;
+    category: string;
+    enrolledStudentsCount: number;
+}
+
+export interface ProfessorSummary {
+    totalCourses: number;
+    totalStudents: number;
+    totalActivities: number;
+    pendingSubmissionsToGrade: number;
+    topCourses: ProfessorTopCourse[];
+}

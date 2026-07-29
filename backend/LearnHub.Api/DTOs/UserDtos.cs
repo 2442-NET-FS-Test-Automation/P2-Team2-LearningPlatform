@@ -117,3 +117,20 @@ public class NotificationDto
     public DateTime CreatedAt { get; set; }
     public string? Link { get; set; }
 }
+
+public class ProfessorSummaryDto
+{
+    public int TotalCourses { get; set; }
+    public int TotalStudents { get; set; }
+    public int TotalActivities { get; set; }
+    public int PendingSubmissionsToGrade { get; set; }
+    public List<ProfessorTopCourseDto> TopCourses { get; set; } = [];
+}
+
+public class ProfessorTopCourseDto
+{
+    public int CourseId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Category { get; set; } = string.Empty;
+    public int EnrolledStudentsCount { get; set; }
+}
