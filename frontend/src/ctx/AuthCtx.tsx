@@ -10,11 +10,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // const token = localStorage.getItem("token");
-        // if (!token) {
-        //     setIsLoading(false);
-        //     return;
-        // }
+       
         api.get("/auth/me")
             .then((res) => {
                 setUser(parseAuthUser(res.data.user));
@@ -53,16 +49,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             throw error;
         } finally {
             setUser(null);
-            // localStorage.removeItem("token");
         }
     };
 
-    const setToken = (token: string) => {
-        // localStorage.setItem("token", token);
-    }
 
     return (
-        <AuthContext.Provider value={{ user, setUser, isLoading, login, register, logout, setToken }}>
+        <AuthContext.Provider value={{ user, setUser, isLoading, login, register, logout }}>
             {children}
         </AuthContext.Provider>
     );

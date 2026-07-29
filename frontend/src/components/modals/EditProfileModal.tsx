@@ -5,7 +5,6 @@ import type { UpdateProfileDto } from "../../lib/types";
 import { isAlphanumeric } from "../../lib/funcs";
 import { updateUser } from "../../api/usersRequest";
 import type { AuthUser } from "../../lib/typesAuth";
-import { useAuth } from "../../ctx/AuthCtx";
 
 interface Props {
     userId: number;
@@ -20,7 +19,7 @@ export default function EditProfileModal({
     onClose,
     onUpdated,
 }: Props) {
-    const { setToken } = useAuth();
+
 
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
