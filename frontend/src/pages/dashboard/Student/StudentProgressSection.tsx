@@ -30,7 +30,7 @@ export default function ProgressSection({
                     <div className="amber-accent-chip mx-auto flex h-10 w-10 items-center justify-center rounded-full">
                         <TrendingUp size={18} />
                     </div>
-                    <p className={`text-3xl font-bold ${getGradeColor(AvgGrade)}`}>{AvgGrade}%</p>
+                    <p className={`text-3xl font-bold ${getGradeColor(AvgGrade)}`}>{Math.trunc(AvgGrade)}%</p>
                     <p className="text-sm text-muted">Average Grade</p>
                 </div>
 

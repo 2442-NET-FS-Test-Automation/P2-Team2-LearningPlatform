@@ -29,17 +29,7 @@ export default function ManagerReportsSection() {
         }
     }
 
-    if (loading) {
-        return ( 
-        <>
-            <div className="card space-y-6">
-                <h2 className="text-2xl font-bold">Reports</h2>
-                <Loading message="Loading report data..." />
-            </div>
-            
-        </>
-        );
-    }
+    if (loading) return (<Loading fullh={false} message="Loading report data..." />);
 
     if (error || !report) {
         return (

@@ -164,4 +164,21 @@ public class ActivityRepo : IActivityRepo
 
         return new PagedResult<Activity> { Items = items, Page = page, PageSize = pageSize, TotalItems = total, TotalPages = (int)Math.Ceiling(total / (double)pageSize) };
     }
+
+    public async Task<int?> GetUserIdBySubmissionAsync(int submissionId)
+    {
+        return await _context.ActivitySubmissions
+            .Where(s => s.Id == submissionId)
+            .Include(s => s.Student)
+            .Select(s => s.Student.UserId)
+            .FirstOrDefaultAsync();
+    }
+    public async Task<int?> GetCourseIdBySubmissionAsync(int submissionId)
+    {
+        return await _context.ActivitySubmissions
+            .Where(s => s.Id == submissionId)
+            .Include(s => s.Activity)
+            .Select(s => s.Activity.CourseId)
+            .FirstOrDefaultAsync();
+    }
 }

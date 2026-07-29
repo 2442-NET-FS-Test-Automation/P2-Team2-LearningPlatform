@@ -13,12 +13,16 @@ public class ActivitiesController : ControllerBase
     private readonly IActivityRepo _repo;
     private readonly IUserRepo _userRepo;
     private readonly IMapper _mapper;
+    private readonly INotificationsRepo _notificationsRepo;
+    private readonly ICourseRepo _courseRepo;
 
-    public ActivitiesController(IActivityRepo repo, IMapper mapper, IUserRepo userRepo)
+    public ActivitiesController(IActivityRepo repo, IMapper mapper, IUserRepo userRepo, INotificationsRepo notificationsRepo, ICourseRepo courseRepo)
     {
         _repo = repo;
         _mapper = mapper;
         _userRepo = userRepo;
+        _notificationsRepo = notificationsRepo;
+        _courseRepo = courseRepo;
     }
 
     [HttpGet]
@@ -164,6 +168,17 @@ public class ActivitiesController : ControllerBase
         };
 
         var created = await _repo.CreateAsync(activity);
+
+        var studentUserIds = await _courseRepo.GetEnrolledUserIdsAsync(dto.CourseId);
+        var notifications = studentUserIds.Select(sid => new Notification 
+        {
+            UserId = sid,
+            Message = $"New activity published: {activity.Title}",
+            CreatedAt = DateTime.UtcNow,
+            Link = $"/courses/{dto.CourseId}"
+        });
+        await _notificationsRepo.AddNotificationsAsync(notifications);
+
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, _mapper.Map<ActivitySummaryDto>(created));
     }
 
@@ -238,6 +253,21 @@ public class ActivitiesController : ControllerBase
         };
 
         await _repo.CreateSubmissionAsync(submission);
+
+        var profUserId = await _courseRepo.GetProfessorUserIdByCourseAsync(activity.CourseId);
+        if (profUserId.HasValue) 
+        {
+            var studentUser = await _userRepo.GetByEmailOrUsernameAsync(username!);
+            var studentName = studentUser != null ? studentUser.FirstName : "A student";
+            await _notificationsRepo.AddNotificationAsync(new Notification
+            {
+                UserId = profUserId.Value,
+                Message = $"New submission from {studentName} for activity '{activity.Title}'",
+                CreatedAt = DateTime.UtcNow,
+                Link = $"/courses/{activity.CourseId}"
+            });
+        }
+
         return Created();
     }
     
@@ -248,6 +278,24 @@ public class ActivitiesController : ControllerBase
         if (!DataTypeVerification.IsNumValid(submissionId)) return BadRequest();
 
         var success = await _repo.GradeSubmissionAsync(submissionId, dto.Feedback, dto.Score);
-        return success ? NoContent() : NotFound();
+        
+        if (success) 
+        {
+            var studentUserId = await _repo.GetUserIdBySubmissionAsync(submissionId);
+            if (studentUserId.HasValue) 
+            {
+                var courseId = await _repo.GetCourseIdBySubmissionAsync(submissionId);
+                await _notificationsRepo.AddNotificationAsync(new Notification
+                {
+                    UserId = studentUserId.Value,
+                    Message = $"Your submission was graded: {dto.Score}",
+                    CreatedAt = DateTime.UtcNow,
+                    Link = courseId.HasValue ? $"/courses/{courseId.Value}" : null
+                });
+            }
+            return NoContent();
+        }
+
+        return NotFound();
     }
 }

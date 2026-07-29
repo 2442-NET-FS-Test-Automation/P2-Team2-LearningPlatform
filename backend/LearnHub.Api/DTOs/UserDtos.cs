@@ -107,3 +107,30 @@ public class ProfessorInfoDto
 
     public List<CourseListDto> Courses {get;set;} = [];
 }
+
+public class NotificationDto
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public bool IsRead { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public string? Link { get; set; }
+}
+
+public class ProfessorSummaryDto
+{
+    public int TotalCourses { get; set; }
+    public int TotalStudents { get; set; }
+    public int TotalActivities { get; set; }
+    public int PendingSubmissionsToGrade { get; set; }
+    public List<ProfessorTopCourseDto> TopCourses { get; set; } = [];
+}
+
+public class ProfessorTopCourseDto
+{
+    public int CourseId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Category { get; set; } = string.Empty;
+    public int EnrolledStudentsCount { get; set; }
+}

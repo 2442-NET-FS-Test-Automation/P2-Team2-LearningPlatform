@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { X } from "lucide-react";
+import { UserRoundPen } from "lucide-react";
 
 import type { UpdateProfileDto } from "../../lib/types";
 import { isAlphanumeric } from "../../lib/funcs";
 import { updateUser } from "../../api/usersRequest";
 import type { AuthUser } from "../../lib/typesAuth";
+import ModalHeader from "./ModalHeader";
+import ErrorMessage from "../ErrorMessage";
 
 interface Props {
     userId: number;
@@ -95,27 +97,13 @@ export default function EditProfileModal({
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-            <div className="card w-full max-w-3xl shadow-xl animate-in fade-in zoom-in duration-200">
-                {/* Header */}
-                <div className="flex items-center justify-between border-b pb-4 mb-6">
-                    <div>
-                        <h2 className="text-2xl font-bold">
-                            Edit Profile
-                        </h2>
-
-                        <p className="text-sm text-muted">
-                            Update your personal information
-                        </p>
-                    </div>
-
-                    <button
-                        onClick={onClose}
-                        className="text-slate-400 hover:text-white text-xl"
-                    >
-                        <X />
-                    </button>
-                </div>
+        <div className="modal-container">
+            <div className="card modal-card animate-fade-in-up">
+                <ModalHeader 
+                    Icon={UserRoundPen} 
+                    Title={"Edit Profile"} 
+                    Description={"Change your personal data"}
+                    OnClose={onClose} />    
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Personal information */}
@@ -192,9 +180,9 @@ export default function EditProfileModal({
                         />
                     </div>
 
+                    {error && <ErrorMessage error={error} />}
                     {/* Footer */}
                     <div className="flex justify-end gap-3 border-t pt-5">
-                        {error && <p className="flex items-center align-center text-sm text-red-600 dark:text-red-400">{error}</p>}
                         <button
                             type="button"
                             className="btn-outline"

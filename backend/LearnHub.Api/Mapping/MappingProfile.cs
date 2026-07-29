@@ -115,5 +115,6 @@ public class MappingProfile : Profile
             .ForMember(d => d.Submission, o => o.MapFrom(s => s.Submissions.FirstOrDefault()));
 
         CreateMap<CourseSchedule, CourseScheduleDto>();
+        CreateMap<Notification, NotificationDto>();
     }
 }

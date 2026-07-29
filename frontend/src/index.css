@@ -130,6 +130,14 @@
         @apply bg-white/80 dark:bg-slate-900/60;
     }
 
+    /* Modals */
+    .modal-container {
+        @apply fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm;
+    }
+    .modal-card {
+        @apply w-full max-w-3xl max-h-[80vh] shadow-xl overflow-auto bg-white dark:bg-slate-800;
+    }
+
     /* Text colors */
     .text-muted {
         @apply text-slate-600 dark:text-slate-400;
@@ -200,6 +208,9 @@
     }
     .indigo-accent-watermark {
         @apply text-indigo-300 dark:text-indigo-900;
+    }
+    .emerald-accent {
+        @apply bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-300;
     }
 }
 

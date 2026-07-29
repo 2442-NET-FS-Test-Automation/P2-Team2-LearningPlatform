@@ -9,6 +9,7 @@ import type { ShiftDto } from "../../../lib/types";
 import EditShiftModal from "../../../components/modals/EditShiftModal";
 import ConfirmModal from "../../../components/modals/ConfirmModal";
 import Loading from "../../../components/layout/Loading";
+import ErrorMessage from "../../../components/ErrorMessage";
 
 export default function ManageShiftsSection() {
     const [shifts, setShifts] = useState<ShiftDto[]>([]); // TODO: Specify type
@@ -101,11 +102,7 @@ export default function ManageShiftsSection() {
                     </div>
                 </div>
 
-                {error && (
-                    <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
-                        {error}
-                    </div>
-                )}
+                {error && <ErrorMessage error={error} />}
 
                 {loading ? (
                     <Loading fullh={false} message="Loading shifts..." />

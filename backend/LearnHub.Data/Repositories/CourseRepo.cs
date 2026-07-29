@@ -19,7 +19,9 @@ public class CourseRepo : ICourseRepo
     public async Task<PagedResult<Course>> GetAllAsync(int page, int pageSize, string? search = null, CourseCategory? categoryFilter = null, bool? isActiveFilter = null)
     {
         // Create a query from the context of Courses
-        var query = _context.Courses.AsQueryable();
+        var query = _context.Courses
+            .Include(c => c.StudentCourses)
+            .AsQueryable();
 
         // filter first
         if (isActiveFilter != null) query = query.Where(c => c.IsActive == isActiveFilter);
@@ -188,6 +190,15 @@ public class CourseRepo : ICourseRepo
         await _context.SaveChangesAsync();
     }
 
+    public async Task<List<int>> GetEnrolledUserIdsAsync(int courseId)
+    {
+        return await _context.StudentCourses
+            .Where(sc => sc.CourseId == courseId)
+            .Include(sc => sc.Student)
+            .Select(sc => sc.Student.UserId)
+            .ToListAsync();
+    }
+
     public async Task AssignProfessorAsync(
         int courseId,
         int professorId)
@@ -225,6 +236,15 @@ public class CourseRepo : ICourseRepo
         await _context.SaveChangesAsync();
     }
 
+    public async Task<int?> GetProfessorUserIdByCourseAsync(int courseId)
+    {
+        return await _context.Courses
+            .Where(c => c.Id == courseId && c.ProfessorId != null)
+            .Include(c => c.Professor)
+            .Select(c => c.Professor!.UserId)
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<List<Course>> GetByProfessorAsync(int professorId)
     {
         return await _context.Courses
@@ -260,4 +280,9 @@ public class CourseRepo : ICourseRepo
         return studentCourse.EndDate != null;
     }
 
+    public async Task<List<int>> GetCompletedCourseIdsForStudent(int studentId, List<int> courseIds)
+    {
+        var studentCourses = await _context.StudentCourses.Where(sc => sc.StudentId == studentId && courseIds.Contains(sc.CourseId) && sc.EndDate != null).ToListAsync();
+        return studentCourses.Select(sc => sc.CourseId).ToList();
+    }
 }

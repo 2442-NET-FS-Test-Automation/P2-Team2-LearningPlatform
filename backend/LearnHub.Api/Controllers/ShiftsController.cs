@@ -1,9 +1,10 @@
-using AutoMapper;
 using LearnHub.Data;
 using LearnHub.Data.Entities;
 using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using LearnHub.Api.DTOs;
 
 namespace LearnHub.Api.Controllers;
 
@@ -15,7 +16,7 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     private readonly IShiftsRepo _repo = repo;
 
     [HttpGet]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<Shift>>> GetAllShifts(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
@@ -41,7 +42,7 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
         return Ok(response);
     }
     [HttpPost]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<Shift>> AddShift(
         [FromBody] ShiftDto dto
     )
@@ -64,7 +65,7 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     }
 
     [HttpPatch("{id:int}")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<Shift>> UpdateShift(
         int id,
         [FromBody] ShiftDto dto
@@ -93,7 +94,7 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult> RemoveShift(int id)
     {
         if(await _repo.RemoveById(id))
@@ -103,10 +104,3 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
         return BadRequest(new { error = "Failed to remove" });
     }
 }
-
-public class ShiftDto
-{
-    public string? Name { get; set; }
-    public string? StartTime { get; set; }
-    public string? EndTime { get; set; }
-};

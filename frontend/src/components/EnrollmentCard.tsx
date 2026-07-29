@@ -43,7 +43,7 @@ export default function EnrollmentCard({
                                 ? isEnrolling
                                     ? "Enrolling..."
                                     : "Enroll Now"
-                                :  "login to Enroll"}
+                                :  "Login to Enroll"}
                     </p>
                 </div>
             </button>

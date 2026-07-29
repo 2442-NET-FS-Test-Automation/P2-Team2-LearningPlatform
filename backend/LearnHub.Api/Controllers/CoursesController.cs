@@ -142,9 +142,21 @@ public class CoursesController : ControllerBase
         if (pageSize < 1) pageSize = 10;
         if (pageSize > 50) pageSize = 50;
 
+        // Student validation
+        Student? student = null;
 
         //cache key
         var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}:isActive:{true}";
+        
+        if (User.Identity?.IsAuthenticated == true &&
+            User.IsInRole("Student"))
+        {
+            var user = await _userRepo.GetByEmailOrUsernameAsync(User.Identity.Name!);
+
+            if (user != null) student = await _studentRepo.GetByUserIdAsync(user.Id);
+            if (student != null) {cacheKey += $":userId{student.UserId}";}
+        }
+
 
         if(_cache.TryGetValue(cacheKey, out PagedResult<CourseListDto>? cachedResponse) && cachedResponse is not null)
         {
@@ -153,27 +165,33 @@ public class CoursesController : ControllerBase
 
         // await for the courses
         var result = await _repo.GetAllAsync(page, pageSize, searchName, categoryFilter, true);
-        
+
+        var courseIds = result.Items.Select(c => c.Id).ToList();
+
+        var completedIds = student != null ? await _repo.GetCompletedCourseIdsForStudent(student.Id, courseIds) : [];
+
+        var items = result.Items.Select(c => new CourseListDto
+        {
+            Id = c.Id,
+            Name = c.Name,
+            Description = c.Description,
+            Category = c.CategoryName.ToString(),
+            IsActive = c.IsActive,
+            IsFull = c.Capacity == 0 ? 0 : (int)Math.Round(c.StudentCourses.Count * 100.0 / c.Capacity),
+            IsEnrolled = student != null && c.StudentCourses.Any(sc => sc.StudentId == student.Id),
+            Completed = completedIds.Contains(c.Id)
+        }).ToList();
+
         var response = new PagedResult<CourseListDto>
         {
-            Items = result.Items.Select(c => new CourseListDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                Category = c.CategoryName.ToString(),
-                IsActive = c.IsActive
-            }).ToList(),
-
+            Items = items.ToList(),
             Page = result.Page,
             PageSize = result.PageSize,
             TotalItems = result.TotalItems,
             TotalPages = result.TotalPages
         };
 
-
         //set cache response
-
         var cts = GetCoursesCacheToken();
 
         var options = new MemoryCacheEntryOptions()

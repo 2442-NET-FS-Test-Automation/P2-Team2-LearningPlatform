@@ -1,6 +1,9 @@
 import { CalendarDays } from "lucide-react";
 import EventBox from "../../components/EventBox";
 import { DAY_NAMES_SHORT, type ScheduleEvent, type CoursesInfo } from "../../lib/types";
+import { timeToHours } from "../../lib/funcs";
+import Loading from "../../components/layout/Loading";
+import ErrorMessage from "../../components/ErrorMessage";
 
 const HOUR_START = 7;
 const HOUR_END = 21;
@@ -14,7 +17,20 @@ const EVENT_COLORS = [
     "bg-pink-100 text-pink-800 border-pink-300 dark:bg-pink-900/40 dark:text-pink-300 dark:border-pink-700",
 ];
 
-export default function WeeklyScheduleSection({ Courses }: CoursesInfo) {
+type ShiftWindow = {
+    startTime: string;
+    endTime: string;
+};
+
+interface Props extends CoursesInfo {
+    loading: boolean,
+    error: string | null,
+    shift?: ShiftWindow | null;
+    showShift?: boolean;
+}
+
+export default function WeeklyScheduleSection({ Courses, loading, error, shift, showShift=false }: Props) {
+    if (loading) return (<Loading message="Loading..." />);
     const pendingCourses = Courses.filter(c => c.schedule && c.schedule.length > 0);
 
     const events: (ScheduleEvent & { Id: number})[] = pendingCourses.flatMap((course, courseIndex) =>
@@ -29,12 +45,27 @@ export default function WeeklyScheduleSection({ Courses }: CoursesInfo) {
     const totalHours = HOUR_END - HOUR_START;
     const hourMarks = Array.from({ length: totalHours + 1 }, (_, i) => HOUR_START + i);
 
+    const shiftBand = showShift && shift
+        ? {
+            top: (timeToHours(shift.startTime) - HOUR_START) * HOUR_HEIGHT,
+            height: (timeToHours(shift.endTime) - timeToHours(shift.startTime)) * HOUR_HEIGHT,
+        }
+        : null;
+
     return (
         <div className="card space-y-4">
-            <h2 className="flex items-center gap-3 text-xl font-semibold">
-                <CalendarDays size={25} className="text-blue-600 dark:text-blue-400" />
-                Weekly Schedule
-            </h2>
+            <div>
+                <h2 className="flex items-center gap-3 text-xl font-semibold">
+                    <CalendarDays size={25} className="text-blue-600 dark:text-blue-400" />
+                    Weekly Schedule
+                </h2>
+                {shiftBand && (
+                    <p className="mt-1 text-xs text-muted">
+                        The shaded band shows your working shift
+                    </p>
+                )}
+            </div>
+            {error && <ErrorMessage error={error} />}
 
             {events.length === 0 ? (
                 <p className="text-muted">No scheduled class times for your current courses.</p>
@@ -72,6 +103,14 @@ export default function WeeklyScheduleSection({ Courses }: CoursesInfo) {
                                         style={{ top: (h - HOUR_START) * HOUR_HEIGHT }}
                                     />
                                 ))}
+
+                                {shiftBand && dayIndex !== 0 && (
+                                    <div
+                                        className="absolute inset-x-0 z-0 rounded-md bg-slate-400/25 dark:bg-slate-300/10"
+                                        style={{ top: shiftBand.top, height: shiftBand.height }}
+                                        aria-hidden="true"
+                                    />
+                                )}
 
                                 {events.filter((e) => e.day === dayIndex)
                                     .map((e, i) => <EventBox key={i} Event={e} HOUR_START={HOUR_START} HOUR_HEIGHT={HOUR_HEIGHT}/>)

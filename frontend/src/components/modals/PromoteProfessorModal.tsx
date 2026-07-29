@@ -1,6 +1,9 @@
 import { useState } from "react";
 import type { UserDto } from "../../lib/types";
 import { promoteToProfessor } from "../../api/usersRequest";
+import ModalHeader from "./ModalHeader";
+import { UserRoundPen } from "lucide-react";
+import ErrorMessage from "../ErrorMessage";
 
 interface PromoteProfessorModalProps {
     user: UserDto;
@@ -49,17 +52,13 @@ export default function PromoteProfessorModal({
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-
-            <div className="card w-full max-w-md p-6">
-
-                <h2 className="text-2xl font-bold mb-2">
-                    Promote to Professor
-                </h2>
-
-                <p className="text-sm text-slate-500 mb-6">
-                    {user.firstName} {user.lastName}
-                </p>
+        <div className="modal-container">
+            <div className="card modal-card animate-fade-in-up">
+                <ModalHeader 
+                    Icon={UserRoundPen} 
+                    Title={"Promote to Professor"} 
+                    Description={"Promote "+user.firstName+" "+user.lastName+" student account to professor role"} 
+                    OnClose={onClose} />
 
                 <form
                     onSubmit={handleSubmit}
@@ -99,14 +98,9 @@ export default function PromoteProfessorModal({
                         />
                     </div>
 
-                    {error && (
-                        <p className="text-red-500 text-sm">
-                            {error}
-                        </p>
-                    )}
+                    {error && <ErrorMessage error={error} />}
 
                     <div className="flex justify-end gap-3 pt-4">
-
                         <button
                             type="button"
                             className="btn-outline"
@@ -124,13 +118,9 @@ export default function PromoteProfessorModal({
                                 ? "Promoting..."
                                 : "Promote"}
                         </button>
-
                     </div>
-
                 </form>
-
             </div>
-
         </div>
     );
 }

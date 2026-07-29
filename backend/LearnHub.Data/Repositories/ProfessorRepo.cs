@@ -1,10 +1,7 @@
-
-
-using LearnHub.Data;
 using LearnHub.Data.Entities;
-using LearnHub.Data.Repositories;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
+namespace LearnHub.Data.Repositories;
 
 public class ProfessorRepo: IProfessorRepo
 {
@@ -48,5 +45,62 @@ public class ProfessorRepo: IProfessorRepo
     {
         return await _context.Professors
             .AnyAsync(p => p.UserId == userId);
+    }
+    public async Task<Shift?> GetShiftByIdAsync(int userId)
+    {
+        var professor = await _context.Professors.FirstOrDefaultAsync(p => p.UserId == userId);
+        if (professor == null) return null;
+
+        return await _context.Shifts.FirstOrDefaultAsync(s => s.Id == professor.ShiftId);
+    }
+
+    public async Task<ProfessorSummaryResult> GetProfessorSummaryAsync(int userId)
+    {
+        var professor = await _context.Professors
+            .Include(p => p.Courses)
+            .FirstOrDefaultAsync(p => p.UserId == userId);
+            
+        if (professor == null) return new ProfessorSummaryResult();
+
+        var courseIds = professor.Courses.Select(c => c.Id).ToList();
+
+        var totalCourses = courseIds.Count;
+
+        var totalStudents = await _context.StudentCourses
+            .Where(sc => courseIds.Contains(sc.CourseId))
+            .Select(sc => sc.StudentId)
+            .Distinct()
+            .CountAsync();
+
+        var totalActivities = await _context.Activities
+            .Where(a => courseIds.Contains(a.CourseId) && a.IsActive)
+            .CountAsync();
+
+        var pendingSubmissions = await _context.ActivitySubmissions
+            .Include(s => s.Activity)
+            .Where(s => courseIds.Contains(s.Activity.CourseId) && s.Score == null)
+            .CountAsync();
+
+        var topCourses = await _context.Courses
+            .Where(c => courseIds.Contains(c.Id))
+            .Select(c => new TopCourseItem
+            {
+                CourseId = c.Id,
+                Name = c.Name,
+                Category = c.CategoryName.ToString(),
+                EnrolledStudentsCount = c.StudentCourses.Count()
+            })
+            .OrderByDescending(c => c.EnrolledStudentsCount)
+            .Take(5)
+            .ToListAsync();
+
+        return new ProfessorSummaryResult
+        {
+            TotalCourses = totalCourses,
+            TotalStudents = totalStudents,
+            TotalActivities = totalActivities,
+            PendingSubmissionsToGrade = pendingSubmissions,
+            TopCourses = topCourses
+        };
     }
 }

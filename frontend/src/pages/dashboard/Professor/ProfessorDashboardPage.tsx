@@ -6,12 +6,13 @@ import DashboardSideNav from "../../../components/DashboardSideNav";
 import ProfileSection from "../ProfileSection";
 import WeeklyScheduleSection from "../WeeklyScheduleSection";
 import AssignedCoursesSection from "./AssignedCoursesSection";
+import SummarySection from "./SummarySection";
 
 import { useAuth } from "../../../ctx/AuthCtx";
 
-import type { CourseInfo, TabItem } from "../../../lib/types";
+import type { CourseInfo, ShiftDto, TabItem } from "../../../lib/types";
 import { handleLogout } from "../../../lib/funcs";
-import { getProfessorCourses } from "../../../api/professorRequests";
+import { getOwnShift, getProfessorCourses } from "../../../api/professorRequests";
 
 export default function ProfessorDashboardPage() {
     const { user } = useAuth();
@@ -19,33 +20,50 @@ export default function ProfessorDashboardPage() {
 
     const [courses, setCourses] = useState<CourseInfo[]>([]);
     const [loadingCourses, setLoadingCourses] = useState(true);
-    const [coursesError, setCoursesError] = useState<string | null>(null);
+    const [courseError, setCourseError] = useState<string | null>(null);
+
+    const [shift, setShift] = useState<ShiftDto | null>();
+    const [loadingShift, setLoadingShift] = useState(true);
+    const [shiftError, setShiftError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!user) return;
 
         setLoadingCourses(true);
-        setCoursesError(null);
+        setLoadingShift(true);
+        setCourseError(null);
+        setShiftError(null);
 
         getProfessorCourses()
             .then((res) => {
-                console.log(res);
                 setCourses(res ?? []);
             })
             .catch(() => {
-                setCoursesError("Failed to load assigned courses.");
+                setCourseError("Failed to load assigned courses.");
             })
             .finally(() => {
                 setLoadingCourses(false);
             });
+
+        getOwnShift()
+            .then((res) => {
+                setShift(res);
+            })
+            .catch(() => {
+                setShiftError("Failed to load shift")
+            })
+            .finally(() => {
+                setLoadingShift(false);
+            })
     }, [user]);
 
     
-    const [activeTab, setActiveTab] = useState<string>("courses");
+    const [activeTab, setActiveTab] = useState<string>("summary");
     const tabs: TabItem[] = [
         { Id: "profile", Label: "Profile", Icon: <User size={18} /> },
+        { Id: "summary", Label: "Summary", Icon: <LayoutDashboard size={18} /> },
         { Id: "courses", Label: "My Courses", Icon: <BookOpen size={18} />},
-        { Id: "schedule", Label: "Schedule", Icon: <CalendarDays size={18} />}
+        { Id: "schedule", Label: "Schedule", Icon: <CalendarDays size={18} />},
     ];
 
     if (!user) navigate("/login");
@@ -69,9 +87,12 @@ export default function ProfessorDashboardPage() {
 
                     {/* Main Content */}
                     <div key={activeTab} className="flex-1 animate-fade-in-up">
+                        {activeTab === "summary" && <SummarySection />}
                         {activeTab === "profile" && <ProfileSection />}
-                        {activeTab === "courses" && <AssignedCoursesSection courses={courses} loading={loadingCourses} error={coursesError} />}
-                        {activeTab === "schedule" && <WeeklyScheduleSection Courses={courses} />}
+                        {activeTab === "courses" && <AssignedCoursesSection courses={courses} loading={loadingCourses} error={courseError} />}
+                        {activeTab === "schedule" && <WeeklyScheduleSection Courses={courses} 
+                            loading={loadingShift} error={shiftError}
+                            shift={shift} showShift={true} />}
                     </div>
                 </div>
             </div>

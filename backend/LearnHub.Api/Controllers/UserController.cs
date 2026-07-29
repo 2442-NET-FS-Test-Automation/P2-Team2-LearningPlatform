@@ -181,6 +181,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("{id}/promote")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> PromoteToProfessor(
         int id,
         PromoteProfessorDto dto)

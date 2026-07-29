@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import CourseCard from "../../components/CourseCard";
 import PaginationControls from "../../components/layout/PaginationControls";
 import { COURSE_CATEGORIES, type CourseCategory, type CourseCompact } from "../../lib/types";
-import { getEnabledCourses, getEnabledCoursesPaged } from "../../api/coursesRequests";
+import { getEnabledCoursesPaged } from "../../api/coursesRequests";
 import { Search } from "lucide-react";
 import Loading from "../../components/layout/Loading";
 
@@ -64,7 +64,6 @@ export default function CoursesPage() {
         <div className="section-light relative overflow-hidden min-h-screen">
             {/* Ambient background accents, matching Hero */}
             <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl dark:bg-blue-500/10" aria-hidden="true" />
-            <div className="pointer-events-none absolute -right-24 top-80 h-80 w-80 rounded-full bg-amber-300/20 blur-3xl dark:bg-amber-400/10" aria-hidden="true" />
 
             <div className="relative container-page py-16">
 
@@ -127,7 +126,7 @@ export default function CoursesPage() {
                                         className="animate-fade-in-up"
                                         style={{ animationDelay: `${Math.min(i, 8) * 60}ms` }}
                                     >
-                                        <CourseCard Id={c.id} Name={c.name} Description={c.description} CategoryName={c.category} />
+                                        <CourseCard Id={c.id} Name={c.name} Description={c.description} CategoryName={c.category} Completed={c.completed} IsFull={c.isFull} IsEnrolled={c.isEnrolled}/>
                                     </div>
                                 ))}
                             </div>

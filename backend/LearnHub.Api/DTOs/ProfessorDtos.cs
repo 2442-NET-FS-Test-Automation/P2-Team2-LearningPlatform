@@ -1,6 +1,6 @@
 using LearnHub.Data.Entities;
 
-namespace LearnHub.Api.DTOs.Professors;
+namespace LearnHub.Api.DTOs;
 
 public class ProfessorDto
 {
@@ -50,4 +50,19 @@ public class UpdateProfessorDto
     public DateOnly? ContractDate { get; set; }
 
     public bool? IsActive { get; set; }
+}
+
+public class ShiftDto
+{
+    public string? Name { get; set; }
+    public string? StartTime { get; set; }
+    public string? EndTime { get; set; }
+};
+
+public class ReturnShiftDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = default!;
+    public string StartTime { get; set; } = default!;
+    public string EndTime { get; set; } = default!;
 }

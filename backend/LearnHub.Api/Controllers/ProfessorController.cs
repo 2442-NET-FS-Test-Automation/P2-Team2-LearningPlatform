@@ -1,3 +1,4 @@
+using LearnHub.Api.DTOs;
 using LearnHub.Api.DTOs.Courses;
 using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -61,5 +62,61 @@ public class ProfessorsController: ControllerBase
             });
         };
         return response;
+    }
+
+    [HttpGet("Shift")]
+    [Authorize(Roles = "Professor,Admin")]
+    public async Task<ActionResult<ReturnShiftDto>> GetProfessorShift()
+    {
+        var username = User.Identity?.Name;
+        if (username == null) return Unauthorized();
+
+        var user = await _userRepo.GetByEmailOrUsernameAsync(username);
+        if (user == null) return BadRequest(error: "User does not exist");
+
+        var shift = await _professorRepo.GetShiftByIdAsync(user.Id);
+        if (shift == null) return NotFound();
+        
+        return Ok(new ReturnShiftDto {
+            Id = shift.Id,
+            Name = shift.Name,
+            StartTime = shift.StartTime.ToString(),
+            EndTime = shift.EndTime.ToString()
+        });
+    }
+
+    [HttpGet("Summary")]
+    [Authorize(Roles = "Professor,Admin")]
+    public async Task<ActionResult<LearnHub.Api.DTOs.Users.ProfessorSummaryDto>> GetProfessorSummary()
+    {
+        var username = User.Identity?.Name;
+        if (username == null) return Unauthorized();
+
+        var user = await _userRepo.GetByEmailOrUsernameAsync(username);
+        if (user == null) return BadRequest(error: "User does not exist");
+
+        if (username != user.Username) return Forbid();
+
+        var professor = await _professorRepo.GetByUserIdAsync(user.Id);
+        if (professor == null) return BadRequest(error: "User is not a professor");
+
+        var summary = await _professorRepo.GetProfessorSummaryAsync(user.Id);
+        
+        var dto = new LearnHub.Api.DTOs.Users.ProfessorSummaryDto
+        {
+            TotalCourses = summary.TotalCourses,
+            TotalStudents = summary.TotalStudents,
+            TotalActivities = summary.TotalActivities,
+            PendingSubmissionsToGrade = summary.PendingSubmissionsToGrade,
+            TopCourses = summary.TopCourses.Select(tc => new LearnHub.Api.DTOs.Users.ProfessorTopCourseDto
+            {
+                CourseId = tc.CourseId,
+                Name = tc.Name,
+                Category = tc.Category,
+                EnrolledStudentsCount = tc.EnrolledStudentsCount
+            }).ToList()
+        };
+
+        return Ok(dto);
     }
 }

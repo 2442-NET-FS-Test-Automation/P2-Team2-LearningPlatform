@@ -57,7 +57,10 @@ export type CourseCompact = {
     id: number,
     name: string,
     description: string,
-    category: CourseCategory
+    category: CourseCategory,
+    isFull: number,
+    isEnrolled: boolean,
+    completed?: boolean
 }
 
 export type CourseSchedule = {
@@ -299,4 +302,28 @@ export type CreateActivityDto = {
     title: string;
     description: string;
     dueDate: string;
+}
+
+export type Notification = {
+    id: number;
+    userId: number;
+    message: string;
+    isRead: boolean;
+    createdAt: string;
+    link?: string;
+}
+
+export interface ProfessorTopCourse {
+    courseId: number;
+    name: string;
+    category: string;
+    enrolledStudentsCount: number;
+}
+
+export interface ProfessorSummary {
+    totalCourses: number;
+    totalStudents: number;
+    totalActivities: number;
+    pendingSubmissionsToGrade: number;
+    topCourses: ProfessorTopCourse[];
 }
