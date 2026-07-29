@@ -1,10 +1,7 @@
-
-
-using LearnHub.Data;
 using LearnHub.Data.Entities;
-using LearnHub.Data.Repositories;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
+namespace LearnHub.Data.Repositories;
 
 public class ProfessorRepo: IProfessorRepo
 {
@@ -48,5 +45,12 @@ public class ProfessorRepo: IProfessorRepo
     {
         return await _context.Professors
             .AnyAsync(p => p.UserId == userId);
+    }
+    public async Task<Shift?> GetShiftByIdAsync(int userId)
+    {
+        var professor = await _context.Professors.FirstOrDefaultAsync(p => p.UserId == userId);
+        if (professor == null) return null;
+
+        return await _context.Shifts.FirstOrDefaultAsync(s => s.Id == professor.ShiftId);
     }
 }

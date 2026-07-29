@@ -54,6 +54,7 @@ export default function CourseDetailsPage() {
 
     const [studentActivities, setStudentActivities] = useState<ActivityWithSubmission[]>([]);
     const [courseActivities, setCourseActivities] = useState<ActivityWithSubmissions[]>([]);
+    const [activitiesPercentage, setActivitiesPercentage] = useState(0);
     const [submittingActivityId, setSubmittingActivityId] = useState<number | null>(null);
     const [showCreateActivity, setShowCreateActivity] = useState(false);
     const [deleteActivityId, setDeleteActivityId] = useState<number | null>(null);
@@ -75,7 +76,7 @@ export default function CourseDetailsPage() {
         getStudentActivities(Number(id))
             .then(setStudentActivities)
             .catch(e => console.log(e));
-    }, [updated])
+    }, [updated, isEnrolled])
 
     useEffect(() => {
         if (!user) return;
@@ -88,6 +89,7 @@ export default function CourseDetailsPage() {
                 .catch(() => {
                     setIsEnrolled(false);
                 });
+            
         } else if (user.role === "Professor" || user.role === "Admin") {
             getCourseActivities(Number(id), activityTab === "active")
                 .then(setCourseActivities)
@@ -103,19 +105,23 @@ export default function CourseDetailsPage() {
             return;
         }
         if (isEnrolled || isEnrolling) return;
-
+        
         setIsEnrolling(true);
         studentEnroll(user.id, Number(id))
-            .then(() => {
-                setIsEnrolled(true);
-                setEnrolledCount((prev) => prev + 1);
-            })
-            .catch((e) => console.log(e))
-            .finally(() => setIsEnrolling(false));
+        .then(() => {
+            setIsEnrolled(true);
+            setEnrolledCount((prev) => prev + 1);
+        })
+        .catch((e) => console.log(e))
+        .finally(() => setIsEnrolling(false));
     };
-
+    
     const pendingActivities = studentActivities.filter(a => !a.submission);
     const completedActivities = studentActivities.filter(a => a.submission);
+    
+    useEffect(() => {
+        setActivitiesPercentage(Math.round((completedActivities.length / studentActivities.length) * 100));
+    }, [pendingActivities, completedActivities])
 
     const handleComplete = () => {
         if (!user) return null;
@@ -463,9 +469,7 @@ export default function CourseDetailsPage() {
                                                 <div className="space-y-3">
                                                     <div className="flex items-baseline justify-between">
                                                         <span className="big-stat">
-                                                            {studentActivities.length > 0
-                                                                ? Math.round((completedActivities.length / studentActivities.length) * 100)
-                                                                : 100}%
+                                                            {studentActivities.length > 0 ? Math.round(activitiesPercentage) : 0}%
                                                         </span>
                                                         <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
                                                             <ListChecks size={16} />
@@ -476,9 +480,7 @@ export default function CourseDetailsPage() {
                                                         <div
                                                             className="h-2 rounded-full bg-blue-600 transition-all dark:bg-blue-400"
                                                             style={{
-                                                                width: `${studentActivities.length > 0
-                                                                    ? (completedActivities.length / studentActivities.length) * 100
-                                                                    : 100}%`
+                                                                width: `${studentActivities.length > 0 ? activitiesPercentage : 0}%`
                                                             }}
                                                         />
                                                     </div>
@@ -491,7 +493,8 @@ export default function CourseDetailsPage() {
                                                             </button>
                                                         :
                                                             <button
-                                                                className="btn-primary w-full justify-center gap-2 text-center mt-2"
+                                                                className="btn-primary w-full justify-center gap-2 text-center mt-2 disabled:opacity-50"
+                                                                disabled={activitiesPercentage !== 100}
                                                                 onClick={() => {handleComplete()}}
                                                             >
                                                                 Mark as completed
