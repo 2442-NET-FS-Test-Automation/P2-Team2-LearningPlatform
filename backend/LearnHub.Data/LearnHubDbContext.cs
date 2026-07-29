@@ -15,9 +15,17 @@ public class LearnHubDbContext(DbContextOptions<LearnHubDbContext> options) : Db
     public DbSet<CourseSchedule> CourseSchedules => Set<CourseSchedule>();
     public DbSet<Activity> Activities => Set<Activity>();
     public DbSet<ActivitySubmission> ActivitySubmissions => Set<ActivitySubmission>();
+    public DbSet<Notification> Notifications => Set<Notification>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Notification>()
+            .HasOne(n => n.User)
+            .WithMany()
+            .HasForeignKey(n => n.UserId);
+
 
         modelBuilder.Entity<StudentCourse>()
             .HasOne(s => s.Student)

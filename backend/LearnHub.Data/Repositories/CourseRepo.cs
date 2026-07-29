@@ -188,6 +188,15 @@ public class CourseRepo : ICourseRepo
         await _context.SaveChangesAsync();
     }
 
+    public async Task<List<int>> GetEnrolledUserIdsAsync(int courseId)
+    {
+        return await _context.StudentCourses
+            .Where(sc => sc.CourseId == courseId)
+            .Include(sc => sc.Student)
+            .Select(sc => sc.Student.UserId)
+            .ToListAsync();
+    }
+
     public async Task AssignProfessorAsync(
         int courseId,
         int professorId)
@@ -223,6 +232,15 @@ public class CourseRepo : ICourseRepo
 
 
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<int?> GetProfessorUserIdByCourseAsync(int courseId)
+    {
+        return await _context.Courses
+            .Where(c => c.Id == courseId && c.ProfessorId != null)
+            .Include(c => c.Professor)
+            .Select(c => c.Professor!.UserId)
+            .FirstOrDefaultAsync();
     }
 
     public async Task<List<Course>> GetByProfessorAsync(int professorId)

@@ -300,3 +300,11 @@ export type CreateActivityDto = {
     description: string;
     dueDate: string;
 }
+
+export type Notification = {
+    id: number;
+    userId: number;
+    message: string;
+    isRead: boolean;
+    createdAt: string;
+}

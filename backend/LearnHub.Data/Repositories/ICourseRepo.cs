@@ -24,10 +24,14 @@ public interface ICourseRepo
 
     Task RemoveStudentAsync(int studentId, int courseId);
 
+    Task<List<int>> GetEnrolledUserIdsAsync(int courseId);
+
+
     Task AssignProfessorAsync(int courseId, int professorId);
 
     Task RemoveProfessorAsync(int courseId);
     Task<List<Course>> GetByProfessorAsync(int professorId);
+    Task<int?> GetProfessorUserIdByCourseAsync(int courseId);
     Task UpdateScheduleAsync(int courseId, List<CourseSchedule> schedules);
     Task<bool> IsCourseActiveAsync(int courseId);
     Task<bool> IsCourseCompleted(int studentId, int courseId);
