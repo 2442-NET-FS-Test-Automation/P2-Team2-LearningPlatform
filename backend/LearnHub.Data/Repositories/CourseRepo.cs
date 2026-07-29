@@ -166,8 +166,6 @@ public class CourseRepo : ICourseRepo
         };
 
         _context.StudentCourses.Add(studentCourse);
-
-        await _context.SaveChangesAsync();
     }
 
     public async Task RemoveStudentAsync(
@@ -186,8 +184,6 @@ public class CourseRepo : ICourseRepo
 
 
         _context.StudentCourses.Remove(studentCourse);
-
-        await _context.SaveChangesAsync();
     }
 
     public async Task<List<int>> GetEnrolledUserIdsAsync(int courseId)
@@ -214,8 +210,6 @@ public class CourseRepo : ICourseRepo
 
         course.ProfessorId = professorId;
 
-
-        await _context.SaveChangesAsync();
     }
 
     public async Task RemoveProfessorAsync(
@@ -232,8 +226,6 @@ public class CourseRepo : ICourseRepo
 
         course.ProfessorId = null;
 
-
-        await _context.SaveChangesAsync();
     }
 
     public async Task<int?> GetProfessorUserIdByCourseAsync(int courseId)
@@ -268,11 +260,6 @@ public class CourseRepo : ICourseRepo
 
         await _context.SaveChangesAsync();
     }
-    public async Task<bool> IsCourseActiveAsync(int courseId)
-    {
-        return await _context.Courses
-            .AnyAsync(c => c.Id == courseId && c.IsActive);
-    }
     public async Task<bool> IsCourseCompleted(int studentId, int courseId)
     {
         var studentCourse = await _context.StudentCourses.FirstOrDefaultAsync(sc => sc.CourseId == courseId && sc.StudentId == studentId);
@@ -285,4 +272,79 @@ public class CourseRepo : ICourseRepo
         var studentCourses = await _context.StudentCourses.Where(sc => sc.StudentId == studentId && courseIds.Contains(sc.CourseId) && sc.EndDate != null).ToListAsync();
         return studentCourses.Select(sc => sc.CourseId).ToList();
     }
+
+    public async Task ValidateStudentEnrollmentAsync(
+        int studentId,
+        int courseId)
+    {
+        var course = await _context.Courses
+            .Include(c => c.Schedule)
+            .FirstOrDefaultAsync(c => c.Id == courseId);
+
+        if (course == null)
+            throw new KeyNotFoundException("Course not found.");
+
+        if (!course.IsActive)
+            throw new InvalidOperationException(
+                "Cannot assign inactive course.");
+
+        var existingSchedules = await _context.CourseSchedules
+            .Where(cs => cs.Course.StudentCourses.Any(sc => sc.StudentId == studentId))
+            .ToListAsync();
+
+        var hasConflict = existingSchedules.Any(existing =>
+            course.Schedule.Any(newSchedule =>
+                existing.Day == newSchedule.Day &&
+                existing.StartTime < newSchedule.EndTime &&
+                existing.EndTime > newSchedule.StartTime));
+    
+        if (hasConflict)
+            throw new InvalidOperationException(
+                $"Student has a schedule conflict with this course {course.Name}.");
+    }
+
+    public async Task ValidateProfessorAssignmentAsync(
+        int professorId,
+        int courseId)
+    {
+        var professor = await _context.Professors
+            .Include(p => p.Shift)
+            .FirstOrDefaultAsync(p => p.Id == professorId);
+
+        if (professor == null)
+            throw new KeyNotFoundException("Professor not found.");
+
+        var course = await _context.Courses
+            .Include(c => c.Schedule)
+            .FirstOrDefaultAsync(c => c.Id == courseId);
+
+        if (course == null)
+            throw new KeyNotFoundException("Course not found.");
+
+        if (!course.IsActive)
+            throw new InvalidOperationException(
+                "Cannot assign inactive course.");
+
+        var outsideShift = course.Schedule.Any(s =>
+            s.StartTime < professor.Shift.StartTime ||
+            s.EndTime > professor.Shift.EndTime);
+
+        if (outsideShift)
+            throw new InvalidOperationException(
+                $"{course.Name} is outside professor shift.");
+
+        var existingSchedules = await _context.CourseSchedules
+            .Where(cs => cs.Course.ProfessorId == professorId)
+            .ToListAsync();
+
+        var hasConflict = existingSchedules.Any(existing =>
+            course.Schedule.Any(newSchedule =>
+                existing.Day == newSchedule.Day &&
+                existing.StartTime < newSchedule.EndTime &&
+                existing.EndTime > newSchedule.StartTime));
+        if (hasConflict)
+            throw new InvalidOperationException(
+                $"Professor has a schedule conflict with this course {course.Name}.");
+    }
+    
 }
