@@ -46,6 +46,7 @@ builder.Services.AddScoped<ICourseRepo, CourseRepo>();
 builder.Services.AddScoped<IReportRepo, ReportRepo>();
 builder.Services.AddScoped<IShiftsRepo, ShiftsRepo>();
 builder.Services.AddScoped<IActivityRepo, ActivityRepo>();
+builder.Services.AddScoped<INotificationsRepo, NotificationsRepo>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();

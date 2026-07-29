@@ -107,3 +107,13 @@ public class ProfessorInfoDto
 
     public List<CourseListDto> Courses {get;set;} = [];
 }
+
+public class NotificationDto
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public bool IsRead { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public string? Link { get; set; }
+}

@@ -23,4 +23,6 @@ public interface IActivityRepo
     Task<bool> CourseExistsAsync(int courseId);
     Task<PagedResult<Activity>> GetByCourseWithStudentSubmissionAsync(int courseId, int studentId, int page, int pageSize);
     Task<Activity?> GetByIdWithSubmissionsAsync(int id);
+    Task<int?> GetUserIdBySubmissionAsync(int submissionId);
+    Task<int?> GetCourseIdBySubmissionAsync(int submissionId);
 }

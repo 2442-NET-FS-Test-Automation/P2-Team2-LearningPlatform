@@ -6,6 +6,7 @@ import { useTheme } from "../../ctx/ThemeCtx";
 import { useAuth } from "../../ctx/AuthCtx";
 
 import { getDashboardRoute } from "../../lib/funcs";
+import NotificationsDropdown from "./NotificationsDropdown";
 
 export default function Navbar() {
     const { theme, toggleTheme } = useTheme();
@@ -45,6 +46,9 @@ export default function Navbar() {
                     )}
                     
                     
+                    {/* Notifications */}
+                    {user && <NotificationsDropdown />}
+                    
                     {/* Dark mode toggle */}
                     <button
                         onClick={toggleTheme}
@@ -64,6 +68,7 @@ export default function Navbar() {
                     >
                         {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
                     </button>
+                    {user && <NotificationsDropdown />}
                     <button
                         onClick={() => setIsMenuOpen((prev) => !prev)}
                         className="rounded-full p-2 transition hover:bg-slate-200 dark:hover:bg-slate-500"
