@@ -209,6 +209,9 @@
     .indigo-accent-watermark {
         @apply text-indigo-300 dark:text-indigo-900;
     }
+    .emerald-accent {
+        @apply bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-300;
+    }
 }
 
 @keyframes float-slow {

@@ -16,8 +16,9 @@ public class CourseListDto
     public bool IsActive { get; set; }
 
     public decimal? Price { get; set; }
-    public int IsFull {get; set;}
-    public bool IsEnrolled{get; set;}
+    public int IsFull { get; set; }
+    public bool IsEnrolled{ get; set; }
+    public bool? Completed { get; set; } = null;
 }
 
 public class CourseScheduleDto

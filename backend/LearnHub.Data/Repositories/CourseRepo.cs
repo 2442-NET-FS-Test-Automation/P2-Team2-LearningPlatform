@@ -262,4 +262,9 @@ public class CourseRepo : ICourseRepo
         return studentCourse.EndDate != null;
     }
 
+    public async Task<List<int>> GetCompletedCourseIdsForStudent(int studentId, List<int> courseIds)
+    {
+        var studentCourses = await _context.StudentCourses.Where(sc => sc.StudentId == studentId && courseIds.Contains(sc.CourseId) && sc.EndDate != null).ToListAsync();
+        return studentCourses.Select(sc => sc.CourseId).ToList();
+    }
 }
