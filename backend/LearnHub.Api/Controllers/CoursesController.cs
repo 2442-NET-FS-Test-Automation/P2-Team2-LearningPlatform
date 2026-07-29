@@ -145,17 +145,18 @@ public class CoursesController : ControllerBase
         // Student validation
         Student? student = null;
 
+        //cache key
+        var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}:isActive:{true}";
+        
         if (User.Identity?.IsAuthenticated == true &&
             User.IsInRole("Student"))
         {
             var user = await _userRepo.GetByEmailOrUsernameAsync(User.Identity.Name!);
 
-            if (user != null)
-                student = await _studentRepo.GetByUserIdAsync(user.Id);
+            if (user != null) student = await _studentRepo.GetByUserIdAsync(user.Id);
+            if (student != null) cacheKey += $":userId{student.UserId}";
         }
 
-        //cache key
-        var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}:isActive:{true}";
 
         if(_cache.TryGetValue(cacheKey, out PagedResult<CourseListDto>? cachedResponse) && cachedResponse is not null)
         {
