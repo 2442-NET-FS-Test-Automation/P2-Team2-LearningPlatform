@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Clock, GraduationCap, ListChecks, Plus, Trash2, Trophy, Users, RotateCcw } from "lucide-react";
+import { Clock, GraduationCap, ListChecks, Plus, Archive, Trophy, Users, RotateCcw } from "lucide-react";
 
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import ActivitySubmissionForm from "../../components/forms/ActivitySubmissionForm";
@@ -33,6 +33,7 @@ import type {
     CreateActivityDto
 } from "../../lib/types";
 import EnrollmentCard from "../../components/EnrollmentCard";
+import ErrorMessage from "../../components/ErrorMessage";
 
 export default function CourseDetailsPage() {
     const { user } = useAuth();
@@ -53,6 +54,7 @@ export default function CourseDetailsPage() {
 
     const [studentActivities, setStudentActivities] = useState<ActivityWithSubmission[]>([]);
     const [courseActivities, setCourseActivities] = useState<ActivityWithSubmissions[]>([]);
+    const [activitiesPercentage, setActivitiesPercentage] = useState(0);
     const [submittingActivityId, setSubmittingActivityId] = useState<number | null>(null);
     const [showCreateActivity, setShowCreateActivity] = useState(false);
     const [deleteActivityId, setDeleteActivityId] = useState<number | null>(null);
@@ -74,7 +76,7 @@ export default function CourseDetailsPage() {
         getStudentActivities(Number(id))
             .then(setStudentActivities)
             .catch(e => console.log(e));
-    }, [updated])
+    }, [updated, isEnrolled])
 
     useEffect(() => {
         if (!user) return;
@@ -87,6 +89,7 @@ export default function CourseDetailsPage() {
                 .catch(() => {
                     setIsEnrolled(false);
                 });
+            
         } else if (user.role === "Professor" || user.role === "Admin") {
             getCourseActivities(Number(id), activityTab === "active")
                 .then(setCourseActivities)
@@ -102,19 +105,23 @@ export default function CourseDetailsPage() {
             return;
         }
         if (isEnrolled || isEnrolling) return;
-
+        
         setIsEnrolling(true);
         studentEnroll(user.id, Number(id))
-            .then(() => {
-                setIsEnrolled(true);
-                setEnrolledCount((prev) => prev + 1);
-            })
-            .catch((e) => console.log(e))
-            .finally(() => setIsEnrolling(false));
+        .then(() => {
+            setIsEnrolled(true);
+            setEnrolledCount((prev) => prev + 1);
+        })
+        .catch((e) => console.log(e))
+        .finally(() => setIsEnrolling(false));
     };
-
+    
     const pendingActivities = studentActivities.filter(a => !a.submission);
     const completedActivities = studentActivities.filter(a => a.submission);
+    
+    useEffect(() => {
+        setActivitiesPercentage(Math.round((completedActivities.length / studentActivities.length) * 100));
+    }, [pendingActivities, completedActivities])
 
     const handleComplete = () => {
         if (!user) return null;
@@ -286,7 +293,7 @@ export default function CourseDetailsPage() {
                                         {/* Título y botón */}
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <h2 className="text-xl font-semibold">Student Activities</h2>
+                                                <h2 className="text-2xl font-semibold">Student Activities</h2>
                                                 <p className="mt-2 text-muted">
                                                     Your students have submitted
                                                 </p>
@@ -429,10 +436,10 @@ export default function CourseDetailsPage() {
                                                         {activityTab === "active" ? (
                                                             <button
                                                                 onClick={() => setDeleteActivityId(a.id)}
-                                                                className="rounded-full p-2 text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
+                                                                className="rounded-full p-2 text-amber-600 transition-colors hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-900/30"
                                                                 title="Archive activity"
                                                             >
-                                                                <Trash2 size={18}/>
+                                                                <Archive size={18}/>
                                                             </button>
                                                         ) : (
                                                             <button
@@ -462,9 +469,7 @@ export default function CourseDetailsPage() {
                                                 <div className="space-y-3">
                                                     <div className="flex items-baseline justify-between">
                                                         <span className="big-stat">
-                                                            {studentActivities.length > 0
-                                                                ? Math.round((completedActivities.length / studentActivities.length) * 100)
-                                                                : 100}%
+                                                            {studentActivities.length > 0 ? Math.round(activitiesPercentage) : 0}%
                                                         </span>
                                                         <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
                                                             <ListChecks size={16} />
@@ -475,9 +480,7 @@ export default function CourseDetailsPage() {
                                                         <div
                                                             className="h-2 rounded-full bg-blue-600 transition-all dark:bg-blue-400"
                                                             style={{
-                                                                width: `${studentActivities.length > 0
-                                                                    ? (completedActivities.length / studentActivities.length) * 100
-                                                                    : 100}%`
+                                                                width: `${studentActivities.length > 0 ? activitiesPercentage : 0}%`
                                                             }}
                                                         />
                                                     </div>
@@ -490,17 +493,14 @@ export default function CourseDetailsPage() {
                                                             </button>
                                                         :
                                                             <button
-                                                                className="btn-primary w-full justify-center gap-2 text-center mt-2"
+                                                                className="btn-primary w-full justify-center gap-2 text-center mt-2 disabled:opacity-50"
+                                                                disabled={activitiesPercentage !== 100}
                                                                 onClick={() => {handleComplete()}}
                                                             >
                                                                 Mark as completed
                                                             </button>
                                                     }
-                                                    {error && 
-                                                        <p className="text-red-600 dark:text-red-400 text-sm mt-2">
-                                                            {error}
-                                                        </p>
-                                                    }
+                                                    {error && <ErrorMessage error={error} />}
                                                 </div>
                                             ) : (
                                                 <EnrollmentCard
@@ -592,9 +592,9 @@ export default function CourseDetailsPage() {
         )}
         {deleteActivityId !== null &&
             <ConfirmModal
-                title="Delete this activity?"
-                message="Students will lose access to this activity and any submissions tied to it. This can't be undone."
-                confirmLabel="Delete"
+                title="Archive this activity?"
+                message="Students will lose access to this activity and any submissions tied to it."
+                confirmLabel="Archive"
                 variant="danger"
                 onConfirm={handleDeleteActivity}
                 onCancel={() => setDeleteActivityId(null)}

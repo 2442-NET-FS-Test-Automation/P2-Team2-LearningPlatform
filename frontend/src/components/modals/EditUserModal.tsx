@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { UserRoundPen, X } from "lucide-react";
 
 import type { UserDetailsDto ,UpdateProfileDto, CourseSelectDto } from "../../lib/types";
 import { updateUser } from "../../api/usersRequest";
 import { getEnabledCourses } from "../../api/coursesRequests";
+import ModalHeader from "./ModalHeader";
+import ErrorMessage from "../ErrorMessage";
 
 interface Props {
     user: UserDetailsDto;
@@ -136,17 +138,14 @@ export default function EditUserModal({
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-            <div className="card w-full max-w-3xl shadow-xl animate-in fade-in zoom-in duration-200 flex flex-col max-h-[90vh]">
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold">Edit User</h2>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-                        <X size={20} />
-                    </button>
-                </div>
-
-                {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">{error}</div>}
-
+        <div className="modal-container">
+            <div className="card modal-card animate-fade-in-up">
+                <ModalHeader 
+                    Icon={UserRoundPen} 
+                    Title={"Edit User"} 
+                    Description={"Edit an existing course"} 
+                    OnClose={onClose} />
+                
                 <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                     <form id="editUserForm" onSubmit={handleSubmit} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -369,6 +368,8 @@ export default function EditUserModal({
                         )}
                     </form>
                 </div>
+
+                {error && <ErrorMessage error={error} />}
                 
                 <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
                     <button type="button" className="btn-outline" onClick={onClose}>

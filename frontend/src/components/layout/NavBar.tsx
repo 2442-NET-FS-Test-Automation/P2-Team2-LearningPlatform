@@ -17,18 +17,20 @@ export default function Navbar() {
 
     return (
         <header className="navbar">
-            <nav className="flex container-page items-center justify-between py-4">
+            <nav className="relative flex container-page items-center justify-between py-4">
                 <Link to="/" onClick={closeMenu} className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                     LearnHub
                 </Link>
-                {user && (
-                    <div className="flex items-center gap-2 ">
-                        <p className="mr-auto">{"Hi, "+user.firstName}</p>
-                        <span className="blue-accent-chip rounded-full px-2.5 py-0.5 text-xs font-semibold">
-                            {user.role}
-                        </span>
-                    </div>
-                )}
+                <div className="absolute left-1/2 -translate-x-1/2">
+                    {user && (
+                        <div className="hidden md:flex items-center gap-2 ">
+                            <p className="mr-auto">{"Hi, "+user.firstName}</p>
+                            <span className="blue-accent-chip rounded-full px-2.5 py-0.5 text-xs font-semibold">
+                                {user.role}
+                            </span>
+                        </div>
+                    )}
+                </div>
 
                 {/* Desktop controls */}
                 <div className="hidden items-center gap-8 md:flex">
@@ -82,6 +84,15 @@ export default function Navbar() {
             {isMenuOpen && (
                 <div className="border-t border-slate-200 bg-white px-8 py-4 dark:border-slate-800 dark:bg-slate-950 md:hidden">
                     <div className="flex flex-col gap-4">
+                        {user && 
+                            <div className="flex items-center gap-2">
+                                <p className="">{"Hi, "+user.firstName}</p>
+                                <span className="blue-accent-chip rounded-full px-2.5 py-0.5 text-xs font-semibold">
+                                    {user.role}
+                                </span>
+                            </div>
+                        }
+                        <div className="border-t"></div>
                         <Link to="/courses" onClick={closeMenu} className="nav-link">Courses</Link>
                         {user ? (
                             <Link to={getDashboardRoute(user.role)} onClick={closeMenu} className="nav-link">Dashboard</Link>

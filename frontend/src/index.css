@@ -130,6 +130,14 @@
         @apply bg-white/80 dark:bg-slate-900/60;
     }
 
+    /* Modals */
+    .modal-container {
+        @apply fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm;
+    }
+    .modal-card {
+        @apply w-full max-w-3xl max-h-screen shadow-xl overflow-auto bg-white dark:bg-slate-800;
+    }
+
     /* Text colors */
     .text-muted {
         @apply text-slate-600 dark:text-slate-400;

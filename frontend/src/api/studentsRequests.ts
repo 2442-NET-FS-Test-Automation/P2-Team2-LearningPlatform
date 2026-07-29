@@ -22,6 +22,5 @@ export async function getStudentCourses(userId: number){
 
 export async function setCourseCompleted(userId: number, courseId: number) {
     const result = await api.post(`/Students/${userId}/Courses/${courseId}/complete`);
-    console.log(result);
     return { status: result.status, data: result.data.error };
 }

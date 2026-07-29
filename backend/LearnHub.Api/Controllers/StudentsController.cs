@@ -114,7 +114,7 @@ public class StudentsController(ICourseRepo courseRepo, IStudentRepo studentRepo
     public async Task<ActionResult<ICollection<CourseDetailDto>>> GetStudentCourses(
         int userId,
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10
+        [FromQuery] int pageSize = 50
     )
     {
         // Set pagination limits

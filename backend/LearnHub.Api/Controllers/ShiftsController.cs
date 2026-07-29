@@ -1,9 +1,10 @@
-using AutoMapper;
 using LearnHub.Data;
 using LearnHub.Data.Entities;
 using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using LearnHub.Api.DTOs;
 
 namespace LearnHub.Api.Controllers;
 
@@ -103,10 +104,3 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
         return BadRequest(new { error = "Failed to remove" });
     }
 }
-
-public class ShiftDto
-{
-    public string? Name { get; set; }
-    public string? StartTime { get; set; }
-    public string? EndTime { get; set; }
-};

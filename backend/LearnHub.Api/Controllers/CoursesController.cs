@@ -142,9 +142,21 @@ public class CoursesController : ControllerBase
         if (pageSize < 1) pageSize = 10;
         if (pageSize > 50) pageSize = 50;
 
+        // Student validation
+        Student? student = null;
 
         //cache key
         var cacheKey = $"courses:all:page{page}:size{pageSize}:search{searchName}:category:{categoryFilter}:isActive:{true}";
+        
+        if (User.Identity?.IsAuthenticated == true &&
+            User.IsInRole("Student"))
+        {
+            var user = await _userRepo.GetByEmailOrUsernameAsync(User.Identity.Name!);
+
+            if (user != null) student = await _studentRepo.GetByUserIdAsync(user.Id);
+            if (student != null) cacheKey += $":userId{student.UserId}";
+        }
+
 
         if(_cache.TryGetValue(cacheKey, out PagedResult<CourseListDto>? cachedResponse) && cachedResponse is not null)
         {
@@ -162,7 +174,9 @@ public class CoursesController : ControllerBase
                 Name = c.Name,
                 Description = c.Description,
                 Category = c.CategoryName.ToString(),
-                IsActive = c.IsActive
+                IsActive = c.IsActive,
+                IsFull =  c.Capacity == 0 ? 0 : (int)Math.Round(c.StudentCourses.Count * 100.0 / c.Capacity),
+                IsEnrolled = student != null && c.StudentCourses.Any(sc => sc.StudentId == student.Id)
             }).ToList(),
 
             Page = result.Page,

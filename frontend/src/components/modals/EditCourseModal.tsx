@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { BookOpenCheck, X } from "lucide-react";
 
-import { COURSE_CATEGORIES, DAY_NAMES, type CourseSchedule, type CourseCategory, type UpdateCourseDto } from "../../lib/types";
+import { COURSE_CATEGORIES, DAY_NAMES, type CourseSchedule, type UpdateCourseDto } from "../../lib/types";
 import { getCourseDetails, updateCourse } from "../../api/coursesRequests";
+import ModalHeader from "./ModalHeader";
+import ErrorMessage from "../ErrorMessage";
 
 interface Props {
     courseId: number;
@@ -83,16 +85,13 @@ export default function EditCourseModal({ courseId, onClose, onUpdated }: Props)
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-            <div className="card w-full max-w-2xl shadow-xl animate-in fade-in zoom-in duration-200 flex flex-col max-h-[90vh]">
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold">Edit Course</h2>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-                        <X size={20} />
-                    </button>
-                </div>
-
-                {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">{error}</div>}
+        <div className="modal-container">
+            <div className="card modal-card animate-fade-in-up">
+                <ModalHeader 
+                    Icon={BookOpenCheck} 
+                    Title={"Edit Course"} 
+                    Description={"Edit details of an existing course"} 
+                    OnClose={onClose} />
 
                 <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                     <form id="editCourseForm" onSubmit={handleSubmit} className="space-y-4">
@@ -217,6 +216,8 @@ export default function EditCourseModal({ courseId, onClose, onUpdated }: Props)
                         </div>
                     </form>
                 </div>
+
+                {error && <ErrorMessage error={error}/>}
 
                 <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200 dark:border-slate-800">
                     <button type="button" onClick={onClose} className="btn-outline px-4 py-2">Cancel</button>

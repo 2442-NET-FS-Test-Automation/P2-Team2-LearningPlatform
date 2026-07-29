@@ -19,7 +19,9 @@ public class CourseRepo : ICourseRepo
     public async Task<PagedResult<Course>> GetAllAsync(int page, int pageSize, string? search = null, CourseCategory? categoryFilter = null, bool? isActiveFilter = null)
     {
         // Create a query from the context of Courses
-        var query = _context.Courses.AsQueryable();
+        var query = _context.Courses
+            .Include(c => c.StudentCourses)
+            .AsQueryable();
 
         // filter first
         if (isActiveFilter != null) query = query.Where(c => c.IsActive == isActiveFilter);

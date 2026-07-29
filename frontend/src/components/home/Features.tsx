@@ -11,7 +11,7 @@ export default function Features() {
 
     async function coursesCount() {
         let result = await getEnabledCourses(1, 200);
-        setCourseStat(result.items.length);
+        setCourseStat(result.length);
     }
 
     async function professorsCount() {
