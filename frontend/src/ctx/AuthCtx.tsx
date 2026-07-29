@@ -57,12 +57,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    // const setToken = (token: string) => {
-    //     // localStorage.setItem("token", token);
-    // }
+    const setToken = (token: string) => {
+        // localStorage.setItem("token", token);
+    }
 
     return (
-        <AuthContext.Provider value={{ user, setUser, isLoading, login, register, logout }}>
+        <AuthContext.Provider value={{ user, setUser, isLoading, login, register, logout, setToken }}>
             {children}
         </AuthContext.Provider>
     );

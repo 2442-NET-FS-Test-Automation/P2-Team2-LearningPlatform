@@ -20,7 +20,7 @@ api.interceptors.response.use(
             if (!isLoginRequest) {
                 localStorage.removeItem("token");
                 console.log("Unauthorized");
-                window.location.href = "/login";
+                // window.location.href = "/login";
             }
         }
         return Promise.reject(error);
