@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BookOpen, Users, FileText, Clock, Trophy } from "lucide-react";
 import type { ProfessorSummary } from "../../../lib/types";
 import { getProfessorSummary } from "../../../api/professorRequests";
+import { Link } from "react-router-dom";
 
 export default function SummarySection() {
     const [summary, setSummary] = useState<ProfessorSummary | null>(null);
@@ -42,7 +43,7 @@ export default function SummarySection() {
         <div className="flex flex-col gap-8">
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {metrics.map((metric, i) => (
-                    <div key={i} className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/50 transition-transform hover:-translate-y-1">
+                    <div key={i} className="flex items-center card gap-4 rounded-xl p-6 transition-transform hover:-translate-y-1">
                         <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full ${metric.bg}`}>
                             {metric.icon}
                         </div>
@@ -54,7 +55,7 @@ export default function SummarySection() {
                 ))}
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm dark:border-slate-800 dark:bg-slate-950/50">
+            <div className="card overflow-hidden">
                 <div className="flex items-center gap-2 border-b border-slate-100 bg-slate-50/50 p-6 dark:border-slate-800/50 dark:bg-slate-900/20">
                     <Trophy className="text-yellow-500" size={20} />
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Top Courses by Enrollments</h3>
@@ -73,7 +74,9 @@ export default function SummarySection() {
                                         #{index + 1}
                                     </div>
                                     <div>
-                                        <h4 className="font-semibold text-slate-900 dark:text-slate-100">{course.name}</h4>
+                                        <Link to={"/courses/"+course.courseId}>
+                                            <h4 className="font-semibold text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400">{course.name}</h4>
+                                        </Link>
                                         <p className="text-sm text-slate-500 dark:text-slate-400">{course.category}</p>
                                     </div>
                                 </div>
