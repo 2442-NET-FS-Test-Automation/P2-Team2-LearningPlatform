@@ -60,10 +60,10 @@ export default function ProfessorDashboardPage() {
     
     const [activeTab, setActiveTab] = useState<string>("summary");
     const tabs: TabItem[] = [
-        { Id: "summary", Label: "Summary", Icon: <LayoutDashboard size={18} /> },
         { Id: "profile", Label: "Profile", Icon: <User size={18} /> },
+        { Id: "summary", Label: "Summary", Icon: <LayoutDashboard size={18} /> },
         { Id: "courses", Label: "My Courses", Icon: <BookOpen size={18} />},
-        { Id: "schedule", Label: "Schedule", Icon: <CalendarDays size={18} />}
+        { Id: "schedule", Label: "Schedule", Icon: <CalendarDays size={18} />},
     ];
 
     if (!user) navigate("/login");
