@@ -65,6 +65,7 @@ public class ProfessorsController: ControllerBase
     }
 
     [HttpGet("Shift")]
+    [Authorize(Roles = "Professor,Admin")]
     public async Task<ActionResult<ReturnShiftDto>> GetProfessorShift()
     {
         var username = User.Identity?.Name;

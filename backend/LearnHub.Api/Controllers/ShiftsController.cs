@@ -16,7 +16,7 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     private readonly IShiftsRepo _repo = repo;
 
     [HttpGet]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<Shift>>> GetAllShifts(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
@@ -42,7 +42,7 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
         return Ok(response);
     }
     [HttpPost]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<Shift>> AddShift(
         [FromBody] ShiftDto dto
     )
@@ -65,7 +65,7 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     }
 
     [HttpPatch("{id:int}")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<Shift>> UpdateShift(
         int id,
         [FromBody] ShiftDto dto
@@ -94,7 +94,7 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult> RemoveShift(int id)
     {
         if(await _repo.RemoveById(id))
