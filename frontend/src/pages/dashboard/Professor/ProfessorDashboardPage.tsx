@@ -46,7 +46,6 @@ export default function ProfessorDashboardPage() {
 
         getOwnShift()
             .then((res) => {
-                console.log(res);
                 setShift(res);
             })
             .catch(() => {
