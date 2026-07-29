@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bell, Check, CheckCircle2 } from "lucide-react";
+import { Bell, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getUserNotifications, markNotificationAsRead, markAllNotificationsAsRead } from "../../api/notificationsRequests";
 import type { Notification } from "../../lib/types";
