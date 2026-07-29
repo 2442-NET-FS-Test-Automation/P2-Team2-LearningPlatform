@@ -309,4 +309,5 @@ export type Notification = {
     message: string;
     isRead: boolean;
     createdAt: string;
+    link?: string;
 }

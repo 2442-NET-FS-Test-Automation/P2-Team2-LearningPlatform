@@ -174,7 +174,8 @@ public class ActivitiesController : ControllerBase
         {
             UserId = sid,
             Message = $"New activity published: {activity.Title}",
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Link = $"/courses/{dto.CourseId}"
         });
         await _notificationsRepo.AddNotificationsAsync(notifications);
 
@@ -262,7 +263,8 @@ public class ActivitiesController : ControllerBase
             {
                 UserId = profUserId.Value,
                 Message = $"New submission from {studentName} for activity '{activity.Title}'",
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                Link = $"/courses/{activity.CourseId}"
             });
         }
 
@@ -282,11 +284,13 @@ public class ActivitiesController : ControllerBase
             var studentUserId = await _repo.GetUserIdBySubmissionAsync(submissionId);
             if (studentUserId.HasValue) 
             {
+                var courseId = await _repo.GetCourseIdBySubmissionAsync(submissionId);
                 await _notificationsRepo.AddNotificationAsync(new Notification
                 {
                     UserId = studentUserId.Value,
                     Message = $"Your submission was graded: {dto.Score}",
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
+                    Link = courseId.HasValue ? $"/courses/{courseId.Value}" : null
                 });
             }
             return NoContent();

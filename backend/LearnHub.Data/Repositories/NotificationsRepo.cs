@@ -12,7 +12,7 @@ public class NotificationsRepo : INotificationsRepo
         _context = context;
     }
 
-    public async Task<List<Notification>> GetUserNotificationsAsync(int userId, bool unreadOnly = false)
+    public async Task<PagedResult<Notification>> GetUserNotificationsAsync(int userId, bool unreadOnly = false, int page = 1, int pageSize = 10)
     {
         var query = _context.Notifications.Where(n => n.UserId == userId);
         
@@ -21,7 +21,20 @@ public class NotificationsRepo : INotificationsRepo
             query = query.Where(n => !n.IsRead);
         }
 
-        return await query.OrderByDescending(n => n.CreatedAt).ToListAsync();
+        var total = await query.CountAsync();
+        var items = await query.OrderByDescending(n => n.CreatedAt)
+                               .Skip((page - 1) * pageSize)
+                               .Take(pageSize)
+                               .ToListAsync();
+
+        return new PagedResult<Notification>
+        {
+            Items = items,
+            Page = page,
+            PageSize = pageSize,
+            TotalItems = total,
+            TotalPages = (int)Math.Ceiling(total / (double)pageSize)
+        };
     }
 
     public async Task<Notification?> GetByIdAsync(int id)
@@ -53,15 +66,8 @@ public class NotificationsRepo : INotificationsRepo
 
     public async Task MarkAllAsReadAsync(int userId)
     {
-        var notifications = await _context.Notifications
+        await _context.Notifications
             .Where(n => n.UserId == userId && !n.IsRead)
-            .ToListAsync();
-
-        foreach (var notification in notifications)
-        {
-            notification.IsRead = true;
-        }
-
-        await _context.SaveChangesAsync();
+            .ExecuteUpdateAsync(s => s.SetProperty(n => n.IsRead, true));
     }
 }

@@ -173,4 +173,12 @@ public class ActivityRepo : IActivityRepo
             .Select(s => s.Student.UserId)
             .FirstOrDefaultAsync();
     }
+    public async Task<int?> GetCourseIdBySubmissionAsync(int submissionId)
+    {
+        return await _context.ActivitySubmissions
+            .Where(s => s.Id == submissionId)
+            .Include(s => s.Activity)
+            .Select(s => s.Activity.CourseId)
+            .FirstOrDefaultAsync();
+    }
 }

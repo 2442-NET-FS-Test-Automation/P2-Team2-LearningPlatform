@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import { Bell, Check, CheckCircle2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { getUserNotifications, markNotificationAsRead, markAllNotificationsAsRead } from "../../api/notificationsRequests";
 import type { Notification } from "../../lib/types";
 
 export default function NotificationsDropdown() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [isOpen, setIsOpen] = useState(false);
+    const navigate = useNavigate();
 
     const fetchNotifications = async () => {
         try {
-            const data = await getUserNotifications();
+            const data = await getUserNotifications(true);
             setNotifications(data);
         } catch (error) {
             console.error("Failed to fetch notifications", error);
@@ -25,7 +27,7 @@ export default function NotificationsDropdown() {
     const handleMarkAsRead = async (id: number) => {
         try {
             await markNotificationAsRead(id);
-            setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
+            setNotifications(prev => prev.filter(n => n.id !== id));
         } catch (error) {
             console.error("Failed to mark as read", error);
         }
@@ -34,9 +36,19 @@ export default function NotificationsDropdown() {
     const handleMarkAllAsRead = async () => {
         try {
             await markAllNotificationsAsRead();
-            setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+            setNotifications([]);
         } catch (error) {
             console.error("Failed to mark all as read", error);
+        }
+    };
+
+    const handleNotificationClick = (notification: Notification) => {
+        if (notification.link) {
+            if (!notification.isRead) {
+                handleMarkAsRead(notification.id);
+            }
+            navigate(notification.link);
+            setIsOpen(false);
         }
     };
 
@@ -56,7 +68,7 @@ export default function NotificationsDropdown() {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-80 rounded-lg border border-slate-200 bg-white p-4 shadow-lg dark:border-slate-800 dark:bg-slate-950 z-50">
+                <div className="absolute -right-4 sm:right-0 mt-2 w-[300px] sm:w-80 max-w-[90vw] rounded-lg border border-slate-200 bg-white p-4 shadow-lg dark:border-slate-800 dark:bg-slate-950 z-50">
                     <div className="flex items-center justify-between border-b border-slate-200 pb-2 dark:border-slate-800">
                         <h3 className="font-semibold">Notifications</h3>
                         {unreadCount > 0 && (
@@ -78,7 +90,10 @@ export default function NotificationsDropdown() {
                             notifications.map(notification => (
                                 <div 
                                     key={notification.id} 
+                                    onClick={() => handleNotificationClick(notification)}
                                     className={`flex items-start gap-3 rounded-md p-3 text-sm transition ${
+                                        notification.link ? "cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800" : ""
+                                    } ${
                                         notification.isRead 
                                             ? "bg-transparent text-slate-600 dark:text-slate-400" 
                                             : "bg-blue-50 text-slate-900 dark:bg-blue-900/20 dark:text-slate-100"
@@ -92,7 +107,10 @@ export default function NotificationsDropdown() {
                                     </div>
                                     {!notification.isRead && (
                                         <button 
-                                            onClick={() => handleMarkAsRead(notification.id)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleMarkAsRead(notification.id);
+                                            }}
                                             className="text-blue-600 hover:text-blue-700 dark:text-blue-400"
                                             title="Mark as read"
                                         >
