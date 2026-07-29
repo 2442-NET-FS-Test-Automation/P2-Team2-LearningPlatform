@@ -1,11 +1,9 @@
 import axios from "axios";
 
-export const api = axios.create({baseURL: import.meta.env.VITE_API_URL, timeout: 20000 });
-
-api.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token");
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-    return config;
+export const api = axios.create({
+    baseURL: import.meta.env.VITE_API_URL, 
+    timeout: 20000,
+    withCredentials: true
 });
 
 api.interceptors.response.use(
@@ -14,9 +12,7 @@ api.interceptors.response.use(
         if (error.response?.status === 401) {
             const isLoginRequest = error.config.url?.includes('/auth/login');
             if (!isLoginRequest) {
-                localStorage.removeItem("token");
                 console.log("Unauthorized");
-                window.location.href = "/login";
             }
         }
         return Promise.reject(error);

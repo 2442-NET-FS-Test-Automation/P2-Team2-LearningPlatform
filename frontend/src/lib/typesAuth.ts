@@ -25,5 +25,4 @@ export type AuthContextType = {
     login: (credentials: LoginCredentials) => Promise<AuthUser>;
     register: (data: RegisterData) => Promise<AuthUser>;
     logout: () => void;
-    setToken: (token: string) => void;
 }

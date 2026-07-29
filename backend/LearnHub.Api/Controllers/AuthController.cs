@@ -46,13 +46,30 @@ public class AuthController : ControllerBase {
         // -- Issue token --
         var token = _tokens.Issue(dto.Username, UserRoles.Student);
 
+
+        //set cookie
+        Response.Cookies.Append(
+            "access-token",
+            token,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(1)
+            }
+        );
+
+
+
+
+
         var user = await _users.LoginUserAsync(dto.Username, dto.Password);
 
         var publicUser = ToPublicUser(user!);
 
         return Ok(new {
-            user = publicUser,
-            token 
+            user = publicUser
         });
     }
 
@@ -72,12 +89,54 @@ public class AuthController : ControllerBase {
         if (!user.IsActive) return Forbid();
 
         var token = _tokens.Issue(user.Username, user.Role);
+
+        //set cookie
+        Response.Cookies.Append(
+            "access-token",
+            token,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(1)
+            }
+        );
+
+
         var publicUser = ToPublicUser(user!);
         return Ok(new {
-            user = publicUser,
-            token
+            user = publicUser
         });
     }
+
+
+
+    // -- Logout user
+    [HttpPost("logout")]
+    public ActionResult Logout()
+    {
+        Response.Cookies.Delete(
+            "access-token",
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict
+            }
+        );
+
+        return NoContent();
+    }
+
+
+
+
+
+
+
+
+
 
     [HttpGet("me")]
     public async Task<ActionResult> Me()

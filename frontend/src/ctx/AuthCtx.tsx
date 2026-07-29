@@ -10,16 +10,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            setIsLoading(false);
-            return;
-        }
+       
         api.get("/auth/me")
             .then((res) => {
                 setUser(parseAuthUser(res.data.user));
             })
-            .catch(() => localStorage.removeItem("token"))
+            // .catch(() => localStorage.removeItem("token"))
+            .catch(() => setUser(null))
             .finally(() => setIsLoading(false));
     }, []);
 
@@ -27,7 +24,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading(true);
         try {
             const res = await api.post("/auth/login", credentials);
-            localStorage.setItem("token", res.data.token);
             const loggedUser = parseAuthUser(res.data.user);
             setUser(loggedUser);
             return loggedUser;
@@ -38,23 +34,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const register = async (data: RegisterData) => {
         const res = await api.post("/auth/register", data);
-        localStorage.setItem("token", res.data.token);
         const registered = parseAuthUser(res.data.user)
         setUser(registered);
         return registered;
     };
 
-    const logout = () => {
-        localStorage.removeItem("token");
-        setUser(null);
+
+
+    const logout = async () => {
+        try {
+            await api.post("/auth/logout");
+        } catch (error) {
+            console.error(error);
+            throw error;
+        } finally {
+            setUser(null);
+        }
     };
 
-    const setToken = (token: string) => {
-        localStorage.setItem("token", token);
-    }
 
     return (
-        <AuthContext.Provider value={{ user, setUser, isLoading, login, register, logout, setToken }}>
+        <AuthContext.Provider value={{ user, setUser, isLoading, login, register, logout }}>
             {children}
         </AuthContext.Provider>
     );
