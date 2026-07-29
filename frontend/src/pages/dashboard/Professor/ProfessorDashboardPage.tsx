@@ -6,6 +6,7 @@ import DashboardSideNav from "../../../components/DashboardSideNav";
 import ProfileSection from "../ProfileSection";
 import WeeklyScheduleSection from "../WeeklyScheduleSection";
 import AssignedCoursesSection from "./AssignedCoursesSection";
+import SummarySection from "./SummarySection";
 
 import { useAuth } from "../../../ctx/AuthCtx";
 
@@ -57,8 +58,9 @@ export default function ProfessorDashboardPage() {
     }, [user]);
 
     
-    const [activeTab, setActiveTab] = useState<string>("courses");
+    const [activeTab, setActiveTab] = useState<string>("summary");
     const tabs: TabItem[] = [
+        { Id: "summary", Label: "Summary", Icon: <LayoutDashboard size={18} /> },
         { Id: "profile", Label: "Profile", Icon: <User size={18} /> },
         { Id: "courses", Label: "My Courses", Icon: <BookOpen size={18} />},
         { Id: "schedule", Label: "Schedule", Icon: <CalendarDays size={18} />}
@@ -85,6 +87,7 @@ export default function ProfessorDashboardPage() {
 
                     {/* Main Content */}
                     <div key={activeTab} className="flex-1 animate-fade-in-up">
+                        {activeTab === "summary" && <SummarySection />}
                         {activeTab === "profile" && <ProfileSection />}
                         {activeTab === "courses" && <AssignedCoursesSection courses={courses} loading={loadingCourses} error={courseError} />}
                         {activeTab === "schedule" && <WeeklyScheduleSection Courses={courses} 
