@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export type CourseCardProps = {
@@ -6,7 +7,8 @@ export type CourseCardProps = {
     Description: string,
     CategoryName: string,
     IsFull: number,
-    IsEnrolled: boolean
+    IsEnrolled: boolean,
+    Completed?: boolean
 }
 
 export default function CourseCard({
@@ -15,13 +17,14 @@ export default function CourseCard({
     Description,
     CategoryName,
     IsFull,
-    IsEnrolled
+    IsEnrolled,
+    Completed
 }: CourseCardProps) {
-    const occupancy =
+    const status =
         IsEnrolled === true
         ? {
             text: "Enrolled",
-            className: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+            className: "blue-accent-chip"
         }
         : IsFull >= 100
         ? {
@@ -40,7 +43,7 @@ export default function CourseCard({
         }
         : {
             text: "Open seats",
-            className: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
+            className: "emerald-accent"
         };
     return (
         <Link to={"/courses/" + Id} className="no-underline h-full">
@@ -58,9 +61,16 @@ export default function CourseCard({
                         <span className="blue-accent-chip rounded-full px-3 py-1 text-xs font-semibold">
                             {CategoryName}
                         </span>
-                        <span className={`rounded-full px-3 py-1 text-xs font-semifold ${occupancy.className}`}>
-                            {occupancy.text}
-                        </span>
+                        {Completed ?
+                            <div className="flex gap-2 rounded-full px-3 py-1 text-xs emerald-accent">
+                                Completed
+                                <Check size={16} />
+                            </div>
+                        :
+                            <span className={`rounded-full px-3 py-1 text-xs font-semifold ${status.className}`}>
+                                {status.text}
+                            </span>
+                        }
                     </div>
                 </div>
             </div>

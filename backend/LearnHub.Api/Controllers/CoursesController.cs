@@ -154,7 +154,7 @@ public class CoursesController : ControllerBase
             var user = await _userRepo.GetByEmailOrUsernameAsync(User.Identity.Name!);
 
             if (user != null) student = await _studentRepo.GetByUserIdAsync(user.Id);
-            if (student != null) cacheKey += $":userId{student.UserId}";
+            if (student != null) {cacheKey += $":userId{student.UserId}";}
         }
 
 
@@ -165,29 +165,33 @@ public class CoursesController : ControllerBase
 
         // await for the courses
         var result = await _repo.GetAllAsync(page, pageSize, searchName, categoryFilter, true);
-        
+
+        var courseIds = result.Items.Select(c => c.Id).ToList();
+
+        var completedIds = student != null ? await _repo.GetCompletedCourseIdsForStudent(student.Id, courseIds) : [];
+
+        var items = result.Items.Select(c => new CourseListDto
+        {
+            Id = c.Id,
+            Name = c.Name,
+            Description = c.Description,
+            Category = c.CategoryName.ToString(),
+            IsActive = c.IsActive,
+            IsFull = c.Capacity == 0 ? 0 : (int)Math.Round(c.StudentCourses.Count * 100.0 / c.Capacity),
+            IsEnrolled = student != null && c.StudentCourses.Any(sc => sc.StudentId == student.Id),
+            Completed = completedIds.Contains(c.Id)
+        }).ToList();
+
         var response = new PagedResult<CourseListDto>
         {
-            Items = result.Items.Select(c => new CourseListDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                Category = c.CategoryName.ToString(),
-                IsActive = c.IsActive,
-                IsFull =  c.Capacity == 0 ? 0 : (int)Math.Round(c.StudentCourses.Count * 100.0 / c.Capacity),
-                IsEnrolled = student != null && c.StudentCourses.Any(sc => sc.StudentId == student.Id)
-            }).ToList(),
-
+            Items = items.ToList(),
             Page = result.Page,
             PageSize = result.PageSize,
             TotalItems = result.TotalItems,
             TotalPages = result.TotalPages
         };
 
-
         //set cache response
-
         var cts = GetCoursesCacheToken();
 
         var options = new MemoryCacheEntryOptions()

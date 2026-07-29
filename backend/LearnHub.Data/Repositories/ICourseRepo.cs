@@ -31,4 +31,5 @@ public interface ICourseRepo
     Task UpdateScheduleAsync(int courseId, List<CourseSchedule> schedules);
     Task<bool> IsCourseActiveAsync(int courseId);
     Task<bool> IsCourseCompleted(int studentId, int courseId);
+    Task<List<int>> GetCompletedCourseIdsForStudent(int studentId, List<int> courseIds);
 }
