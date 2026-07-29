@@ -88,6 +88,7 @@ export default function CourseDetailsPage() {
                 .catch(() => {
                     setIsEnrolled(false);
                 });
+            
         } else if (user.role === "Professor" || user.role === "Admin") {
             getCourseActivities(Number(id), activityTab === "active")
                 .then(setCourseActivities)
@@ -116,6 +117,7 @@ export default function CourseDetailsPage() {
 
     const pendingActivities = studentActivities.filter(a => !a.submission);
     const completedActivities = studentActivities.filter(a => a.submission);
+    const activitiesPercentage = (completedActivities.length / studentActivities.length) * 100;
 
     const handleComplete = () => {
         if (!user) return null;
@@ -463,9 +465,7 @@ export default function CourseDetailsPage() {
                                                 <div className="space-y-3">
                                                     <div className="flex items-baseline justify-between">
                                                         <span className="big-stat">
-                                                            {studentActivities.length > 0
-                                                                ? Math.round((completedActivities.length / studentActivities.length) * 100)
-                                                                : 100}%
+                                                            {studentActivities.length > 0 ? Math.round(activitiesPercentage) : 0}%
                                                         </span>
                                                         <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
                                                             <ListChecks size={16} />
@@ -476,9 +476,7 @@ export default function CourseDetailsPage() {
                                                         <div
                                                             className="h-2 rounded-full bg-blue-600 transition-all dark:bg-blue-400"
                                                             style={{
-                                                                width: `${studentActivities.length > 0
-                                                                    ? (completedActivities.length / studentActivities.length) * 100
-                                                                    : 100}%`
+                                                                width: `${studentActivities.length > 0 ? activitiesPercentage : 0}%`
                                                             }}
                                                         />
                                                     </div>
@@ -491,7 +489,8 @@ export default function CourseDetailsPage() {
                                                             </button>
                                                         :
                                                             <button
-                                                                className="btn-primary w-full justify-center gap-2 text-center mt-2"
+                                                                className="btn-primary w-full justify-center gap-2 text-center mt-2 disabled:opacity-50"
+                                                                disabled={Math.round(activitiesPercentage) !== 100}
                                                                 onClick={() => {handleComplete()}}
                                                             >
                                                                 Mark as completed
