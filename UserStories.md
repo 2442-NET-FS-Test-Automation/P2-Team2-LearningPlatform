@@ -382,7 +382,7 @@
     - **Then** each course card should indicate its capacity status (e.g. "Open seats," "Filling up," "Almost full," or "Full") based on how close it is to capacity.
     - **And** a course at 100% capacity should not be enrollable, showing "Course Full" instead of an active enroll button.
 
-#### Story 4.3: Blocked Access to Protected Routes
+### Story 4.3: Blocked Access to Protected Routes
  
 **As an** Anonymous User, **I want** to be redirected to the login page when I try to access a protected route **so that** I understand I need to log in first.
  
