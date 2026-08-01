@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/tests/">
+    <Project Path="tests/LearnHub.Tests.Integration/LearnHub.Tests.Integration.csproj" />
+    <Project Path="tests/LearnHub.Tests.Unit/LearnHub.Tests.Unit.csproj" />
+  </Folder>
   <Project Path="LearnHub.Api/LearnHub.Api.csproj" />
   <Project Path="LearnHub.Data/LearnHub.Data.csproj" />
 </Solution>
