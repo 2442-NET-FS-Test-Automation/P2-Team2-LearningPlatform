@@ -106,7 +106,7 @@ This dashboard contains
 
 Authentication is handled using JWT Bearer Tokens.
 
-- Login stores the access token in local storage. (May change to cookies if time allows)
+- Token gets stored in browser cookies
 - Axios automatically attaches the token to requests.
 - Protected routes require authentication.
 - Role-based routing restricts access to administrator pages.
