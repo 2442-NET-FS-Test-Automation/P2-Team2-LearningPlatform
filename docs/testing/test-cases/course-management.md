@@ -1,8 +1,9 @@
-# Course Related Test Cases
+# Course Management related Test Cases
 Following naming like:
 TC-CM-##
 
-## REQ-06	Anonymous user browses courses
+## REQ-06 Anonymous user browses courses
+
 ```
 TC-CM-01
 Trace:        REQ-06 (catalog - capacity status thresholds)
@@ -14,6 +15,7 @@ Expected:     "Open seats" below 50, "Filling up" at 50-79, "Almost full" at
               80-99, "Full" at 100, matching exactly at each boundary
 Status:       (not started)
 ```
+
 ```
 TC-CM-02
 Trace:        REQ-06 (catalog - anonymous access to enabled courses)
@@ -25,6 +27,7 @@ Expected:     200 response; only the active course appears in the results;
               the inactive one is excluded
 Status:       (not started)
 ```
+
 ```
 TC-CM-03
 Trace:        REQ-06 (catalog - combined search and category filter)
@@ -38,6 +41,7 @@ Expected:     each combination returns only courses matching both conditions;
               no combination returns a course failing either filter
 Status:       (not started)
 ```
+
 ```
 TC-CM-04
 Trace:        REQ-06 (catalog - empty result state)
@@ -48,6 +52,7 @@ Steps:        load the Courses page with a search term matching nothing
 Expected:     "No course matches the search." message rendered; no course cards shown
 Status:       (not started)
 ```
+
 ```
 TC-CM-05
 Trace:        REQ-06 (catalog - anonymous browsing journey)
@@ -61,6 +66,7 @@ Expected:     no "Enroll" button state offering direct enrollment (shows
               completed activities) render
 Status:       (not started)
 ```
+
 ```
 TC-CM-06
 Trace:        REQ-06 (catalog - direct link to a deactivated course)
@@ -73,7 +79,10 @@ Expected:     NotFoundPage is shown; no course details, schedule, or activity
 Status:       (not started)
 ```
 
-## REQ-07	Pagination works correctly
+---
+
+## REQ-07 Pagination works correctly
+
 ```
 TC-CM-07
 Trace:        REQ-07 (pagination - server-side clamping)
@@ -87,6 +96,7 @@ Expected:     page below 1 clamps to 1; pageSize below 1 falls back to the
               passes through unchanged
 Status:       (not started)
 ```
+
 ```
 TC-CM-08
 Trace:        REQ-07 (pagination - control button boundaries)
@@ -100,6 +110,7 @@ Expected:     currentPage does not go below 1 or above totalPages in either case
               the corresponding button is rendered disabled
 Status:       (not started)
 ```
+
 ```
 TC-CM-09
 Trace:        REQ-07 (pagination - end-to-end clamp through the API)
@@ -111,10 +122,11 @@ Expected:     response reflects page=1 and pageSize=50; items.length <= 50;
               TotalPages equals ceil(TotalItems / 50)
 Status:       (not started)
 ```
+
 ```
 TC-CM-10
 Trace:        REQ-07 (pagination - items-per-page resets to page 1)
-Level:        Integration — Frontend (ManagerUsersSection, mocked API)
+Level:        Integration — Frontend (CoursesPage, mocked API)
 Technique:    State transition
 Precondition: component on page 3 of a multi-page result set
 Steps:        change the "items per page" selector to a new value
@@ -122,12 +134,13 @@ Expected:     currentPage resets to 1; the API is re-queried with page=1 and
               the new pageSize
 Status:       (not started)
 ```
+
 ```
 TC-CM-11
 Trace:        REQ-07 (pagination - full navigation journey)
 Level:        E2E — Selenium
 Technique:    Boundary-value analysis + UI state verification
-Precondition: Manage Users table seeded with enough users to span 3+ pages
+Precondition: enough courses exist to span at least 3 pages
 Steps:        click "Next" repeatedly to reach the last page, then attempt to
               click "Next" again; click "Previous" back to page 1, then attempt
               "Previous" again
@@ -137,7 +150,66 @@ Expected:     the "Next" button is disabled on the last page and "Previous" is
 Status:       (not started)
 ```
 
-## REQ-10	Admin manages courses
+---
 
+## REQ-10 Admin manages courses
 
-## REQ-20	Professor only manages assigned courses
+```
+TC-CM-12
+Trace:        REQ-10 (course management - create course)
+Level:        Integration — Backend (CoursesController.Create + DB)
+Technique:    Equivalence partitioning (valid course information)
+Precondition: authenticated Admin user
+Steps:        create a new course with valid information
+Expected:     course is created successfully and persisted in the database
+Status:       (not started)
+```
+
+```
+TC-CM-13
+Trace:        REQ-10 (course management - update course)
+Level:        Integration — Backend (CoursesController.Update + DB)
+Technique:    State transition (existing course -> updated course)
+Precondition: authenticated Admin user; existing course
+Steps:        modify the course information
+Expected:     updated values are stored and returned by subsequent requests
+Status:       (not started)
+```
+
+```
+TC-CM-14
+Trace:        REQ-10 (course management - deactivate course)
+Level:        Integration — Backend (CoursesController.Update + DB)
+Technique:    State transition (active -> inactive)
+Precondition: authenticated Admin user; active course exists
+Steps:        deactivate the course
+Expected:     course becomes inactive and no longer appears in the public catalog
+Status:       (not started)
+```
+
+```
+TC-CM-15
+Trace:        REQ-10 (course management - invalid course information)
+Level:        Unit — Backend (course validation)
+Technique:    Boundary-value analysis
+Precondition: none
+Steps:        validate a course with missing required fields or invalid values
+Expected:     validation fails and the course cannot be created
+Status:       (not started)
+```
+
+```
+TC-CM-16
+Trace:        REQ-10 (course management - complete admin workflow)
+Level:        E2E — Selenium
+Technique:    Scenario testing
+Precondition: authenticated Admin user
+Steps:        create a course, edit it, verify the changes, then deactivate it
+Expected:     every operation succeeds and the UI reflects each change
+Status:       (not started)
+```
+
+---
+
+## REQ-20 Professor only manages assigned courses
+
