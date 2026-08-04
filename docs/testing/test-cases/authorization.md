@@ -104,7 +104,7 @@ Status:       (not started)
 ```
 TC-AuthZ-10
 Trace:        REQ-04 (UI authorization - protected route via URL bar)
-Level:        E2E — Cypress
+Level:        E2E — Selenium
 Technique:    Negative testing (unauthenticated, direct URL entry)
 Precondition: no session/cookies
 Steps:        type /student/dashboard directly into the address bar and load it
