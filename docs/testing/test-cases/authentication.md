@@ -18,7 +18,7 @@ Status:       (not started)
 TC-AuthN-02
 Trace:        REQ-01 (registration - server-side age validation)
 Level:        Unit — Backend (age validation logic in RegisterDto/validator)
-Technique:    Boundary-value analysis (12-year cutoff, mirrors TC-01 server-side)
+Technique:    Boundary-value analysis (12-year cutoff, lower edge)
 Precondition: none (validator tested in isolation, no DB)
 Steps:        validate a RegisterDto with BirthDate = today minus 12 years minus 1 day
 Expected:     validation fails with an age-related error; no downstream service call attempted

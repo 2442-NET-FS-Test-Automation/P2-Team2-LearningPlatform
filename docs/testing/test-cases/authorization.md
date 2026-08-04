@@ -50,7 +50,7 @@ Status:       (not started)
 TC-AuthZ-05
 Trace:        REQ-03 (authorization - malformed route id)
 Level:        Integration — Backend (any [HttpGet("{id:int}")]-style endpoint)
-Technique:    Error guessing / input validation boundary
+Technique:    Input validation boundary
 Precondition: authenticated user of any role with endpoint access rights
 Steps:        request the endpoint with id = -1, then id = 0
 Expected:     both return 400 (via DataTypeVerification.IsNumValid) rather than a
