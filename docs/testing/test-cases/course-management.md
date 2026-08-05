@@ -15,7 +15,6 @@ Expected:     "Open seats" below 50, "Filling up" at 50-79, "Almost full" at
               80-99, "Full" at 100, matching exactly at each boundary
 Status:       (not started)
 ```
-
 ```
 TC-CM-02
 Trace:        REQ-06 (catalog - anonymous access to enabled courses)
@@ -27,7 +26,6 @@ Expected:     200 response; only the active course appears in the results;
               the inactive one is excluded
 Status:       (not started)
 ```
-
 ```
 TC-CM-03
 Trace:        REQ-06 (catalog - combined search and category filter)
@@ -41,7 +39,6 @@ Expected:     each combination returns only courses matching both conditions;
               no combination returns a course failing either filter
 Status:       (not started)
 ```
-
 ```
 TC-CM-04
 Trace:        REQ-06 (catalog - empty result state)
@@ -52,7 +49,6 @@ Steps:        load the Courses page with a search term matching nothing
 Expected:     "No course matches the search." message rendered; no course cards shown
 Status:       (not started)
 ```
-
 ```
 TC-CM-05
 Trace:        REQ-06 (catalog - anonymous browsing journey)
@@ -66,7 +62,6 @@ Expected:     no "Enroll" button state offering direct enrollment (shows
               completed activities) render
 Status:       (not started)
 ```
-
 ```
 TC-CM-06
 Trace:        REQ-06 (catalog - direct link to a deactivated course)
@@ -79,10 +74,7 @@ Expected:     NotFoundPage is shown; no course details, schedule, or activity
 Status:       (not started)
 ```
 
----
-
 ## REQ-07 Pagination works correctly
-
 ```
 TC-CM-07
 Trace:        REQ-07 (pagination - server-side clamping)
@@ -96,7 +88,6 @@ Expected:     page below 1 clamps to 1; pageSize below 1 falls back to the
               passes through unchanged
 Status:       (not started)
 ```
-
 ```
 TC-CM-08
 Trace:        REQ-07 (pagination - control button boundaries)
@@ -110,7 +101,6 @@ Expected:     currentPage does not go below 1 or above totalPages in either case
               the corresponding button is rendered disabled
 Status:       (not started)
 ```
-
 ```
 TC-CM-09
 Trace:        REQ-07 (pagination - end-to-end clamp through the API)
@@ -122,7 +112,6 @@ Expected:     response reflects page=1 and pageSize=50; items.length <= 50;
               TotalPages equals ceil(TotalItems / 50)
 Status:       (not started)
 ```
-
 ```
 TC-CM-10
 Trace:        REQ-07 (pagination - items-per-page resets to page 1)
@@ -134,7 +123,6 @@ Expected:     currentPage resets to 1; the API is re-queried with page=1 and
               the new pageSize
 Status:       (not started)
 ```
-
 ```
 TC-CM-11
 Trace:        REQ-07 (pagination - full navigation journey)
@@ -150,10 +138,7 @@ Expected:     the "Next" button is disabled on the last page and "Previous" is
 Status:       (not started)
 ```
 
----
-
 ## REQ-10 Admin manages courses
-
 ```
 TC-CM-12
 Trace:        REQ-10 (course management - create course)
@@ -164,7 +149,6 @@ Steps:        create a new course with valid information
 Expected:     course is created successfully and persisted in the database
 Status:       (not started)
 ```
-
 ```
 TC-CM-13
 Trace:        REQ-10 (course management - update course)
@@ -175,7 +159,6 @@ Steps:        modify the course information
 Expected:     updated values are stored and returned by subsequent requests
 Status:       (not started)
 ```
-
 ```
 TC-CM-14
 Trace:        REQ-10 (course management - deactivate course)
@@ -186,7 +169,6 @@ Steps:        deactivate the course
 Expected:     course becomes inactive and no longer appears in the public catalog
 Status:       (not started)
 ```
-
 ```
 TC-CM-15
 Trace:        REQ-10 (course management - invalid course information)
@@ -197,7 +179,6 @@ Steps:        validate a course with missing required fields or invalid values
 Expected:     validation fails and the course cannot be created
 Status:       (not started)
 ```
-
 ```
 TC-CM-16
 Trace:        REQ-10 (course management - complete admin workflow)
@@ -208,8 +189,6 @@ Steps:        create a course, edit it, verify the changes, then deactivate it
 Expected:     every operation succeeds and the UI reflects each change
 Status:       (not started)
 ```
-
----
 
 ## REQ-20 Professor only manages assigned courses
 

@@ -1,7 +1,11 @@
-REQ-15	Student submits activities
+# Activities related Test Cases
+Following naming like:
+TC-Activ-##
 
-REQ-16	Student views activities and grades
+## REQ-15	Student submits activities
 
-REQ-17	Student completes a course
+## REQ-16	Student views activities and grades
 
-REQ-18	Professor manages activities
+## REQ-17	Student completes a course
+
+## REQ-18	Professor manages activities

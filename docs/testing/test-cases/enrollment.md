@@ -1,5 +1,9 @@
-REQ-13	Student enrolls in courses
+# Enrollment related Test Cases
+Following naming like:
+TC-Enroll-##
 
-REQ-14	Student unenrolls from courses
+## REQ-13	Student enrolls in courses
 
-REQ-21	Student schedule conflicts are validated
+## REQ-14	Student unenrolls from courses
+
+## REQ-21	Student schedule conflicts are validated

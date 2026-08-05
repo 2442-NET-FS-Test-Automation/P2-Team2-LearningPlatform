@@ -1,3 +1,7 @@
-REQ-16	Student views activities and grades
+# Grading related Test Cases
+Following naming like:
+TC-Grade-##
 
-REQ-19	Professor grades submissions
+## REQ-16	Student views activities and grades
+
+## REQ-19	Professor grades submissions
