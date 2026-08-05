@@ -6,12 +6,13 @@ import istanbul from 'vite-plugin-istanbul';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    react(), 
+    react(),
     tailwindcss(),
     istanbul({
-      include: 'src/*',
-      extension: ['.ts', '.tsx'],
-      requireEnv: false,
+        include: 'src/*',
+        extension: ['.ts', '.tsx'],
+        requireEnv: false,
     }),
   ],
+  base: "http://localhost:5173/",
 })
