@@ -4,9 +4,11 @@ using LearnHub.Data.Entities;
 
 namespace LearnHub.Data.Repositories;
 
-public class StudentRepo(LearnHubDbContext context): IStudentRepo
+public class StudentRepo(LearnHubDbContext context, ICourseRepo courseRepo): IStudentRepo
 {
     private readonly LearnHubDbContext _context = context;
+    private readonly ICourseRepo _courseRepo = courseRepo;
+
 
     public void Add(Student student)
     {
@@ -39,6 +41,10 @@ public class StudentRepo(LearnHubDbContext context): IStudentRepo
 
         var exists = await _context.StudentCourses.AnyAsync(sc => sc.CourseId == courseId && sc.StudentId == studentId);
         if (exists) return false;
+
+        await _courseRepo.ValidateStudentEnrollmentAsync(
+            studentId,
+            courseId);
 
         var course = await _context.Courses
             .FirstOrDefaultAsync(c => c.Id == courseId);
