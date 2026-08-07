@@ -105,14 +105,33 @@ export default function CourseDetailsPage() {
             return;
         }
         if (isEnrolled || isEnrolling) return;
-        
+        setError(null);
         setIsEnrolling(true);
         studentEnroll(user.id, Number(id))
         .then(() => {
             setIsEnrolled(true);
             setEnrolledCount((prev) => prev + 1);
         })
-        .catch((e) => console.log(e))
+        .catch((e) => {
+            switch (e.status) {
+                case 400:
+                    setError("You cannot enroll in this course.");
+                    break;
+
+                case 404:
+                    setError("Course not found.");
+                    break;
+
+                case 409:
+                    setError("You are already enrolled in this course.");
+                    break;
+
+                default:
+                    setError("There was an error enrolling in the course.");
+                    break;
+            }
+
+        })
         .finally(() => setIsEnrolling(false));
     };
     
@@ -511,6 +530,10 @@ export default function CourseDetailsPage() {
                                                     handleClick={() => handleEnroll()}
                                                 />
                                             )
+                                            
+                                        )}
+                                        {!isEnrolled && error && (
+                                            <ErrorMessage error={error} />
                                         )}
                                         {user.role === "Professor" && (
                                             <div className="space-y-3">
@@ -559,13 +582,17 @@ export default function CourseDetailsPage() {
                                         )}
                                     </>
                                 ) : (
-                                    <EnrollmentCard
-                                        userLogged={false}
-                                        course={course}
-                                        enrolledCount={enrolledCount}
-                                        isEnrolling={isEnrolling}
-                                        handleClick={() => handleEnroll()}
-                                    />
+                                    <>
+                                        <EnrollmentCard
+                                            userLogged={true}
+                                            course={course}
+                                            enrolledCount={enrolledCount}
+                                            isEnrolling={isEnrolling}
+                                            handleClick={() => handleEnroll()}
+                                        />
+
+                                        {error && <ErrorMessage error={error} />}
+                                    </>
                                 )}
                             </div>
                         </div>
