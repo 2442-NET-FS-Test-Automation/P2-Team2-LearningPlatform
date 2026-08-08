@@ -8,11 +8,11 @@ TC-AuthZ-01
 Trace:        REQ-03 (authorization - role membership check)
 Level:        Unit - Backend (role-check helper / policy, isolated from HTTP pipeline)
 Technique:    Equivalence partitioning (Student / Professor / Admin / unauthenticated)
-Precondition: none (helper tested directly with mocked ClaimsPrincipal)
-Steps:        evaluate the helper against each of the four role classes for an
-              Admin-only rule
-Expected:     only the Admin class passes; the other three are rejected
-Status:       (not started)
+Precondition: none (helper tested directly with mocked ClaimsPrincipal on CoursesController)
+Steps:        evaluate the helper against each of the four role classes for a restricted
+              rule
+Expected:     each role passes on its own restrictions; the other three are rejected
+Status:       (passed)
 ```
 ```
 TC-AuthZ-02
