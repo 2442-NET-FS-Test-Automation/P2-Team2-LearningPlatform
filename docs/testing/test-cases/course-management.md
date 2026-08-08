@@ -235,18 +235,18 @@ Steps:        create or update a course, then retrieve the course by its ID
 Expected:     the course is returned successfully with the latest persisted
               information, including its name, description, category, price,
               hours, certification status, schedule, and assigned professor
-Status:       (not started)
+Status:       Passed
 ```
 
 ```
 TC-CM-17
-Trace:        REQ-10 (course management - assign professor)
-Level:        Integration — Backend (CoursesController + DB)
-Technique:    State transition (course without professor -> assigned professor)
-Precondition: authenticated Admin user; existing course and valid professor
-Steps:        assign the professor to the course
-Expected:     course is successfully updated with the selected professor;
-              subsequent course retrieval returns the assigned professor
+Trace:        REQ-10 (course management - update course error handling)
+Level:        Component — Frontend (EditCourseModal)
+Technique:    Error handling / negative testing
+Precondition: EditCourseModal is rendered with an existing course; API calls are mocked
+Steps:        mock updateCourse to reject; submit the edit course form
+Expected:     "Failed to update course." is displayed in the modal;
+              the modal remains open and the course is not reported as updated
 Status:       (not started)
 ```
 

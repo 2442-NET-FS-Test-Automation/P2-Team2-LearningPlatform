@@ -4,7 +4,10 @@ using System.Runtime.InteropServices;
 using System.Transactions;
 using FluentAssertions;
 using LearnHub.Api.DTOs.Courses;
+using LearnHub.Api.DTOs.Users;
 using LearnHub.Data;
+using LearnHub.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -224,6 +227,53 @@ public class CourseControllerTests : IClassFixture<TestApplicationFactory>
         {
             var response = await _client.PostAsJsonAsync("/api/Courses", dto);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+        finally
+        {
+            await _transaction.RollbackAsync();
+        }
+    }
+
+    [Fact]
+    public async Task TC_CM_16_GetCourse_ShouldReturnLatestPersistedInformation()
+    {
+        _client.LoginAsAdmin();
+
+        var courseId = 1;
+
+        _transaction = await _context.Database.BeginTransactionAsync();
+
+        try
+        {
+            var updateDto = new UpdateCourseDto
+            {
+                Name = "Updated Course Name",
+                Description = "Updated description for the course",
+                About = "Updated about section",
+                Capacity = 45,
+                Certification = true,
+                Hours = 55,
+                Price = 699.99m
+            };
+
+            var patchResponse = await _client.PatchAsJsonAsync($"/api/Courses/{courseId}", updateDto);
+
+            patchResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+
+            var getResponse = await _client.GetAsync($"/api/Course/{courseId}");
+            getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var course = await getResponse.Content.ReadFromJsonAsync<CourseDetailDto>();
+
+            course.Should().NotBeNull();
+            course!.Name.Should().Be(updateDto.Name);
+            course.Description.Should().Be(updateDto.Description);
+            course.About.Should().Be(updateDto.About);
+            course.Capacity.Should().Be(updateDto.Capacity!.Value);
+            course.Certification.Should().Be(updateDto.Certification!.Value);
+            course.Hours.Should().Be(updateDto.Hours);
+            course.Price.Should().Be(updateDto.Price!.Value);
         }
         finally
         {

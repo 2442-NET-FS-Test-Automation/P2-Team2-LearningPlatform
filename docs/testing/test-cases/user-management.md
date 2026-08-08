@@ -55,6 +55,17 @@ Steps:        attempt to access user management endpoints
 Expected:     response returns 403 Forbidden and user information is not exposed
 Status:       (not started)
 ```
+```
+TC-UserMgmt-06
+Trace:        REQ-08 (user management - assign professor)
+Level:        Integration — Backend (UsersController + DB)
+Technique:    State transition (professor without courses -> assigned courses)
+Precondition: authenticated Admin user; existing course and valid professor
+Steps:        assign the course to the professor
+Expected:     professor is successfully updated with the selecteds courses;
+              subsequent course retrieval returns the assigned professor
+Status:       (not started)
+```
 
 ## REQ-09 Admin promotes students
 ```
