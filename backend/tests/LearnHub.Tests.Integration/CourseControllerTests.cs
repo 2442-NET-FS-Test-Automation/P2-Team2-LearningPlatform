@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Runtime.InteropServices;
 using System.Transactions;
 using FluentAssertions;
 using LearnHub.Api.DTOs.Courses;
@@ -156,6 +157,41 @@ public class CourseControllerTests : IClassFixture<TestApplicationFactory>
             var enabled = await enabledResponse.Content.ReadFromJsonAsync<PagedResult<CourseListDto>>();
 
             enabled!.Items.Should().NotContain(c => c.Id == courseId);
+        }
+        finally
+        {
+            await _transaction.RollbackAsync();
+        }
+    }
+
+    [Theory]
+    [InlineData("AB", 400)]
+    [InlineData("ABC",201)]
+    [InlineData("...(100 chars)", 201)]
+    [InlineData("...(101 chars)", 201)]
+    public async Task TC_CM_15_CreateCourse_NameValidation(string name, int expectedStatus)
+    {
+        _client.LoginAsAdmin();
+
+        var dto = new CreateCourseDto
+        {
+            ProfessorId = 1,
+            Name = name,
+            Description = "Valid description here",
+            About = "Valid about section here",
+            Category = CourseCategory.Programming,
+            Capacity = 30,
+            Certification = false,
+            Hours = 40,
+            Price = 100m
+        };
+
+        _transaction = await _context.Database.BeginTransactionAsync();
+
+        try
+        {
+            var response = await _client.PostAsJsonAsync("/api/Courses", dto);
+            ((int)response.StatusCode).Should().Be(expectedStatus);
         }
         finally
         {

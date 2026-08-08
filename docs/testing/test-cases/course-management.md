@@ -170,14 +170,53 @@ Expected:     course becomes inactive and no longer appears in the public catalo
 Status:       Passed
 ```
 ```
-TC-CM-15
-Trace:        REQ-10 (course management - invalid course information)
-Level:        Unit — Backend (course validation)
-Technique:    Boundary-value analysis
-Precondition: none
-Steps:        validate a course with missing required fields or invalid values
-Expected:     validation fails and the course cannot be created
-Status:       (not started)
+TC-CM-15a
+Trace:        REQ-10 (course management - name below minimum length)
+Level:        Integration — Backend (CoursesController.Create)
+Technique:    Boundary-value analysis (MinLength=3, value=2)
+Precondition: authenticated Admin; valid ProfessorId exists
+Steps:        POST /api/Courses with Name = "AB" (2 chars)
+Expected:     400 — validation error naming the Name field; no course persisted
+```
+
+```
+TC-CM-15b
+Trace:        REQ-10 (course management - name at minimum length)
+Level:        Integration — Backend
+Technique:    Boundary-value analysis (MinLength=3, value=3)
+Precondition: same as TC-CM-15a
+Steps:        POST /api/Courses with Name = "ABC" (3 chars), all other fields valid
+Expected:     201 — course created successfully
+```
+
+```
+TC-CM-15c
+Trace:        REQ-10 (course management - name at maximum length)
+Level:        Integration — Backend
+Technique:    Boundary-value analysis (MaxLength=100, value=100)
+Precondition: same as TC-CM-15a
+Steps:        POST /api/Courses with Name = string of exactly 100 chars
+Expected:     201 — course created successfully
+```
+
+```
+TC-CM-15d
+Trace:        REQ-10 (course management - name above maximum length)
+Level:        Integration — Backend
+Technique:    Boundary-value analysis (MaxLength=100, value=101)
+Precondition: same as TC-CM-15a
+Steps:        POST /api/Courses with Name = string of 101 chars
+Expected:     400 — validation error naming the Name field
+```
+
+```
+TC-CM-15e
+Trace:        REQ-10 (course management - invalid professor)
+Level:        Integration — Backend
+Technique:    Equivalence partitioning (invalid ProfessorId class)
+Precondition: authenticated Admin
+Steps:        POST /api/Courses with ProfessorId = 99999 (non-existent)
+Expected:     400 — professor not found; no course persisted
 ```
 
 ```
