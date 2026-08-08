@@ -80,7 +80,7 @@ Technique:    Boundary-value analysis (8-char minimum)
 Precondition: LoginPage rendered
 Steps:        enter a 7-character password, submit
 Expected:     "Password should be at least 8 characters long" shown; no API call made
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthN-08

@@ -1,6 +1,6 @@
 export class RegisterPOM {
     visit() {
-        cy.visit("register");
+        cy.visit("/register");
         cy.contains("h1", "Create Account");
         
         return this;
