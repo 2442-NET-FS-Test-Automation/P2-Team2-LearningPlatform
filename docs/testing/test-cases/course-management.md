@@ -86,7 +86,7 @@ Steps:        normalize (page=0, pageSize=0), (page=-1, pageSize=51),
 Expected:     page below 1 clamps to 1; pageSize below 1 falls back to the
               default; pageSize above 50 clamps to 50; page=1/pageSize=50
               passes through unchanged
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-CM-08
