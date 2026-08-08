@@ -198,4 +198,36 @@ public class CourseControllerTests : IClassFixture<TestApplicationFactory>
             await _transaction.RollbackAsync();
         }
     }
+
+
+    [Fact]
+    public async Task TC_CM_15e_CreateCourse_InvalidProfessor_ShouldReturnBadRequest()
+    {
+        _client.LoginAsAdmin();
+
+        var dto = new CreateCourseDto
+        {
+            ProfessorId = 9999999,
+            Name = "Valid Course",
+            Description = "Valid description here",
+            About = "Valid about section here",
+            Category = CourseCategory.Programming,
+            Capacity = 30,
+            Certification = false,
+            Hours = 40,
+            Price = 100m
+        };
+
+        _transaction = await _context.Database.BeginTransactionAsync();
+
+        try
+        {
+            var response = await _client.PostAsJsonAsync("/api/Courses", dto);
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+        finally
+        {
+            await _transaction.RollbackAsync();
+        }
+    }
 }
