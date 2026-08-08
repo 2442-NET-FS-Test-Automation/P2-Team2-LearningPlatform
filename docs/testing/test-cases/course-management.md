@@ -247,7 +247,7 @@ Precondition: EditCourseModal is rendered with an existing course; API calls are
 Steps:        mock updateCourse to reject; submit the edit course form
 Expected:     "Failed to update course." is displayed in the modal;
               the modal remains open and the course is not reported as updated
-Status:       (not started)
+Status:       Passed
 ```
 
 ```

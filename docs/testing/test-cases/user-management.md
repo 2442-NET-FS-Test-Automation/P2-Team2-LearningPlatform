@@ -64,7 +64,7 @@ Precondition: authenticated Admin user; existing course and valid professor
 Steps:        assign the course to the professor
 Expected:     professor is successfully updated with the selecteds courses;
               subsequent course retrieval returns the assigned professor
-Status:       (not started)
+Status:       Passed
 ```
 
 ## REQ-09 Admin promotes students
