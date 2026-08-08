@@ -312,10 +312,30 @@ public class CoursesController : ControllerBase
         InvalidateCoursesCache();
 
         // Return where you can consult the createdCourse and the required parameters
+        var responseDto = new CourseDetailDto
+        {
+            Id = createdCourse.Id,
+            Name = createdCourse.Name,
+            Description = createdCourse.Description,
+            About = createdCourse.About,
+            Category = createdCourse.CategoryName.ToString(),
+            Price = createdCourse.EnrollmentPrice,
+            Hours = createdCourse.Hours,
+            Capacity = createdCourse.Capacity,
+            IsActive = createdCourse.IsActive,
+            Certification = createdCourse.Certification,
+            Schedule = dto.Schedule?.Select(s => new CourseScheduleDto
+            {
+                Day = s.Day,
+                StartTime = s.StartTime,
+                EndTime = s.EndTime
+            }).ToList() ?? []
+        };
+
         return CreatedAtAction(
             nameof(GetCourse),
-            new {id = course.Id},
-            createdCourse
+            new { id = createdCourse.Id },
+            responseDto
         );
     }
 

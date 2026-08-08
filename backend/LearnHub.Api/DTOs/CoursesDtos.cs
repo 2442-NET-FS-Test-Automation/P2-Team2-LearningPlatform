@@ -1,4 +1,5 @@
 
+using System.ComponentModel.DataAnnotations;
 using LearnHub.Data;
 
 namespace LearnHub.Api.DTOs.Courses;
@@ -67,20 +68,34 @@ public class CreateCourseDto
 {
     public int ProfessorId { get; set; }
 
+    [Required]
+    [MinLength(3, ErrorMessage = "Name must be at least 3 characters")]
+    [MaxLength(100, ErrorMessage = "Name cannot exceed 100 characters")]
     public string Name { get; set; } = default!;
 
+    [Required]
+    [MinLength(10, ErrorMessage = "Description must be at least 10 characters")]
+    [MaxLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
     public string Description { get; set; } = default!;
 
+
+    [Required]
+    [MinLength(10, ErrorMessage = "About must be at least 10 characters")]
+    [MaxLength(1000, ErrorMessage = "About cannot exceed 1000 characters")]
     public string About { get; set; } = default!;
 
     public CourseCategory Category { get; set; }
 
+    [Range(1, 1000, ErrorMessage = "Capacity must be between 1 and 1000")]
     public int Capacity { get; set; }
 
     public bool Certification { get; set; }
 
+    [Range(1, 10000, ErrorMessage = "Hours must be between 1 and 10000")]
     public int Hours { get; set; }
 
+
+    [Range(0, 100000, ErrorMessage = "Price must be between 0 and 100000")]
     public decimal Price { get; set; }
 
     public List<CourseScheduleDto>? Schedule { get; set; }
