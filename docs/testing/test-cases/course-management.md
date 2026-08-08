@@ -99,7 +99,7 @@ Steps:        call handlePrevious() at currentPage=1; call handleNext() at
               currentPage=totalPages
 Expected:     currentPage does not go below 1 or above totalPages in either case;
               the corresponding button is rendered disabled
-Status:       (in progress)
+Status:       (passed)
 ```
 ```
 TC-CM-09
