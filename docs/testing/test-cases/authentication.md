@@ -12,7 +12,7 @@ Precondition: none (pure function test)
 Steps:        call isBirthDateValid() with a date exactly 12 years before today,
               then with a date 12 years minus 1 day before today
 Expected:     first call returns true (eligible); second call returns false (ineligible)
-Status:       (in execution)
+Status:       (passed)
 ```
 ```
 TC-AuthN-02
@@ -80,7 +80,7 @@ Technique:    Boundary-value analysis (8-char minimum)
 Precondition: LoginPage rendered
 Steps:        enter a 7-character password, submit
 Expected:     "Password should be at least 8 characters long" shown; no API call made
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthN-08

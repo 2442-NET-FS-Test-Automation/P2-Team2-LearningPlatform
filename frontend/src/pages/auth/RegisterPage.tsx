@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -67,7 +67,11 @@ export default function RegisterPage() {
         }
     };
 
-    if (user) navigate(getDashboardRoute(user.role));
+    useEffect(() => {
+        if (user) {
+            navigate(getDashboardRoute(user.role));
+        }
+    }, [user, navigate]);
 
     return (
         <div className="auth-shell">

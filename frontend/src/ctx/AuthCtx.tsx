@@ -3,7 +3,7 @@ import { api } from "../api/api";
 import type { AuthUser, AuthContextType, LoginCredentials, RegisterData } from "../lib/typesAuth";
 import type { UserRole } from "../lib/types";
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<AuthUser | null>(null);
