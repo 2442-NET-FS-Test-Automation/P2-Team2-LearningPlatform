@@ -1,12 +1,12 @@
 ```
 DEFECT-01
-Description: CreateCourseDto accepts invalid values (empty name, negative price, zero capacity) with no server-side rejection.
+Description:    CreateCourseDto accepts invalid values (empty name, negative price, zero capacity) with no server-side rejection.
 
-Found bu: TC-CM-15 design phase - No Data Annotations on DTO, no manual validation in controller or repo.
+Found bu:       TC-CM-15 design phase - No Data Annotations on DTO, no manual validation in controller or repo.
 
-REQ: REQ-10
+REQ:            REQ-10
 
-Status: Open
+Status:         Open
 
-FIX PR: (pending)
+FIX PR:         Fixed
 ```
