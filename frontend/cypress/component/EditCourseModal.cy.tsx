@@ -54,5 +54,8 @@ describe("TC-CM-17 - EditCourseModal error handling", () => {
 
         cy.get("@onUpdated")
             .should("not.have.been.called");
+
+        cy.contains("Edit Course")
+            .should("be.visible");
     });
 });
