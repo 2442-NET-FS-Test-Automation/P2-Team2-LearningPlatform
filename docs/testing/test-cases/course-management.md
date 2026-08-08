@@ -169,6 +169,7 @@ Steps:        deactivate the course
 Expected:     course becomes inactive and no longer appears in the public catalog
 Status:       Passed
 ```
+
 ```
 TC-CM-15a
 Trace:        REQ-10 (course management - name below minimum length)
@@ -177,6 +178,7 @@ Technique:    Boundary-value analysis (MinLength=3, value=2)
 Precondition: authenticated Admin; valid ProfessorId exists
 Steps:        POST /api/Courses with Name = "AB" (2 chars)
 Expected:     400 — validation error naming the Name field; no course persisted
+Status:       Passed
 ```
 
 ```
@@ -187,6 +189,7 @@ Technique:    Boundary-value analysis (MinLength=3, value=3)
 Precondition: same as TC-CM-15a
 Steps:        POST /api/Courses with Name = "ABC" (3 chars), all other fields valid
 Expected:     201 — course created successfully
+Status:       Passed
 ```
 
 ```
@@ -197,6 +200,7 @@ Technique:    Boundary-value analysis (MaxLength=100, value=100)
 Precondition: same as TC-CM-15a
 Steps:        POST /api/Courses with Name = string of exactly 100 chars
 Expected:     201 — course created successfully
+Status:       Passed
 ```
 
 ```
@@ -207,6 +211,7 @@ Technique:    Boundary-value analysis (MaxLength=100, value=101)
 Precondition: same as TC-CM-15a
 Steps:        POST /api/Courses with Name = string of 101 chars
 Expected:     400 — validation error naming the Name field
+Status:       Passed
 ```
 
 ```
@@ -217,6 +222,7 @@ Technique:    Equivalence partitioning (invalid ProfessorId class)
 Precondition: authenticated Admin
 Steps:        POST /api/Courses with ProfessorId = 99999 (non-existent)
 Expected:     400 — professor not found; no course persisted
+Status:       Passed
 ```
 
 ```
