@@ -79,7 +79,7 @@ Steps:        render with (loading=true), (user=null), (user role not in
               allowedRoles), (user role in allowedRoles)
 Expected:     renders null, <Navigate to="/login">, <Navigate to="/unauthorized">,
               and <Outlet/> respectively, one per case
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthZ-08
