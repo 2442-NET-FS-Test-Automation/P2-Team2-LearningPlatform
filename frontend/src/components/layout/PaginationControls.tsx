@@ -25,13 +25,13 @@ export default function PaginationControls({
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-                <div className="flex items-center justify-center">
-                    <button onClick={handlePrevious} disabled={currentPage === 1}
+                <div id="pagControlsContainer" className="flex items-center justify-center">
+                    <button id="PagControlsLeft" onClick={handlePrevious} disabled={currentPage === 1}
                         className="btn-primary rounded-full mx-2 px-2.5 disabled:opacity-40">
                         <ChevronLeft />
                     </button>
                     {/* Full number list (Only desktop) */}
-                    <div className="hidden sm:flex items-center">
+                    <div id="PagControlsNumbers" className="hidden sm:flex items-center">
                         {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                             <button
                             key={page}
@@ -46,10 +46,10 @@ export default function PaginationControls({
                         ))}
                     </div>
                     {/* Compact indicator (mobile only) */}
-                    <span className="sm:hidden mx-2 text-sm font-medium text-muted">
+                    <span id="PagControlsNumbersCompact" className="sm:hidden mx-2 text-sm font-medium text-muted">
                         Page {currentPage} of {totalPages}
                     </span>
-                    <button onClick={handleNext} disabled={currentPage === totalPages}
+                    <button id="PagControlsRight" onClick={handleNext} disabled={currentPage === totalPages}
                         className="btn-primary rounded-full mx-2 px-2.5 disabled:opacity-40">
                         <ChevronRight />
                     </button>
@@ -57,7 +57,7 @@ export default function PaginationControls({
                 
             )}
             {/* Items Per Page Selector */}
-            <div className="flex items-center justify-center gap-2">
+            <div id="PagControlsIPPSelector" className="flex items-center justify-center gap-2">
                 <label htmlFor="itemsperpage" className="text-sm">Per Page: </label>
                 <select defaultValue={defaultIPP}
                     name="itemsperpage" id="itemsperpage" 

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { UserRoundPen, X } from "lucide-react";
 
-import type { UserDetailsDto ,UpdateProfileDto, CourseSelectDto } from "../../lib/types";
+import type { UserDetailsDto ,UpdateProfileDto, CourseSelectDto, ShiftDto } from "../../lib/types";
 import { updateUser } from "../../api/usersRequest";
 import { getEnabledCourses } from "../../api/coursesRequests";
 import ModalHeader from "./ModalHeader";
 import ErrorMessage from "../ErrorMessage";
+import { getShifts } from "../../api/shiftsRequests";
 
 interface Props {
     user: UserDetailsDto;
@@ -37,8 +38,33 @@ export default function EditUserModal({
     });
 
     const [courses, setCourses] = useState<CourseSelectDto[]>([]);
+    const [shifts, setShifts] = useState<ShiftDto[]>([]);
     const [loading,setLoading] = useState(false);
     const [error,setError] = useState<string|null>(null);
+
+    useEffect(() => {
+    let cancelled = false;
+
+    async function loadShifts() {
+        if (!user.professor) return;
+        try {
+            const res = await getShifts(1, 10, "");
+            const loadedShifts = res.items ?? [];
+
+            if(!cancelled) {
+                setShifts(loadedShifts);
+            }
+        } catch (err: any) {
+            console.error(err.response?.data);
+            setError(err.response?.data.error);
+        }
+    }
+
+    loadShifts();
+    return () => {
+        cancelled = true;
+    };
+}, [user]);
 
     useEffect(() => {
         async function loadCourses() {
@@ -57,7 +83,7 @@ export default function EditUserModal({
     }, []);
 
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
 
         const { name, value } = e.target;
@@ -263,9 +289,7 @@ export default function EditUserModal({
                                                     </option>
                                                 ))
                                             }
-
                                         </select>
-
                                     </div>
 
                                     <p className="text-xs text-slate-500">
@@ -281,8 +305,31 @@ export default function EditUserModal({
                                 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-medium uppercase text-slate-500">Shift ID</label>
-                                        <input type="number" name="shiftId" className="form-input w-full" value={form.shiftId} onChange={handleChange} />
+                                        <label className="text-xs font-medium uppercase text-slate-500">Shift</label>
+                                        <select
+                                            className="form-input w-full"  
+                                            name="shiftId"
+                                            value={form.shiftId ?? ""}
+                                            onChange={handleChange}
+                                        >
+                                            {shifts.length > 0 ? (
+                                                <>
+                                                    <option value="" disabled>
+                                                        Select a shift
+                                                    </option>
+                                                    {shifts.map((shift) => (
+                                                        <option
+                                                            key={shift.id}
+                                                            value={shift.id}
+                                                        >
+                                                            {shift.name}
+                                                        </option>
+                                                    ))}
+                                                </>
+                                            ) : (
+                                                <option>No shifts available</option>
+                                            )}
+                                        </select>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-medium uppercase text-slate-500">Contract Date</label>
@@ -304,9 +351,9 @@ export default function EditUserModal({
                                             return (
                                                 <span
                                                     key={id}
-                                                    className="flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-700"
+                                                    className="flex items-center gap-1 rounded-full px-3 py-1 text-sm blue-accent-chip dark:bg-blue-900/70"
                                                 >
-                                                    {course?.name}
+                                                    {course ? course.name : "Disabled course"}
 
                                                     <button
                                                         type="button"
@@ -327,7 +374,7 @@ export default function EditUserModal({
                                         })}
 
                                         <select
-                                            className="flex-1 bg-transparent outline-none"
+                                            className="flex-1 outline-none"
                                             value=""
                                             onChange={(e) => {
                                                 const id = Number(e.target.value);
