@@ -13,7 +13,7 @@ Precondition: none (pure rendering logic test with mocked props)
 Steps:        render CourseCard with IsFull = 49, 50, 79, 80, 99, 100
 Expected:     "Open seats" below 50, "Filling up" at 50-79, "Almost full" at
               80-99, "Full" at 100, matching exactly at each boundary
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-CM-02
@@ -99,7 +99,7 @@ Steps:        call handlePrevious() at currentPage=1; call handleNext() at
               currentPage=totalPages
 Expected:     currentPage does not go below 1 or above totalPages in either case;
               the corresponding button is rendered disabled
-Status:       (not started)
+Status:       (in progress)
 ```
 ```
 TC-CM-09
