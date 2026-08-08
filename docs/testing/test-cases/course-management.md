@@ -147,7 +147,7 @@ Technique:    Equivalence partitioning (valid course information)
 Precondition: authenticated Admin user
 Steps:        create a new course with valid information
 Expected:     course is created successfully and persisted in the database
-Status:       (not started)
+Status:       Passed
 ```
 ```
 TC-CM-13
@@ -157,7 +157,7 @@ Technique:    State transition (existing course -> updated course)
 Precondition: authenticated Admin user; existing course
 Steps:        modify the course information
 Expected:     updated values are stored and returned by subsequent requests
-Status:       (not started)
+Status:       Passed
 ```
 ```
 TC-CM-14
@@ -167,7 +167,7 @@ Technique:    State transition (active -> inactive)
 Precondition: authenticated Admin user; active course exists
 Steps:        deactivate the course
 Expected:     course becomes inactive and no longer appears in the public catalog
-Status:       (not started)
+Status:       Passed
 ```
 ```
 TC-CM-15

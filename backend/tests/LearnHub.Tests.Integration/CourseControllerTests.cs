@@ -139,7 +139,7 @@ public class CourseControllerTests : IClassFixture<TestApplicationFactory>
     }
 
     [Fact]
-    public async Task TC_CM_14()
+    public async Task TC_CM_14_DeleteCourse_ShouldDeactivateCourseSuccesfully()
     {
         _client.LoginAsAdmin();
 
@@ -149,7 +149,7 @@ public class CourseControllerTests : IClassFixture<TestApplicationFactory>
 
         try
         {
-            var response = await _client.DeleteAsync($"/api/Course/{courseId}");
+            var response = await _client.DeleteAsync($"/api/Courses/{courseId}");
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
             var enabledResponse = await _client.GetAsync("/api/Courses/enabled");
