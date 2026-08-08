@@ -162,7 +162,7 @@ Status:       (not started)
 ```
 TC-CM-14
 Trace:        REQ-10 (course management - deactivate course)
-Level:        Integration — Backend (CoursesController.Update + DB)
+Level:        Integration — Backend (CoursesController.Delete + DB)
 Technique:    State transition (active -> inactive)
 Precondition: authenticated Admin user; active course exists
 Steps:        deactivate the course
@@ -179,14 +179,58 @@ Steps:        validate a course with missing required fields or invalid values
 Expected:     validation fails and the course cannot be created
 Status:       (not started)
 ```
+
 ```
 TC-CM-16
+Trace:        REQ-10 (course management - course retrieval after creation/update)
+Level:        Integration — Backend (CoursesController.GetById + DB)
+Technique:    State transition (course created/updated -> retrieved)
+Precondition: authenticated Admin user; existing course
+Steps:        create or update a course, then retrieve the course by its ID
+Expected:     the course is returned successfully with the latest persisted
+              information, including its name, description, category, price,
+              hours, certification status, schedule, and assigned professor
+Status:       (not started)
+```
+
+```
+TC-CM-17
+Trace:        REQ-10 (course management - assign professor)
+Level:        Integration — Backend (CoursesController + DB)
+Technique:    State transition (course without professor -> assigned professor)
+Precondition: authenticated Admin user; existing course and valid professor
+Steps:        assign the professor to the course
+Expected:     course is successfully updated with the selected professor;
+              subsequent course retrieval returns the assigned professor
+Status:       (not started)
+```
+
+```
+TC-CM-18
 Trace:        REQ-10 (course management - complete admin workflow)
 Level:        E2E — Selenium
 Technique:    Scenario testing
 Precondition: authenticated Admin user
-Steps:        create a course, edit it, verify the changes, then deactivate it
-Expected:     every operation succeeds and the UI reflects each change
+Steps:        create a course, open the course details page, edit the course
+              information, verify the changes, and deactivate the course
+Expected:     the course is created and displayed correctly; edited
+              information is reflected in the UI; after deactivation the
+              course is no longer available in the public catalog
+Status:       (not started)
+```
+
+```
+TC-CM-19
+Trace:        REQ-10 (course management - edit course UI)
+Level:        Unit — Frontend (CourseDetailsPage/EditCourseModal)
+Technique:    State transition + component interaction
+Precondition: CourseDetailsPage is rendered with a valid course and an
+              authenticated Admin user; API calls are mocked
+Steps:        render CourseDetailsPage; click the "Edit Course" button;
+              verify that EditCourseModal is displayed; close the modal
+Expected:     "Edit Course" button is visible for the Admin; clicking it
+              opens EditCourseModal with the selected courseId; closing
+              the modal removes it from the rendered UI
 Status:       (not started)
 ```
 

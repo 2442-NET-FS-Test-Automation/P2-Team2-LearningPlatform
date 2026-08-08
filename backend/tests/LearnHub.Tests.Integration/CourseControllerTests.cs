@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Transactions;
 using FluentAssertions;
 using LearnHub.Api.DTOs.Courses;
 using LearnHub.Data;
@@ -84,7 +85,81 @@ public class CourseControllerTests : IClassFixture<TestApplicationFactory>
         {
             await _transaction.RollbackAsync();
         }
-
-
     }   
+
+    [Fact]
+    public async Task TC_CM_13_UpdateCourse_ShouldUpdateCourseSuccesfully()
+    {
+        _client.LoginAsAdmin();
+
+        var courseId = 1;
+
+        var dto = new UpdateCourseDto
+        {
+            Name = "Advanced Algorithms",
+            Description = "Updated description",
+            About = "Updated about",
+            Capacity = 50,
+            Certification = true,
+            Hours = 60,
+            Price = 599.99m
+        };
+
+        _transaction = await _context.Database.BeginTransactionAsync();
+
+        try
+        {
+            var response = await _client.PatchAsJsonAsync(
+                $"/api/Courses/{courseId}",
+                dto
+            );
+
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            var getResponse = await _client.GetAsync($"/api/Courses/{courseId}");
+
+            getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var course = await getResponse.Content.ReadFromJsonAsync<CourseDetailDto>();
+
+            course.Should().NotBeNull();
+
+            course!.Name.Should().Be(dto.Name);
+            course.Description.Should().Be(dto.Description);
+            course.About.Should().Be(dto.About);
+            course.Capacity.Should().Be(dto.Capacity);
+            course.Certification.Should().Be(dto.Certification!.Value);
+            course.Hours.Should().Be(dto.Hours);
+            course.Price.Should().Be(dto.Price);
+        }
+        finally
+        {
+            await _transaction.RollbackAsync();
+        }
+    }
+
+    [Fact]
+    public async Task TC_CM_14()
+    {
+        _client.LoginAsAdmin();
+
+        var courseId = 1;
+
+        _transaction = await _context.Database.BeginTransactionAsync();
+
+        try
+        {
+            var response = await _client.DeleteAsync($"/api/Course/{courseId}");
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            var enabledResponse = await _client.GetAsync("/api/Courses/enabled");
+            var enabled = await enabledResponse.Content.ReadFromJsonAsync<PagedResult<CourseListDto>>();
+
+            enabled!.Items.Should().NotContain(c => c.Id == courseId);
+        }
+        finally
+        {
+            await _transaction.RollbackAsync();
+        }
+    }
 }
