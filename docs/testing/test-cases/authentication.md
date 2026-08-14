@@ -34,7 +34,7 @@ Steps:        POST /auth/register with a complete, valid payload (unique usernam
               password >= 8 chars, birthdate >= 12 years old)
 Expected:     201/200 response with created user info; user row persisted; auth cookie
               set on the response; a follow-up GET /auth/me returns the same user
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthN-04
