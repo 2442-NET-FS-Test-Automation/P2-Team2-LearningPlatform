@@ -59,7 +59,7 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
     // Required by IAsyncLifetime – but we already did setup in constructor, so this can be empty
     public Task InitializeAsync() => Task.CompletedTask;
 
-    [Fact] // TC-AuthZ-03
+    [Fact] // TC-AuthN-03
     public async Task Register_ValidPayload_Returns201AndPersistsUserAndSetsCookie()
     {
         // Arrange – unique credentials
@@ -120,5 +120,103 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
         var meUser = responseContent.GetProperty("user");
         var meUsername = meUser.GetProperty("username").GetString();
         Assert.Equal(registerRequest.Username, meUsername);
+    }
+
+    [Fact] // TC-AuthN-09
+    public async Task Login_WrongPassword_Returns401AndNoCookie()
+    {
+        // Arrange
+        var username = $"testuser34567893456";
+        var password = "ValidPass123";
+        var email = $"test_123456780987234@example.com";
+
+        var registerRequest = new
+        {
+            FirstName = "Test",
+            LastName = "User",
+            Username = username,
+            Email = email,
+            Password = password,
+            BirthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-20)).ToString("yyyy-MM-dd")
+        };
+
+        // Register the user
+        var registerResponse = await _client.PostAsJsonAsync("/api/auth/register", registerRequest);
+        Assert.Equal(HttpStatusCode.OK, registerResponse.StatusCode);
+
+        var registerContent = await registerResponse.Content.ReadFromJsonAsync<JsonElement>();
+        var userObj = registerContent.GetProperty("user");
+        _createdUserId = userObj.GetProperty("id").GetInt32();
+
+        // Act – login with wrong password
+        var loginRequest = new
+        {
+            EmailOrUsername = username,
+            Password = "WrongPassword"
+        };
+
+        var loginResponse = await _client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, loginResponse.StatusCode);
+
+        // Verify no auth cookie was set
+        var cookieHeader = loginResponse.Headers.Contains("Set-Cookie")
+            ? loginResponse.Headers.GetValues("Set-Cookie").FirstOrDefault()
+            : null;
+        Assert.Null(cookieHeader);
+        if (cookieHeader != null) Assert.DoesNotContain("access-token=", cookieHeader);
+    }
+
+    [Fact] // TC-AuthN-10
+    public async Task Login_DeactivatedAccount_Returns403AndNoCookie()
+    {
+        // Arrange – create a user
+        var username = $"testuser234567654";
+        var password = "ValidPass123";
+        var email = $"test_12347654@example.com";
+
+        var registerRequest = new
+        {
+            FirstName = "Test",
+            LastName = "User",
+            Username = username,
+            Email = email,
+            Password = password,
+            BirthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-20)).ToString("yyyy-MM-dd")
+        };
+
+        var registerResponse = await _client.PostAsJsonAsync("/api/auth/register", registerRequest);
+        Assert.Equal(HttpStatusCode.OK, registerResponse.StatusCode);
+
+        var registerContent = await registerResponse.Content.ReadFromJsonAsync<JsonElement>();
+        var userObj = registerContent.GetProperty("user");
+        _createdUserId = userObj.GetProperty("id").GetInt32();
+
+        // Deactivate the user directly in the database
+        var user = await _db.Users.FindAsync(_createdUserId);
+        Assert.NotNull(user);
+        user.IsActive = false;
+        await _db.SaveChangesAsync();
+
+        // Act – login with correct credentials (but user is inactive)
+        var loginRequest = new
+        {
+            EmailOrUsername = username,
+            Password = password
+        };
+
+        var loginResponse = await _client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        // Assert – expect 403
+        Assert.Equal(HttpStatusCode.Forbidden, loginResponse.StatusCode);
+
+        // Verify no auth cookie was set
+        var cookieHeader = loginResponse.Headers.Contains("Set-Cookie")
+            ? loginResponse.Headers.GetValues("Set-Cookie").FirstOrDefault()
+            : null;
+        Assert.Null(cookieHeader);
+        if (cookieHeader != null)
+            Assert.DoesNotContain("access-token", cookieHeader);
     }
 }
