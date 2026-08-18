@@ -100,7 +100,7 @@ Technique:    Equivalence partitioning (invalid credential class)
 Precondition: a registered, active user exists
 Steps:        POST /auth/login with the correct username but wrong password
 Expected:     401 response; no auth cookie set; no session created
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthN-10
@@ -110,7 +110,7 @@ Technique:    Decision table (active/inactive x correct/incorrect credentials)
 Precondition: a registered user exists with IsActive = false, correct credentials known
 Steps:        POST /auth/login with correct credentials for the deactivated user
 Expected:     403 response distinct from the 401 invalid-credentials case; no cookie set
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthN-11
