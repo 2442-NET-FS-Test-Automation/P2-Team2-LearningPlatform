@@ -1,0 +1,9 @@
+# General ignores
+**/bin/
+**/obj/
+**/logs/
+**/*.user
+.git
+.gitignore
+
+**/appsettings.Development.json

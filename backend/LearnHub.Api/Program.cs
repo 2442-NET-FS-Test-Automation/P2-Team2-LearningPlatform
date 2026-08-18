@@ -24,7 +24,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // DbContext
-var conn_string = builder.Configuration["Conn-String"]!;
+var conn_string = builder.Configuration.GetConnectionString("Learnhub");
 
 builder.Services.AddDbContextFactory<LearnHubDbContext>(o => o.UseSqlServer(conn_string));
 
@@ -58,13 +58,24 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 
-// CORS Configuration
 const string SpaCorsPolicy = "spa";
-builder.Services.AddCors(o => o.AddPolicy(SpaCorsPolicy, 
-    p => p.WithOrigins("http://localhost:5173", "http://localhost:5174")
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-        .AllowCredentials()));
+
+// CORS Configuration - DEPRECATED LOCAL IMPLEMENTATION
+// builder.Services.AddCors(o => o.AddPolicy(SpaCorsPolicy, 
+//     p => p.WithOrigins("http://localhost:5173", "http://localhost:5174")
+//         .AllowAnyHeader()
+//         .AllowAnyMethod()
+//         .AllowCredentials()));
+
+var extraOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+var spaOrigins = new [] {"http://localhost:5173","http://localhost:5174"}
+    .Concat(extraOrigins ?? [])
+    .ToArray();
+
+builder.Services.AddCors(o => o.AddPolicy(SpaCorsPolicy, p => p
+    .WithOrigins(spaOrigins)
+    .AllowAnyHeader()
+    .AllowAnyMethod()));
 
 // JWT Authentication
 var jwtSettings = new JwtSettings();
@@ -73,20 +84,6 @@ builder.Configuration.GetSection(JwtSettings.SectionName).Bind(jwtSettings);
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection(JwtSettings.SectionName)
 );
-
-// builder.Services
-//     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//     .AddJwtBearer(o => o.TokenValidationParameters = new TokenValidationParameters
-//     {
-//         ValidateIssuer = true,
-//         ValidateAudience = true,
-//         ValidateLifetime = true,
-//         ValidateIssuerSigningKey = true,
-//         ValidIssuer = jwtSettings.Issuer,
-//         ValidAudience = jwtSettings.Audience,
-//         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
-//     });
-
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -112,7 +109,6 @@ builder.Services
             }
         };
     });
-
 
 
 builder.Services.AddAuthorization();

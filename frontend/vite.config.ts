@@ -14,5 +14,4 @@ export default defineConfig({
         requireEnv: false,
     }),
   ],
-  base: "http://localhost:5173/",
 })
