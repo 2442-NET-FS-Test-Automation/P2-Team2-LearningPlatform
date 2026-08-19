@@ -75,7 +75,8 @@ var spaOrigins = new [] {"http://localhost:5173","http://localhost:5174"}
 builder.Services.AddCors(o => o.AddPolicy(SpaCorsPolicy, p => p
     .WithOrigins(spaOrigins)
     .AllowAnyHeader()
-    .AllowAnyMethod()));
+    .AllowAnyMethod()
+    .AllowCredentials()));
 
 // JWT Authentication
 var jwtSettings = new JwtSettings();

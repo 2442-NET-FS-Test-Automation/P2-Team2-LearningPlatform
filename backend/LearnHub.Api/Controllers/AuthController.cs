@@ -55,14 +55,10 @@ public class AuthController : ControllerBase {
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddDays(1)
             }
         );
-
-
-
-
 
         var user = await _users.LoginUserAsync(dto.Username, dto.Password);
 
@@ -98,19 +94,16 @@ public class AuthController : ControllerBase {
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddDays(1)
             }
         );
-
 
         var publicUser = ToPublicUser(user!);
         return Ok(new {
             user = publicUser
         });
     }
-
-
 
     // -- Logout user
     [HttpPost("logout")]
@@ -122,21 +115,12 @@ public class AuthController : ControllerBase {
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict
+                SameSite = SameSiteMode.None
             }
         );
 
         return NoContent();
     }
-
-
-
-
-
-
-
-
-
 
     [HttpGet("me")]
     public async Task<ActionResult> Me()
