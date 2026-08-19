@@ -34,7 +34,7 @@ Steps:        POST /auth/register with a complete, valid payload (unique usernam
               password >= 8 chars, birthdate >= 12 years old)
 Expected:     201/200 response with created user info; user row persisted; auth cookie
               set on the response; a follow-up GET /auth/me returns the same user
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthN-04
@@ -100,7 +100,7 @@ Technique:    Equivalence partitioning (invalid credential class)
 Precondition: a registered, active user exists
 Steps:        POST /auth/login with the correct username but wrong password
 Expected:     401 response; no auth cookie set; no session created
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthN-10
@@ -110,7 +110,7 @@ Technique:    Decision table (active/inactive x correct/incorrect credentials)
 Precondition: a registered user exists with IsActive = false, correct credentials known
 Steps:        POST /auth/login with correct credentials for the deactivated user
 Expected:     403 response distinct from the 401 invalid-credentials case; no cookie set
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthN-11
@@ -156,7 +156,7 @@ Precondition: a user with username "jsmith" already exists
 Steps:        POST /auth/register with username "jsmith" and a new, unused email
 Expected:     4xx response naming the username conflict; no second row created;
               a count query confirms exactly one "jsmith" row before and after
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthN-15
@@ -166,7 +166,7 @@ Technique:    Negative testing (independent axis from TC-25)
 Precondition: a user with email "j@x.com" already exists, under a different username
 Steps:        POST /auth/register with a new username but email "j@x.com"
 Expected:     4xx response naming the email conflict; no second row created
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthN-16
