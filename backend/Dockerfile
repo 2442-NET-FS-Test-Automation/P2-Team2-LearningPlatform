@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 COPY LearnHub.Api/LearnHub.Api.csproj LearnHub.Api/
-COPY LearnHub.Data//LearnHub.Data.csproj LearnHub.Data/
+COPY LearnHub.Data/LearnHub.Data.csproj LearnHub.Data/
 RUN dotnet restore LearnHub.Api/LearnHub.Api.csproj
 
 COPY LearnHub.Api/ LearnHub.Api/
