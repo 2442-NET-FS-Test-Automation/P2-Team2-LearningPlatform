@@ -156,7 +156,7 @@ Precondition: a user with username "jsmith" already exists
 Steps:        POST /auth/register with username "jsmith" and a new, unused email
 Expected:     4xx response naming the username conflict; no second row created;
               a count query confirms exactly one "jsmith" row before and after
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthN-15
@@ -166,7 +166,7 @@ Technique:    Negative testing (independent axis from TC-25)
 Precondition: a user with email "j@x.com" already exists, under a different username
 Steps:        POST /auth/register with a new username but email "j@x.com"
 Expected:     4xx response naming the email conflict; no second row created
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthN-16

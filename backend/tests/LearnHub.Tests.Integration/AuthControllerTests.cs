@@ -219,4 +219,105 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
         if (cookieHeader != null)
             Assert.DoesNotContain("access-token", cookieHeader);
     }
+
+    // Helper to register a user and return the user ID
+    private async Task<int> RegisterUserAsync(string firstName, string lastName, string username, string email, string password, string birthDate)
+    {
+        var request = new
+        {
+            FirstName = firstName,
+            LastName = lastName,
+            Username = username,
+            Email = email,
+            Password = password,
+            BirthDate = birthDate
+        };
+
+        var response = await _client.PostAsJsonAsync("/api/auth/register", request);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var content = await response.Content.ReadFromJsonAsync<JsonElement>();
+        var userObj = content.GetProperty("user");
+        var userId = userObj.GetProperty("id").GetInt32();
+        _createdUserId=userId;
+        return userId;
+    }
+
+    [Fact] // TC-AuthN-14
+    public async Task Register_DuplicateUsername_ReturnsConflict()
+    {
+        // Arrange – create a user with a known username
+        var username = $"jsmith123456780987654";
+        var email1 = $"jsmith_123456780987654@example.com";
+        var email2 = $"jsmith2_123456780987654@example.com"; // different email for duplicate attempt
+
+        await RegisterUserAsync("John", "Smith", username, email1, "Password123!", DateOnly.FromDateTime(DateTime.Today.AddYears(-20)).ToString("yyyy-MM-dd"));
+
+        // Count how many users exist with this username (should be 1)
+        var countBefore = await _db.Users.CountAsync(u => u.Username == username);
+
+        // Act – try to register with the same username, but different email
+        var duplicateRequest = new
+        {
+            FirstName = "Jane",
+            LastName = "Smith",
+            Username = username,
+            Email = email2,
+            Password = "AnotherPass123!",
+            BirthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-18)).ToString("yyyy-MM-dd")
+        };
+
+        var response = await _client.PostAsJsonAsync("/api/auth/register", duplicateRequest);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+
+        // Verify the error message mentions username
+        var errorContent = await response.Content.ReadFromJsonAsync<JsonElement>();
+        var errorMessage = errorContent.GetProperty("error").GetString();
+        Assert.Contains("username", errorMessage, StringComparison.OrdinalIgnoreCase);
+
+        // Verify no new row was created with the same username
+        var countAfter = await _db.Users.CountAsync(u => u.Username == username);
+        Assert.Equal(countBefore, countAfter);
+    }
+
+    [Fact] // TC-AuthN-15
+    public async Task Register_DuplicateEmail_ReturnsConflict()
+    {
+        // Arrange – create a user with a known email
+        var email = $"jane12349876543@x.com";
+        var username1 = $"jane14621763791";
+        var username2 = $"jane22135267831"; // different username for duplicate attempt
+
+        await RegisterUserAsync("Jane", "Doe", username1, email, "Password123!", DateOnly.FromDateTime(DateTime.Today.AddYears(-20)).ToString("yyyy-MM-dd"));
+
+        // Count how many users exist with this email (should be 1)
+        var countBefore = await _db.Users.CountAsync(u => u.Email == email);
+
+        // Act – try to register with the same email, but different username
+        var duplicateRequest = new
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Username = username2,
+            Email = email,
+            Password = "AnotherPass123!",
+            BirthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-18)).ToString("yyyy-MM-dd")
+        };
+
+        var response = await _client.PostAsJsonAsync("/api/auth/register", duplicateRequest);
+
+        // Assert – expect 409
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+
+        // Verify the error message mentions email
+        var errorContent = await response.Content.ReadFromJsonAsync<JsonElement>();
+        var errorMessage = errorContent.GetProperty("error").GetString();
+        Assert.Contains("email", errorMessage, StringComparison.OrdinalIgnoreCase);
+
+        // Verify no new row with the same email
+        var countAfter = await _db.Users.CountAsync(u => u.Email == email);
+        Assert.Equal(countBefore, countAfter);
+    }
 }
