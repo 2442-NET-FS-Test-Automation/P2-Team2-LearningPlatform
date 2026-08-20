@@ -55,7 +55,7 @@ Precondition: authenticated user of any role with endpoint access rights
 Steps:        request the endpoint with id = -1, then id = 0
 Expected:     both return 400 (via DataTypeVerification.IsNumValid) rather than a
               500 or a misleading 404
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthZ-06
@@ -65,7 +65,7 @@ Technique:    Security testing (negative, token integrity)
 Precondition: a valid auth cookie/token captured, then manually altered or expired
 Steps:        call a protected endpoint using the tampered token
 Expected:     401 Unauthorized; request never reaches controller action logic
-Status:       (not started)
+Status:       (passed)
 ```
 
 ## REQ-04	UI authorization

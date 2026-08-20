@@ -331,4 +331,42 @@ public class ActivitiesControllerAuthTests : IClassFixture<WebApplicationFactory
         var activity = await _db.Activities.FirstAsync(a => a.Id == activityId);
         Assert.False(activity.IsActive);
     }
+
+    [Theory] // TC-AuthZ-05
+    [InlineData(-1)]
+    [InlineData(0)]
+    public async Task GetActivity_InvalidId_ReturnsBadRequest(int invalidId)
+    {
+        // Arrange – login as admin
+        var adminCookie = await GetAdminCookieAsync();
+        _client.DefaultRequestHeaders.Remove("Cookie");
+        _client.DefaultRequestHeaders.Add("Cookie", adminCookie);
+
+        // Act
+        var response = await _client.GetAsync($"/api/activities/{invalidId}");
+
+        // Assert – should return 400 Bad Request, not 404 or 500
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact] // TC-AuthZ-06
+    public async Task GetActivity_TamperedCookie_ReturnsUnauthorized()
+    {
+        // Arrange – get a valid cookie (admin)
+        var validCookie = await GetAdminCookieAsync();
+        Assert.NotNull(validCookie);
+        Assert.Contains("access-token=", validCookie);
+
+        // Tamper with the cookie – change the last character
+        var tamperedCookie = validCookie[..^1] + "X"; // change last char
+
+        _client.DefaultRequestHeaders.Remove("Cookie");
+        _client.DefaultRequestHeaders.Add("Cookie", tamperedCookie);
+
+        // Act – call a protected endpoint (GetById with a valid id)
+        var response = await _client.GetAsync("/api/activities/1");
+
+        // Assert – should return 401 Unauthorized
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
 }

@@ -53,7 +53,7 @@ public class ActivitiesController : ControllerBase
     [Authorize]
     public async Task<ActionResult<ActivityDetailDto>> GetById(int id)
     {
-        if (!DataTypeVerification.IsNumValid(id)) return BadRequest();
+        if (!DataTypeVerification.IsNumValid(id) || id <= 0) return BadRequest();
 
         var activity = await _repo.GetByIdAsync(id);
         if (activity is null) return NotFound();
