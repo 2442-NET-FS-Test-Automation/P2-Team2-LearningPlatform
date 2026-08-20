@@ -136,7 +136,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGet("/", () => {
-    return "Learnhub API";
+    return "Learnhub API From Azure Container with Jenkins CI/CD Pipeline yey";
 });
 
 // Test Endpoints for Role Enforcement
