@@ -80,6 +80,47 @@ public class EnrollToCourseTests {
         Assert.IsType<ConflictObjectResult>(result);
         _studentRepoMock.Verify(r => r.EnrollAsync(11, 21), Times.Once);
     }
+
+
+    [Fact] // TC-Enroll-04
+    public async Task EnrollStudent_CourseFull_ReturnsBadRequest()
+    {
+        var student = new Student { Id = 11, UserId = 6 };
+
+        _studentRepoMock
+            .Setup(r => r.GetByUserIdAsync(6))
+            .ReturnsAsync(student);
+
+        _studentRepoMock
+            .Setup(r => r.EnrollAsync(11, 21))
+            .ThrowsAsync(new InvalidOperationException("Course is full."));
+
+        var result = await _sut.EnrollStudent(userId: 6, courseId: 21);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+        _studentRepoMock.Verify(r => r.EnrollAsync(11, 21), Times.Once);
+    }
+
+
+    [Fact] // TC-Enroll-05
+    public async Task EnrollStudent_CourseNotFound_ReturnsNotFound()
+    {
+        var student = new Student { Id = 11, UserId = 6 };
+
+        _studentRepoMock
+            .Setup(r => r.GetByUserIdAsync(6))
+            .ReturnsAsync(student);
+
+        _studentRepoMock
+            .Setup(r => r.EnrollAsync(11, 7))
+            .ThrowsAsync(new KeyNotFoundException("Course not found")); 
+
+        var result = await _sut.EnrollStudent(userId: 6, courseId: 7);
+
+
+        Assert.IsType<NotFoundObjectResult>(result);
+        _studentRepoMock.Verify(r => r.EnrollAsync(11 ,7), Times.Once);
+    }
     
 }
 

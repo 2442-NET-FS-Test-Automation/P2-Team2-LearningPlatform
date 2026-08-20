@@ -26,6 +26,7 @@ Steps:        call EnrollStudent(userId, courseId)
 Expected:     400 Bad Request; EnrollAsync is never called
 Status:       (passed)
 ```
+
 ```
 TC-Enroll-03
 Trace:        REQ-13 (enroll - already enrolled)
@@ -35,6 +36,28 @@ Precondition: mocked IStudentRepo; student exists; EnrollAsync returns false
 Steps:        call EnrollStudent(userId, courseId)
 Expected:     409 Conflict; EnrollAsync was called once
 Status:       (not started)
+```
+
+```
+TC-Enroll-04
+Trace:        REQ-13 (enroll - course full, controller catch)
+Level:        Unit - Backend (StudentsController.EnrollStudent)
+Technique:    Negative testing
+Precondition: student exists; EnrollAsync throws InvalidOperationException
+Steps:        call EnrollStudent(userId, courseId)
+Expected:     400 Bad Request; EnrollAsync was called once
+Status:       (passed)
+```
+
+```
+TC-Enroll-05
+Trace:        REQ-13 (enroll - course not found, controller catch)
+Level:        Unit - Backend (StudentsController.EnrollStudent)
+Technique:    Negative testing
+Precondition: student exists; EnrollAsync throws KeyNotFoundException
+Steps:        call EnrollStudent(userId, courseId)
+Expected:     404 Not Found; EnrollAsync was called once
+Status:       (passed)
 ```
 
 
