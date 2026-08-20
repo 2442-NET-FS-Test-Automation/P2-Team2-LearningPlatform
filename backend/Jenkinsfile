@@ -22,7 +22,6 @@ pipeline {
 
         stage ('Test') {
             steps {
-                
                 dir(env.API_DIR) {
                     // Turn on the DB
                     sh 'docker start mssql_test'
@@ -36,7 +35,9 @@ pipeline {
 
         stage('Build image') {
             steps {
-                sh "docker build -t ${IMAGE}:${BUILD_NUMBER} -t ${IMAGE}:latest -f ${API_DIR}/Dockerfile ."
+                dir(env.API_DIR) {
+                    sh "docker build -t ${IMAGE}:${BUILD_NUMBER} -t ${IMAGE}:latest -f Dockerfile ."
+                }
             }
         }
 
