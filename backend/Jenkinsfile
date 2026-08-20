@@ -8,6 +8,7 @@ pipeline {
         Jwt__Key=credentials('jwt-key')
         Jwt__Issuer=credentials('jwt-issuer')
         Jwt__Audience=credentials('jwt-audience')
+        ConnectionStrings__Learnhub=credentials('conn-test-server')
     }
 
     stages {
@@ -30,6 +31,12 @@ pipeline {
                     sh 'rm -rf tests/*/TestResults'
                     sh 'dotnet test LearnHub.slnx -c Release --logger "junit;LogFilePath=TestResults/{assembly}.junit.xml"'
                 }
+            }
+        }
+
+        stage('Build image') {
+            steps {
+                sh 'docker build -t %IMAGE%:%BUILD_NUMBER% -t %IMAGE%:latest -f "%API_DIR%/Dockerfile" .'
             }
         }
 
