@@ -36,7 +36,7 @@ pipeline {
 
         stage('Build image') {
             steps {
-                sh 'docker build -t %IMAGE%:%BUILD_NUMBER% -t %IMAGE%:latest -f "%API_DIR%/Dockerfile" .'
+                sh "docker build -t ${IMAGE}:${BUILD_NUMBER} -t ${IMAGE}:latest -f ${API_DIR}/Dockerfile ."
             }
         }
 
@@ -44,10 +44,10 @@ pipeline {
             steps {
                 // The credential never appears in the log: Jenkins injects it as env vars and masks them.
                 withCredentials([usernamePassword(credentialsId: 'acr-admin', usernameVariable: 'ACR_USER', passwordVariable: 'ACR_PASS')]) {
-                    sh 'echo %ACR_PASS%| docker login %REGISTRY% -u %ACR_USER% --password-stdin'
-                    sh 'docker push %IMAGE%:%BUILD_NUMBER%'
-                    sh 'docker push %IMAGE%:latest'
-                    sh 'docker logout %REGISTRY%'
+                    sh "echo ${ACR_PASS} | docker login ${REGISTRY} -u ${ACR_USER} --password-stdin"
+                    sh "docker push ${IMAGE}:${BUILD_NUMBER}"
+                    sh "docker push ${IMAGE}:latest"
+                    sh "docker logout ${REGISTRY}"
                 }
             }
         }
