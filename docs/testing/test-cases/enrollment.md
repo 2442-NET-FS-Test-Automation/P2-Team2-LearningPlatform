@@ -16,7 +16,22 @@ Expected:     200 OK; EnrollAsync was called once with that student's Id and cou
 Status:       (passed)
 ```
 
+```
+TC-Enroll-02
+Trace:        REQ-13 (enroll - user is not a student)
+Level:        Unit - Backend (StudentsController.EnrollStudent)
+Technique:    Negative testing
+Precondition: mocked IStudentRepo; GetByUserIdAsync returns null
+Steps:        call EnrollStudent(userId, courseId)
+Expected:     400 Bad Request; EnrollAsync is never called
+Status:       (passed)
+```
+
+
+
 ## REQ-14	Student unenrolls from courses
+
+
 
 ## REQ-21	Student schedule conflicts are validated
 

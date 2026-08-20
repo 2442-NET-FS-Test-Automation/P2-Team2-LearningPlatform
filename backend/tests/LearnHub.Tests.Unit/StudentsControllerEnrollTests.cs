@@ -1,4 +1,5 @@
 using LearnHub.Api.Controllers;
+using LearnHub.Api.DTOs.Courses;
 using LearnHub.Data.Entities;
 using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +41,24 @@ public class EnrollToCourseTests {
 
         Assert.IsType<OkResult>(result);
         _studentRepoMock.Verify(r => r.EnrollAsync(11, 21), Times.Once);
+    }
+
+
+    [Fact] // Tc-Enroll-02
+    public async Task EnrollStudent_UserIsNotStudent_ReturnsBadRequest()
+    {
+        _studentRepoMock
+            .Setup(r => r.GetByUserIdAsync(5))
+            .ReturnsAsync((Student?)null);
+
+        var result = await _sut.EnrollStudent(userId: 6, courseId: 15);
+
+
+        Assert.IsType<BadRequestObjectResult>(result);
+        _studentRepoMock.Verify(
+            r => r.EnrollAsync(It.IsAny<int>(), It.IsAny<int>()),
+            Times.Never
+        );
     }
     
 }
