@@ -26,6 +26,16 @@ Steps:        call EnrollStudent(userId, courseId)
 Expected:     400 Bad Request; EnrollAsync is never called
 Status:       (passed)
 ```
+```
+TC-Enroll-03
+Trace:        REQ-13 (enroll - already enrolled)
+Level:        Unit - Backend (StudentsController.EnrollStudent)
+Technique:    Negative testing
+Precondition: mocked IStudentRepo; student exists; EnrollAsync returns false
+Steps:        call EnrollStudent(userId, courseId)
+Expected:     409 Conflict; EnrollAsync was called once
+Status:       (not started)
+```
 
 
 

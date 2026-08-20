@@ -60,6 +60,26 @@ public class EnrollToCourseTests {
             Times.Never
         );
     }
+
+
+    [Fact] // TC-Enroll-03
+    public async Task EnrollStudent_AlreadyEnrolled_ReturnsConflict()
+    {
+        var student = new Student { Id = 11, UserId = 6 };
+
+        _studentRepoMock
+            .Setup(r => r.GetByUserIdAsync(6))
+            .ReturnsAsync(student);
+
+        _studentRepoMock
+            .Setup(r => r.EnrollAsync(11, 21))
+            .ReturnsAsync(false);
+
+        var result = await _sut.EnrollStudent(userId: 6, courseId: 21);
+
+        Assert.IsType<ConflictObjectResult>(result);
+        _studentRepoMock.Verify(r => r.EnrollAsync(11, 21), Times.Once);
+    }
     
 }
 
