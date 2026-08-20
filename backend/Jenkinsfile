@@ -1,0 +1,57 @@
+pipeline {
+    agent { label 'linux' }
+
+    environment {
+        API_DIR='backend/'
+        REGISTRY='learnhubcontainers.azurecr.io'
+        IMAGE="${REGISTRY}/learnhub-api"
+        Jwt__Key=credentials('jwt-key')
+        Jwt__Issuer=credentials('jwt-issuer')
+        Jwt__Audience=credentials('jwt-audience')
+    }
+
+    stages {
+        stage ('Build') {
+            steps {
+                dir(env.API_DIR) {
+                    sh 'dotnet build LearnHub.Api/LearnHub.Api.csproj -c Release'
+                }
+            }
+        }
+
+        stage ('Test') {
+            steps {
+                
+                dir(env.API_DIR) {
+                    // Turn on the DB
+                    sh 'docker start mssql_test'
+                    sleep time: 5, unit: 'SECONDS'
+
+                    sh 'rm -rf tests/*/TestResults'
+                    sh 'dotnet test LearnHub.slnx -c Release --logger "junit;LogFilePath=TestResults/{assembly}.junit.xml"'
+                }
+            }
+        }
+
+        stage('Push to ACR') {
+            steps {
+                // The credential never appears in the log: Jenkins injects it as env vars and masks them.
+                withCredentials([usernamePassword(credentialsId: 'acr-admin', usernameVariable: 'ACR_USER', passwordVariable: 'ACR_PASS')]) {
+                    sh 'echo %ACR_PASS%| docker login %REGISTRY% -u %ACR_USER% --password-stdin'
+                    sh 'docker push %IMAGE%:%BUILD_NUMBER%'
+                    sh 'docker push %IMAGE%:latest'
+                    sh 'docker logout %REGISTRY%'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            dir(env.API_DIR) {
+                junit allowEmptyResults: true, testResults: 'tests/**/TestResults/*.junit.xml'
+                archiveArtifacts allowEmptyArchive: true, artifacts: 'tests/**/TestResults/*.trx'
+            }
+        }
+    }
+}
