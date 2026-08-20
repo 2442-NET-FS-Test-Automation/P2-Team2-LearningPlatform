@@ -23,7 +23,7 @@ Precondition: Professor A is authenticated; a course exists that is taught by
               Professor B, not A
 Steps:        POST /Activities for Professor B's course, authenticated as Professor A
 Expected:     403 Forbidden; no activity row created for that course
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthZ-03
@@ -33,7 +33,7 @@ Technique:    Negative testing / access-control boundary
 Precondition: Student is authenticated but not enrolled in the target course
 Steps:        POST /Activities/{id}/submissions for an activity in that course
 Expected:     403 Forbidden; no submission row created
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthZ-04
@@ -44,7 +44,7 @@ Precondition: Admin authenticated; a course taught by an unrelated Professor
 Steps:        as Admin, create and delete an activity for that course
 Expected:     all three operations succeed with 2xx responses regardless of
               course ownership
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-AuthZ-05
