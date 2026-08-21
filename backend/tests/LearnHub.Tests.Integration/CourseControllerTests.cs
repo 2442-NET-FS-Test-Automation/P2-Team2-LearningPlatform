@@ -261,7 +261,7 @@ public class CourseControllerTests : IClassFixture<TestApplicationFactory>
             patchResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
 
-            var getResponse = await _client.GetAsync($"/api/Course/{courseId}");
+            var getResponse = await _client.GetAsync($"/api/Courses/{courseId}");
             getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var course = await getResponse.Content.ReadFromJsonAsync<CourseDetailDto>();

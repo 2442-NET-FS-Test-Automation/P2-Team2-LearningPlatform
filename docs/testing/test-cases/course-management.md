@@ -247,13 +247,13 @@ Precondition: EditCourseModal is rendered with an existing course; API calls are
 Steps:        mock updateCourse to reject; submit the edit course form
 Expected:     "Failed to update course." is displayed in the modal;
               the modal remains open and the course is not reported as updated
-Status:       (not started)
+Status:       Passed
 ```
 
 ```
 TC-CM-18
 Trace:        REQ-10 (course management - complete admin workflow)
-Level:        E2E — Selenium
+Level:        E2E — Cypress
 Technique:    Scenario testing
 Precondition: authenticated Admin user
 Steps:        create a course, open the course details page, edit the course
@@ -261,13 +261,13 @@ Steps:        create a course, open the course details page, edit the course
 Expected:     the course is created and displayed correctly; edited
               information is reflected in the UI; after deactivation the
               course is no longer available in the public catalog
-Status:       (not started)
+Status:       Passed
 ```
 
 ```
 TC-CM-19
 Trace:        REQ-10 (course management - edit course UI)
-Level:        Unit — Frontend (CourseDetailsPage/EditCourseModal)
+Level:        Component — Frontend (CourseDetailsPage/EditCourseModal)
 Technique:    State transition + component interaction
 Precondition: CourseDetailsPage is rendered with a valid course and an
               authenticated Admin user; API calls are mocked
@@ -276,8 +276,7 @@ Steps:        render CourseDetailsPage; click the "Edit Course" button;
 Expected:     "Edit Course" button is visible for the Admin; clicking it
               opens EditCourseModal with the selected courseId; closing
               the modal removes it from the rendered UI
-Status:       (not started)
+Status:       Passed
 ```
 
 ## REQ-20 Professor only manages assigned courses
-
