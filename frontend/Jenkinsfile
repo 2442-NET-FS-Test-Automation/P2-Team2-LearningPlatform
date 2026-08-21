@@ -5,7 +5,7 @@ pipeline {
         SPA_DIR='frontend/'
         VITE_API_URL='https://learnhubappapi-c7hvc7dwggegb9fu.centralus-01.azurewebsites.net/api'
         SITE_URL='https://learnhubweb.z19.web.core.windows.net'
-        BLOB_URL='learnhubweb.blob.core.windows.net/$web'
+        BLOB_URL='https://learnhubweb.blob.core.windows.net/$web'
         BLOB_TOKEN=credentials('web-sas')
     }
 
