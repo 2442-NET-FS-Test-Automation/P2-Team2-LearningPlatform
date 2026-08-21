@@ -28,7 +28,9 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'web-sas', variable: 'sas')]) {
                     dir(env.SPA_DIR) {
-                        sh "azcopy sync dist "${BLOB_URL}${BLOB_TOKEN}" --recursive --delete-destination=true"
+                        sh '''
+                            azcopy sync dist "${BLOB_URL}${BLOB_TOKEN}" --recursive --delete-destination=true
+                        '''
                     }
                 }
             }
