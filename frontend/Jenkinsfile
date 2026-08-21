@@ -21,7 +21,9 @@ pipeline {
 
         stage ('Component Test') {
             steps {
-                sh 'npm run cy:ct'
+                dir(env.SPA_DIR) {
+                    sh 'npm run cy:ct'
+                }
             }
         }
 
