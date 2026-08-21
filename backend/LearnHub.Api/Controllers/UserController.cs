@@ -111,7 +111,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPatch("{id:int}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public async Task<IActionResult> UpdateUser(
         int id,
         UpdateUserDto dto)
@@ -119,6 +119,10 @@ public class UsersController : ControllerBase
         var user = await _repo.GetByIdAsync(id);
 
         if(user == null) return NotFound();
+
+        var role = User.FindFirstValue(System.Security.Claims.ClaimTypes.Role);
+        var username = User.Identity?.Name;
+        if (role != "Admin" && user.Username != username) return Forbid();
 
         try
         {
