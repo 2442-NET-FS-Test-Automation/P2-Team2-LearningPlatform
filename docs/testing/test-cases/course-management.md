@@ -24,7 +24,7 @@ Precondition: at least one active and one inactive course exist
 Steps:        GET /Courses/enabled with no Authorization header
 Expected:     200 response; only the active course appears in the results;
               the inactive one is excluded
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-CM-03
@@ -37,7 +37,7 @@ Steps:        GET /Courses/enabled with searchName + categoryFilter combined,
               across several combinations
 Expected:     each combination returns only courses matching both conditions;
               no combination returns a course failing either filter
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-CM-04
@@ -110,7 +110,7 @@ Precondition: more than 50 active courses exist in the test DB
 Steps:        GET /Courses?page=0&pageSize=999
 Expected:     response reflects page=1 and pageSize=50; items.length <= 50;
               TotalPages equals ceil(TotalItems / 50)
-Status:       (not started)
+Status:       (passed)
 ```
 ```
 TC-CM-10
