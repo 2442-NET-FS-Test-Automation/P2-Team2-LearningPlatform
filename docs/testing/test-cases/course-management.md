@@ -169,15 +169,60 @@ Steps:        deactivate the course
 Expected:     course becomes inactive and no longer appears in the public catalog
 Status:       Passed
 ```
+
 ```
-TC-CM-15
-Trace:        REQ-10 (course management - invalid course information)
-Level:        Unit — Backend (course validation)
-Technique:    Boundary-value analysis
-Precondition: none
-Steps:        validate a course with missing required fields or invalid values
-Expected:     validation fails and the course cannot be created
-Status:       (not started)
+TC-CM-15a
+Trace:        REQ-10 (course management - name below minimum length)
+Level:        Integration — Backend (CoursesController.Create)
+Technique:    Boundary-value analysis (MinLength=3, value=2)
+Precondition: authenticated Admin; valid ProfessorId exists
+Steps:        POST /api/Courses with Name = "AB" (2 chars)
+Expected:     400 — validation error naming the Name field; no course persisted
+Status:       Passed
+```
+
+```
+TC-CM-15b
+Trace:        REQ-10 (course management - name at minimum length)
+Level:        Integration — Backend
+Technique:    Boundary-value analysis (MinLength=3, value=3)
+Precondition: same as TC-CM-15a
+Steps:        POST /api/Courses with Name = "ABC" (3 chars), all other fields valid
+Expected:     201 — course created successfully
+Status:       Passed
+```
+
+```
+TC-CM-15c
+Trace:        REQ-10 (course management - name at maximum length)
+Level:        Integration — Backend
+Technique:    Boundary-value analysis (MaxLength=100, value=100)
+Precondition: same as TC-CM-15a
+Steps:        POST /api/Courses with Name = string of exactly 100 chars
+Expected:     201 — course created successfully
+Status:       Passed
+```
+
+```
+TC-CM-15d
+Trace:        REQ-10 (course management - name above maximum length)
+Level:        Integration — Backend
+Technique:    Boundary-value analysis (MaxLength=100, value=101)
+Precondition: same as TC-CM-15a
+Steps:        POST /api/Courses with Name = string of 101 chars
+Expected:     400 — validation error naming the Name field
+Status:       Passed
+```
+
+```
+TC-CM-15e
+Trace:        REQ-10 (course management - invalid professor)
+Level:        Integration — Backend
+Technique:    Equivalence partitioning (invalid ProfessorId class)
+Precondition: authenticated Admin
+Steps:        POST /api/Courses with ProfessorId = 99999 (non-existent)
+Expected:     400 — professor not found; no course persisted
+Status:       Passed
 ```
 
 ```
@@ -190,25 +235,25 @@ Steps:        create or update a course, then retrieve the course by its ID
 Expected:     the course is returned successfully with the latest persisted
               information, including its name, description, category, price,
               hours, certification status, schedule, and assigned professor
-Status:       (not started)
+Status:       Passed
 ```
 
 ```
 TC-CM-17
-Trace:        REQ-10 (course management - assign professor)
-Level:        Integration — Backend (CoursesController + DB)
-Technique:    State transition (course without professor -> assigned professor)
-Precondition: authenticated Admin user; existing course and valid professor
-Steps:        assign the professor to the course
-Expected:     course is successfully updated with the selected professor;
-              subsequent course retrieval returns the assigned professor
-Status:       (not started)
+Trace:        REQ-10 (course management - update course error handling)
+Level:        Component — Frontend (EditCourseModal)
+Technique:    Error handling / negative testing
+Precondition: EditCourseModal is rendered with an existing course; API calls are mocked
+Steps:        mock updateCourse to reject; submit the edit course form
+Expected:     "Failed to update course." is displayed in the modal;
+              the modal remains open and the course is not reported as updated
+Status:       Passed
 ```
 
 ```
 TC-CM-18
 Trace:        REQ-10 (course management - complete admin workflow)
-Level:        E2E — Selenium
+Level:        E2E — Cypress
 Technique:    Scenario testing
 Precondition: authenticated Admin user
 Steps:        create a course, open the course details page, edit the course
@@ -216,13 +261,13 @@ Steps:        create a course, open the course details page, edit the course
 Expected:     the course is created and displayed correctly; edited
               information is reflected in the UI; after deactivation the
               course is no longer available in the public catalog
-Status:       (not started)
+Status:       Passed
 ```
 
 ```
 TC-CM-19
 Trace:        REQ-10 (course management - edit course UI)
-Level:        Unit — Frontend (CourseDetailsPage/EditCourseModal)
+Level:        Component — Frontend (CourseDetailsPage/EditCourseModal)
 Technique:    State transition + component interaction
 Precondition: CourseDetailsPage is rendered with a valid course and an
               authenticated Admin user; API calls are mocked
@@ -231,8 +276,7 @@ Steps:        render CourseDetailsPage; click the "Edit Course" button;
 Expected:     "Edit Course" button is visible for the Admin; clicking it
               opens EditCourseModal with the selected courseId; closing
               the modal removes it from the rendered UI
-Status:       (not started)
+Status:       Passed
 ```
 
 ## REQ-20 Professor only manages assigned courses
-

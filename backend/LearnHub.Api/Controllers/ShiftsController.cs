@@ -49,7 +49,12 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
     {
         try
         {
-            var shift = await _repo.AddAsync(new Shift { Name = dto.Name!, StartTime = TimeOnly.Parse(dto.StartTime!), EndTime = TimeOnly.Parse(dto.EndTime!) });
+            var startTime = TimeOnly.Parse(dto.StartTime!);
+            var endTime = TimeOnly.Parse(dto.EndTime!);
+            if (endTime <= startTime)
+                return BadRequest(new { error = "Shift end time must be after start time." });
+
+            var shift = await _repo.AddAsync(new Shift { Name = dto.Name!, StartTime = startTime, EndTime = endTime });
 
             if (shift == null) return Conflict("Shift name is already registered.");
 
@@ -77,9 +82,14 @@ public class ShiftsController(IShiftsRepo repo) : ControllerBase
 
             if (shift == null) return BadRequest(new { error = "Shift does not exists" });
 
+            var startTime = dto.StartTime == null ? shift.StartTime : TimeOnly.Parse(dto.StartTime);
+            var endTime = dto.EndTime == null ? shift.EndTime : TimeOnly.Parse(dto.EndTime);
+            if (endTime <= startTime)
+                return BadRequest(new { error = "Shift end time must be after start time." });
+
             if (dto.Name != null) shift.Name = dto.Name;
-            if (dto.StartTime != null) shift.StartTime = TimeOnly.Parse(dto.StartTime);
-            if (dto.EndTime != null) shift.EndTime = TimeOnly.Parse(dto.EndTime);
+            shift.StartTime = startTime;
+            shift.EndTime = endTime;
 
             await _repo.UpdateAsync(shift);
             return Ok();

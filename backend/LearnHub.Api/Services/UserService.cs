@@ -424,6 +424,14 @@ public class UserService : IUserService
                 return false;
             }
 
+            if (dto.ShiftId <= 0 ||
+                !await _db.Shifts.AnyAsync(s => s.Id == dto.ShiftId) ||
+                dto.ContractDate == default)
+            {
+                _logger.LogWarning("Promote failed: invalid professor information for user {UserId}", userId);
+                return false;
+            }
+
             user.Role = UserRoles.Professor;
 
             var professor = new Professor
