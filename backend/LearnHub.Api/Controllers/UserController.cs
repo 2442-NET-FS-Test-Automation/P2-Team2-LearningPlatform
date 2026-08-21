@@ -8,6 +8,7 @@ using LearnHub.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using System.Security.Claims;
 
 namespace LearnHub.Api.Controllers;
 
