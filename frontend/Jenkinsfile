@@ -10,6 +10,10 @@ pipeline {
     }
 
     stages {
+        stage ('Component Test') {
+            sh 'npm run cy:ct --reporter junit --reporter-options "mochaFile=cypress/results/[hash].xml,toConsole=false"'
+        }
+
         stage ('Build') {
             steps {
                 dir(env.SPA_DIR) {
@@ -17,12 +21,7 @@ pipeline {
                     sh "VITE_API_URL=${API_URL}/api npm run build"
                 }
             }
-
         }
-
-        // stage ('Test') {
-
-        // }
 
         stage ('Publish') {
             steps {
@@ -52,12 +51,12 @@ pipeline {
             }
         }
 
-        stage('E2E tests') {
+        stage('E2E tests on live SPA') {
             steps {
                 dir(env.SPA_DIR) {
                     sh 'rm -rf cypress/results'
                     sh 'rm -rf cypress/screenshots'
-                    sh 'npx cypress run --config baseUrl="https://learnhubweb.z19.web.core.windows.net" --env live=true --spec "cypress/e2e/SmokeTest.cy.js" --reporter junit --reporter-options "mochaFile=cypress/results/[hash].xml,toConsole=false"'
+                    sh 'npx cypress run --config baseUrl="https://learnhubweb.z19.web.core.windows.net" --env live=true --reporter junit --reporter-options "mochaFile=cypress/results/[hash].xml,toConsole=false"'
                 }
             }
         }
