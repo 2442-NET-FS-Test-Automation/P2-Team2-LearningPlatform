@@ -9,6 +9,7 @@ export default defineConfig([
   globalIgnores(['dist']),
   {
     files: ['**/*.{ts,tsx}'],
+    ignores: ['cypress/**/*'],
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
@@ -20,9 +21,14 @@ export default defineConfig([
     },
   },
   {
-    files: ['cypress/**/*.js', 'cypress/**/*.ts'],
+    files: ['cypress/**/*.js', 'cypress/**/*.ts', 'cypress/**/*.tsx'],
     plugins: {
         cypress: pluginCypress,
+    },
+    languageOptions: {
+      globals: {
+        ...pluginCypress.environments.globals.recommended,
+      },
     },
     rules: {
         ...pluginCypress.configs.recommended.rules,

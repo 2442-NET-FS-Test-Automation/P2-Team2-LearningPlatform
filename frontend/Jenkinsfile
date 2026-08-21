@@ -1,0 +1,74 @@
+pipeline {
+    agent { label 'linux' }
+
+    environment {
+        SPA_DIR='frontend/'
+        API_URL='https://learnhubappapi-c7hvc7dwggegb9fu.centralus-01.azurewebsites.net'
+        SITE_URL='https://learnhubweb.z19.web.core.windows.net'
+        BLOB_URL='https://learnhubweb.blob.core.windows.net/$web'
+        BLOB_TOKEN=credentials('web-sas')
+    }
+
+    stages {
+        stage ('Build') {
+            steps {
+                dir(env.SPA_DIR) {
+                    sh 'npm ci'
+                    sh "VITE_API_URL=${API_URL}/api npm run build"
+                }
+            }
+
+        }
+
+        // stage ('Test') {
+
+        // }
+
+        stage ('Publish') {
+            steps {
+                withCredentials([string(credentialsId: 'web-sas', variable: 'sas')]) {
+                    dir(env.SPA_DIR) {
+                        sh '''
+                            azcopy sync dist "${BLOB_URL}${BLOB_TOKEN}" --recursive --delete-destination=true
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Wait for API') {
+            steps {
+                sh '''
+                    for i in $(seq 1 30); do
+                        if curl -f -s -o /dev/null "${API_URL}/"; then
+                            echo "api up after $i tries"
+                            exit 0
+                        fi
+                        sleep 10
+                    done
+                    echo "api never answered"
+                    exit 1
+                '''
+            }
+        }
+
+        stage('E2E tests') {
+            steps {
+                dir(env.SPA_DIR) {
+                    sh 'rm -rf cypress/results'
+                    sh 'rm -rf cypress/screenshots'
+                    sh 'npx cypress run --config baseUrl="https://learnhubweb.z19.web.core.windows.net" --env live=true --spec "cypress/e2e/SmokeTest.cy.js" --reporter junit --reporter-options "mochaFile=cypress/results/[hash].xml,toConsole=false"'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            dir(env.SPA_DIR) {
+                junit allowEmptyResults: true, testResults: 'cypress/results/*.xml'
+                archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress/screenshots/**'
+            }
+        }
+    }
+}

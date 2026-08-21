@@ -324,19 +324,12 @@ public class UserService : IUserService
 
         foreach(var courseId in coursesToAdd)
         {
-            if(!await _courseRepo.IsCourseActiveAsync(courseId))
-            {
-                throw new InvalidOperationException(
-                    "Cannot assign inactive course"
-                );
-            }
+            await _courseRepo.ValidateStudentEnrollmentAsync(studentId, courseId);
 
             await _courseRepo.AddStudentAsync(
                 studentId,
                 courseId);
         }
-
-
 
         foreach(var courseId in coursesToRemove)
         {
@@ -380,18 +373,12 @@ public class UserService : IUserService
 
         foreach(var courseId in coursesToAdd)
         {
-            if(!await _courseRepo.IsCourseActiveAsync(courseId))
-            {
-                throw new InvalidOperationException(
-                    "Cannot assign inactive course"
-                );
-            }
+            await _courseRepo.ValidateProfessorAssignmentAsync(professorId, courseId);
 
             await _courseRepo.AssignProfessorAsync(
                 courseId,
                 professorId);
         }
-
 
 
         foreach(var courseId in coursesToRemove)

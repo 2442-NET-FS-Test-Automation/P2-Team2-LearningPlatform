@@ -28,6 +28,8 @@ dist-ssr
 cypress/screenshots/
 cypress/videos/
 cypress/downloads/
+cypress-image-diff-html-report
+cypress-image-diff-screenshots
 
 coverage/
 .nyc_output/
