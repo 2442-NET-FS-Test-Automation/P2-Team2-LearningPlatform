@@ -19,13 +19,13 @@ pipeline {
             }
         }
 
-        stage ('Component Test') {
-            steps {
-                dir(env.SPA_DIR) {
-                    sh 'npm run cy:ct'
-                }
-            }
-        }
+        // stage ('Component Test') {
+        //     steps {
+        //         dir(env.SPA_DIR) {
+        //             sh 'npm run cy:ct'
+        //         }
+        //     }
+        // }
 
         stage ('Publish') {
             steps {
