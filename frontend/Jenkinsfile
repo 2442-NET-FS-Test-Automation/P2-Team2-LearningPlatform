@@ -1,0 +1,41 @@
+pipeline {
+    agent { label 'linux' }
+
+    environment {
+        SPA_DIR='frontend/'
+        VITE_API_URL='https://learnhubappapi-c7hvc7dwggegb9fu.centralus-01.azurewebsites.net/api'
+        SITE_URL='https://learnhubweb.z19.web.core.windows.net'
+        BLOB_URL='learnhubweb.blob.core.windows.net/$web'
+        BLOB_TOKEN=credentials('web-sas')
+    }
+
+    stages {
+        stage ('Build') {
+            steps {
+                dir(env.SPA_DIR) {
+                    sh 'npm ci'
+                    sh "VITE_API_URL=${VITE_API_URL} npm run build"
+                }
+            }
+
+        }
+
+        // stage ('Test') {
+
+        // }
+
+        stage ('Publish') {
+            steps {
+                withCredentials([string(credentialsId: 'web-sas', variable: 'sas')]) {
+                    dir(env.SPA_DIR) {
+                        sh "azcopy sync dist "${BLOB_URL}${BLOB_TOKEN}" --recursive --delete-destination=true"
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+
+    }
+}
