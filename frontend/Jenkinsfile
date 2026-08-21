@@ -10,18 +10,18 @@ pipeline {
     }
 
     stages {
-        stage ('Component Test') {
-            steps {
-                sh 'npm run cy:ct'
-            }
-        }
-
         stage ('Build') {
             steps {
                 dir(env.SPA_DIR) {
                     sh 'npm ci'
                     sh "VITE_API_URL=${API_URL}/api npm run build"
                 }
+            }
+        }
+
+        stage ('Component Test') {
+            steps {
+                sh 'npm run cy:ct'
             }
         }
 
