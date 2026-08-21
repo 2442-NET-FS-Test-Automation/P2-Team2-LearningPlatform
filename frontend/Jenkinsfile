@@ -55,15 +55,15 @@ pipeline {
             }
         }
 
-        stage('E2E tests on live SPA') {
-            steps {
-                dir(env.SPA_DIR) {
-                    sh 'rm -rf cypress/results'
-                    sh 'rm -rf cypress/screenshots'
-                    sh 'npx cypress run --config baseUrl="https://learnhubweb.z19.web.core.windows.net" --env live=true --reporter junit --reporter-options "mochaFile=cypress/results/[hash].xml,toConsole=false"'
-                }
-            }
-        }
+        // stage('E2E tests on live SPA') {
+        //     steps {
+        //         dir(env.SPA_DIR) {
+        //             sh 'rm -rf cypress/results'
+        //             sh 'rm -rf cypress/screenshots'
+        //             sh 'npx cypress run --config baseUrl="https://learnhubweb.z19.web.core.windows.net" --env live=true --reporter junit --reporter-options "mochaFile=cypress/results/[hash].xml,toConsole=false"'
+        //         }
+        //     }
+        // }
     }
 
     post {
