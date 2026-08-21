@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage ('Component Test') {
             steps {
-                sh 'npm run cy:ct --reporter junit --reporter-options "mochaFile=cypress/results/[hash].xml,toConsole=false"'
+                sh 'npm run cy:ct'
             }
         }
 
